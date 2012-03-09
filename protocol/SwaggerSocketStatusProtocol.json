@@ -1,0 +1,7 @@
+{
+    "identity" : "some_unique_uuid_generated_by_the_server",
+    "status" : {
+        "code" : "value",
+        "reasonPhrase" : "reason"
+    }
+}

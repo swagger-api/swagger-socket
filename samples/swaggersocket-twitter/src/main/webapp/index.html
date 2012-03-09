@@ -1,0 +1,154 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <script type="text/javascript" src="jquery/jquery-1.6.4.js"></script>
+    <script type="text/javascript" src="jquery/jquery.form.js"></script>
+    <script type="text/javascript" src="jquery/jquery.list.js"></script>
+    <script type="text/javascript" src="jquery/jquery.swaggersocket.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var ss = new jQuery.swaggersocket.SwaggerSocketListener();
+            var swaggerSocket = new jQuery.swaggersocket.SwaggerSocket();
+            var incompleteMessage = "";
+            var lastHashtag = new Array();
+
+            ss.onError = function(errorMsg, r) {
+                $('#result').prepend($('<li>').append(errorMsg + ":" + r.getStatus() + " " + r.getReasonPhrase()));
+            };
+
+            ss.onResponse = function(r) {
+                $('#result li').each(function(index) {
+                    if (index > 10) {
+                        $(this).remove();
+                    }
+                });
+
+                try {
+                    var swaggerResponse = $.parseJSON(incompleteMessage + r.getData());
+                    incompleteMessage = "";
+                    if (swaggerResponse != null) {
+                        var hash = r.getRequest().getPath();
+                        swaggerResponse.results.forEach(function(result) {
+                            $('#result').prepend($('<li>').append($('<a>').append(result.text))).highlight(hash);
+                            $('#result').prepend($('<li>').append($('<h3>').append(result.from_user).append('</h3>')));
+                        });
+                    }
+                    incompleteMessage = "";
+                } catch (err) {
+                    incompleteMessage = r.getData();
+                }
+            };
+            var incompleteMessage = "";
+
+            open();
+
+            function getKeyCode(ev) {
+                if (window.event) return window.event.keyCode;
+                return ev.keyCode;
+            }
+
+            function getElementById() {
+                return document.getElementById(arguments[0]);
+            }
+
+            function getElementByIdValue() {
+                return document.getElementById(arguments[0]).value;
+            }
+
+            function stop() {
+                if (lastHashtag.length > 0 && lastHashtag[0].length != 0) {
+                    var request = new jQuery.swaggersocket.Request()
+                            .path(lastHashtag[lastHashtag.length -1] + '/stop')
+                            .method("GET")
+                            .listener(ss);
+
+                    swaggerSocket.send(request);
+                }
+            }
+
+            function open() {
+                var request = new jQuery.swaggersocket.Request()
+                        .path(document.location.toString() + 'search/')
+                        .listener(ss);
+
+                swaggerSocket.open(request);
+            }
+
+            getElementById('phrase').setAttribute('autocomplete', 'OFF');
+            getElementById('phrase').onkeyup = function(event) {
+                stop();
+
+                lastHashtag = $.trim(getElementById('phrase').value).split(" ");
+                if (lastHashtag == '') {
+                    $('#result li').each(function(index) {
+                        $(this).remove();
+                    });
+                    return;
+                }
+
+                lastHashtag.forEach(function(tag) {
+                    swaggerSocket.send(new jQuery.swaggersocket.Request()
+                            .path(tag)
+                            .method("GET")
+                            .listener(ss));
+                });
+                return false;
+            };
+
+            getElementById('phrase').onclick = function(event) {
+                if (getElementById('phrase').value == 'Look up any hashtag....') {
+                    getElementById('phrase').value = '';
+                }
+            }
+        });
+    </script>
+    <style type='text/css'>
+        body {
+            text-align: center;
+        }
+
+        div {
+            border: 0px solid black;
+
+        }
+
+        .highlight {
+            background-color: yellow
+        }
+
+        .h3 {
+            background-color: red
+        }
+
+        input#phrase {
+            width: 20em;
+            height: 3em;
+            font-size: 100%;
+            background-color: #e0f0f0;
+        }
+
+        input#phrase2 {
+            width: 20em;
+            height: 3em;
+            font-size: 100%;
+            background-color: #e0f0f0;
+        }
+
+        ul {
+            list-style-type: none;
+            text-align: left;
+        }
+
+    </style>
+</head>
+<body>
+<h1>Twitter Search using SwaggerSocket</h1>
+
+<h2>Enter hashtag (for multiple, separate using a space)</h2>
+<div id='sendMessage'>
+    <input id='phrase' type='text' value="Look up any hashtag...."/>
+</div>
+<h2>Results</h2>
+<ul id="result"></ul>
+</body>
+</html>

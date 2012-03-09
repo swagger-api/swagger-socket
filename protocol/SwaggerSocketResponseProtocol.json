@@ -1,0 +1,17 @@
+{
+    "identity" : "uuid-server-generated-number",
+    "responses" : [
+        {
+            "uuid" : 0,
+            "status" : "status",
+            "path" : "path",
+            "headers" : [
+                {
+                    "name" : "name",
+                    "value" : "value"
+                }
+            ],
+            "messageBody" : "messageBody"
+        }
+    ]
+}

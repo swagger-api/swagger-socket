@@ -1,0 +1,44 @@
+{
+    "handshake" : {
+        "protocolVersion" : "1.0",
+        "protocolName" : "SwaggerSocket",
+        "dataFormat" : "JSON",
+        "identity" : 0,
+        "path" : "/any_url",
+        "method" : "GET",
+
+        "headers" : [
+            {
+                "name" : "name",
+                "value" : "value"
+            }
+        ],
+        "queryStrings" : [
+            {
+                "name" : "name",
+                "value" : "value"
+            }
+        ]
+    },
+    "requests" : [
+        {
+            "uuid" : 0,
+            "method" : "POST",
+            "path" : "/any_url/",
+            "headers" : [
+                {
+                    "name" : "Content-Type",
+                    "value" : "test/plain"
+                }
+            ],
+            "queryStrings" : [
+                {
+                    "name" : "foo2",
+                    "value" : "bar2"
+                }
+            ],
+            "messageBody" : "Swagger Socket Protocol is cool"
+        }
+    ]
+}
+
