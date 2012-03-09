@@ -39,7 +39,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-@Path("/search")
+@Path("/search/{tagid}")
 @Produces("text/html;charset=ISO-8859-1")
 @Singleton
 public class TwitterFeed {
@@ -51,7 +51,6 @@ public class TwitterFeed {
     private final CountDownLatch suspendLatch = new CountDownLatch(1);
 
     @GET
-    @Path("/{tagid}")
     public SuspendResponse<String> search(final @PathParam("tagid") Broadcaster feed,
                                           final @PathParam("tagid") String tagid) {
 
@@ -121,7 +120,7 @@ public class TwitterFeed {
     }
 
     @GET
-    @Path("/{tagid}/stop")
+    @Path("/stop")
     public String stopSearch(final @PathParam("tagid") Broadcaster feed,
                              final @PathParam("tagid") String tagid) {
         feed.resumeAll();
