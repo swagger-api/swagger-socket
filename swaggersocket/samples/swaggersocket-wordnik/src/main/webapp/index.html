@@ -1,0 +1,141 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <script type="text/javascript" src="jquery/jquery-1.6.4.js"></script>
+    <script type="text/javascript" src="jquery/jquery.form.js"></script>
+    <script type="text/javascript" src="jquery/jquery.list.js"></script>
+    <script type="text/javascript" src="jquery/jquery.swaggersocket.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var ss = new jQuery.swaggersocket.SwaggerSocketListener();
+            var swaggerSocket = new jQuery.swaggersocket.SwaggerSocket();
+            var incompleteMessage = "";
+
+            ss.onError = function(errorMsg, r) {
+                $('#result').prepend($('<li>').append(errorMsg + ":" + r.getStatus() + " " + r.getReasonPhrase()));
+            };
+
+            ss.onResponse = function(r) {
+                $('#result li').each(function(index) {
+                    $(this).remove();
+                });
+
+                $('#definitions li').each(function(index) {
+                    $(this).remove();
+                });
+
+                try {
+                    var swaggerResponse = $.parseJSON(incompleteMessage + r.getData());
+                    incompleteMessage = "";
+                    if (swaggerResponse != null) {
+                        swaggerResponse.examples.forEach(function(example) {
+                            try {
+                                if (example.url != null)
+                                    $('#result').prepend($('<li>').append($('<a>').attr('href', example.url).append(example.text))).highlight(getElementById('phrase').value);
+                                else
+                                    $('#result').prepend($('<li>').append($('<a>').attr('href', "").append(example.text)));
+                            } catch (e) {
+                            }
+                        });
+                    }
+                } catch (err) {
+                    incompleteMessage = r.getData();
+                }
+            };
+            var incompleteMessage = "";
+
+            open();
+
+            function getKeyCode(ev) {
+                if (window.event) return window.event.keyCode;
+                return ev.keyCode;
+            }
+
+            function getElementById() {
+                return document.getElementById(arguments[0]);
+            }
+
+            function getElementByIdValue() {
+                return document.getElementById(arguments[0]).value;
+            }
+
+            function open() {
+                var request = new jQuery.swaggersocket.Request()
+                        .path(document.location.toString() + 'admin/api/word.json')
+                        .listener(ss);
+
+                swaggerSocket.open(request);
+            }
+
+            getElementById('phrase').setAttribute('autocomplete', 'OFF');
+            getElementById('phrase').onkeyup = function(event) {
+
+                if (getElementById('phrase').value == '') {
+                    $('#result li').each(function(index) {
+                        $(this).remove();
+                    });
+                    return;
+                }
+
+                var request = new jQuery.swaggersocket.Request()
+                        .path("/" + getElementById('phrase').value + "/examples")
+                        .method("GET")
+                        .listener(ss);
+
+                swaggerSocket.send(request);
+                return false;
+            };
+
+            getElementById('phrase').onclick = function(event) {
+                if (getElementById('phrase').value == 'Look up any word or phrase...') {
+                    getElementById('phrase').value = '';
+                }
+            }
+        });
+    </script>
+    <style type='text/css'>
+        body {
+            text-align: center;
+        }
+
+        div {
+            border: 0px solid black;
+
+        }
+
+        .highlight {
+            background-color: yellow
+        }
+
+        input#phrase {
+            width: 20em;
+            height: 3em;
+            font-size: 100%;
+            background-color: #e0f0f0;
+        }
+
+        ul {
+            list-style-type: none;
+            text-align: left;
+        }
+
+    </style>
+</head>
+<body>
+<h1>Wordnik.com ... in REAL TIME!</h1>
+<h1>You need to configure the Swagger key  in web.xml: com.wordnik.swagger.key</h1>
+
+<br/><br/><br/><br/>
+<image src="/w.png"/>
+<br/>
+
+<div id='sendMessage'>
+    <input id='phrase' type='text' value="Look up any word or phrase..."/>
+    <br>
+</div>
+<br/>
+
+<ul id='definitions'></ul>
+<ul id="result"></ul>
+</body>
+</html>
