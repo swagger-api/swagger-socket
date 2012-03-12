@@ -307,6 +307,16 @@
             </properties>
         </profile>
     </profiles>
+    <repositories>
+        <repository>
+            <id>oss.sonatype.org</id>
+            <url>http://oss.sonatype.org/content/repositories/releases</url>
+        </repository>
+        <repository>
+            <id>oss.sonatype.org-snapshot</id>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
     <distributionManagement>
         <repository>
             <id>sonatype-nexus-staging</id>
