@@ -34,6 +34,11 @@
             <name>Jeanfrancois Arcand</name>
             <email>jfarcand@apache.org</email>
         </developer>
+	<developer>
+	    <id>fehguy</id>
+	    <name>Tony Tam</name>
+	    <email>fehguy@gmail.com</email>
+	</developer>
     </developers>
     <licenses>
         <license>
@@ -177,6 +182,7 @@
         <module>samples/swaggersocket-petstore</module>
         <module>samples/swaggersocket-wordnik</module>
         <module>samples/swaggersocket-twitter</module>
+        <module>samples/swaggersocket-perftest</module>
     </modules>
     <build>
         <extensions>
