@@ -286,6 +286,7 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
                 .requestURL(requestURL)
                 .request(r)
                 .dispatchRequestAsynchronously(true)
+                .destroyable(false)
                 .body(request.getMessageBody() != null ? request.getMessageBody().toString() : "");
 
         AtmosphereRequest ar = b.build();
