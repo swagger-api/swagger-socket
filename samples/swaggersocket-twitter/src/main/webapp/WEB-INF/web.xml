@@ -3,8 +3,8 @@
          xmlns:j2ee="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/ns/j2ee/web-app_2.5.xsd">
-    <description>Atmosphere Twitter Search</description>
-    <display-name>Atmosphere Twitter Search</display-name>
+    <description>SwaggerSocket Twitter Search</description>
+    <display-name>SwaggerSocket Twitter Search</display-name>
     <servlet>
         <description>AtmosphereServlet</description>
         <servlet-name>AtmosphereServlet</servlet-name>
@@ -20,6 +20,10 @@
         <init-param>
             <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
             <param-value>true</param-value>
+            <init-param>
+                <param-name>com.sun.jersey.config.property.packages</param-name>
+                <param-value>org.atmosphere.samples.twitter</param-value>
+            </init-param>
         </init-param>
         <load-on-startup>0</load-on-startup>
     </servlet>
