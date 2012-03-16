@@ -10,10 +10,6 @@
         <servlet-name>AtmosphereServlet</servlet-name>
         <servlet-class>org.atmosphere.cpr.AtmosphereServlet</servlet-class>
         <init-param>
-            <param-name>org.atmosphere.useWebSocket</param-name>
-            <param-value>true</param-value>
-        </init-param>
-        <init-param>
             <param-name>org.atmosphere.useNative</param-name>
             <param-value>true</param-value>
         </init-param>
@@ -22,8 +18,8 @@
             <param-value>com.wordnik.swaggersocket.server.SwaggerSocketProtocol</param-value>
         </init-param>
         <init-param>
-            <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>org.atmosphere.samples.twitter</param-value>
+            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+            <param-value>true</param-value>
         </init-param>
         <load-on-startup>0</load-on-startup>
     </servlet>

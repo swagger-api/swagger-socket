@@ -1,10 +1,6 @@
 package com.wordnik.demo.resources
 
 import com.wordnik.swagger.core._
-import com.wordnik.swagger.core.util._
-import com.wordnik.swagger.core.ApiError._
-import com.wordnik.swagger.core.ApiParam._
-import com.wordnik.swagger.core.ApiOperation._
 import com.wordnik.swagger.jaxrs._
 
 import com.wordnik.resource.util.ProfileEndpointTrait
@@ -12,7 +8,6 @@ import com.wordnik.util.perf.Profile
 
 import org.atmosphere.jersey._
 import org.atmosphere.annotation._
-import org.atmosphere.util._
 import org.atmosphere.cpr._
 
 import javax.ws.rs._

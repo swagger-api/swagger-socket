@@ -606,7 +606,7 @@ function loadAtmosphere(jQuery) {
      * Comet Streaming JavaScript Library
      * http://code.google.com/p/jquery-stream/
      *
-     * Copyright 2011, Donghwan Kim
+     * Copyright 2012, Donghwan Kim
      * Licensed under the Apache License, Version 2.0
      * http://www.apache.org/licenses/LICENSE-2.0
      *
@@ -2022,7 +2022,7 @@ function loadAtmosphere(jQuery) {
      * jQuery stringifyJSON
      * http://github.com/flowersinthesand/jquery-stringifyJSON
      *
-     * Copyright 2011, Donghwan Kim
+     * Copyright 2012, Donghwan Kim
      * Licensed under the Apache License, Version 2.0
      * http://www.apache.org/licenses/LICENSE-2.0
      */
