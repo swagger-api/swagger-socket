@@ -153,10 +153,16 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
         } else {
           val responses = deserializer.deserializeResponse(message)
           responses.foreach(response => {
-            try {
-              l.message(activeRequests(response.getUuid), response)
-            } finally {
-              activeRequests -= response.getUuid
+            // Is this response for us
+            val rq: Request = activeRequests(response.getUuid);
+            if (r.contains(rq)) {
+              try {
+                l.message(rq, response)
+              } catch {
+                case ex: Throwable => l.error(new SwaggerSocketException(500, ex.getMessage))
+              } finally {
+                activeRequests -= response.getUuid
+              }
             }
           })
           l.messages(responses)
