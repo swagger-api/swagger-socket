@@ -15,14 +15,13 @@
  */
 package com.wordnik.swaggersocket.server;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 public class Request extends ProtocolBase {
+
+    private Object attachment;
 
     public Request() {
     }
@@ -35,6 +34,16 @@ public class Request extends ProtocolBase {
         method = b.method;
         dataFormat = b.dataFormat;
         messageBody = b.messageBody;
+        attachment = b.attachment;
+    }
+
+    public Object attachment() {
+        return attachment;
+    }
+
+    public Request attach(Object attachment) {
+        this.attachment = attachment;
+        return this;
     }
 
     public final static class Builder {
@@ -45,6 +54,7 @@ public class Request extends ProtocolBase {
         private String uuid = UUID.randomUUID().toString();
         private String method = "POST";
         private Object messageBody = "";
+        private Object attachment;
 
         public Builder format(String dataFormat) {
             this.dataFormat = dataFormat;
@@ -78,6 +88,11 @@ public class Request extends ProtocolBase {
 
         public Builder method(String method) {
             this.method = method;
+            return this;
+        }
+
+        public Builder attach(Object attachment) {
+            this.attachment = attachment;
             return this;
         }
 
