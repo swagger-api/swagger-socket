@@ -118,19 +118,17 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
     this
   }
 
+  def send(r: Request): SwaggerSocket = {
+    send(Array(r), null)
+    this
+  }
+
   def send(r: Request, l: SwaggerSocketListener): SwaggerSocket = {
     send(Array(r), l)
     this
   }
 
-  def send(r: Array[Request], l: SwaggerSocketListener): SwaggerSocket = {
-
-    val requestMessage = new Builder().requests(r).identity(identity).build
-    //	will we have race conditions here?
-    r.foreach(request => {
-      activeRequests += request.getUuid -> request
-    })
-
+  def listener(l: SwaggerSocketListener) : SwaggerSocket = {
     w.listener(new TextListener {
 
       override def onOpen {
@@ -153,22 +151,71 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
         } else {
           val responses = deserializer.deserializeResponse(message)
           responses.foreach(response => {
-            // Is this response for us
             val rq: Request = activeRequests(response.getUuid);
-            if (r.contains(rq)) {
-              try {
-                l.message(rq, response)
-              } catch {
-                case ex: Throwable => l.error(new SwaggerSocketException(500, ex.getMessage))
-              } finally {
-                activeRequests -= response.getUuid
-              }
+            try {
+              l.message(rq, response)
+            } catch {
+              case ex: Throwable => l.error(new SwaggerSocketException(500, ex.getMessage))
+            } finally {
+              activeRequests -= response.getUuid
             }
           })
           l.messages(responses)
         }
       }
-    }).send(serializer.serializeRequests(requestMessage))
+    })
+    this
+  }
+
+  def send(r: Array[Request], l: SwaggerSocketListener): SwaggerSocket = {
+
+    val requestMessage = new Builder().requests(r).identity(identity).build
+    //	will we have race conditions here?
+    r.foreach(request => {
+      activeRequests += request.getUuid -> request
+    })
+
+    if (l != null) {
+      w.listener(new TextListener {
+
+        override def onOpen {
+          logger.trace("OnOpen " + this)
+        }
+
+        override def onClose {
+          logger.trace("onClose" + this)
+        }
+
+        override def onError(t: Throwable) {
+          l.error(new SwaggerSocketException(500, ""))
+        }
+
+        /* will we get partial responses?  I think large messages can definitely be chunked */
+        override def onMessage(message: String) {
+          if (message.startsWith("{\"status\"")) {
+            val s: StatusMessage = deserializer.deserializeStatus(message)
+            l.error(new SwaggerSocketException(s.getStatus.getStatusCode, s.getStatus.getReasonPhrase))
+          } else {
+            val responses = deserializer.deserializeResponse(message)
+            responses.foreach(response => {
+              // Is this response for us
+              val rq: Request = activeRequests(response.getUuid);
+              if (r.contains(rq)) {
+                try {
+                  l.message(rq, response)
+                } catch {
+                  case ex: Throwable => l.error(new SwaggerSocketException(500, ex.getMessage))
+                } finally {
+                  activeRequests -= response.getUuid
+                }
+              }
+            })
+            l.messages(responses)
+          }
+        }
+      })
+    }
+    w.send(serializer.serializeRequests(requestMessage))
     this
   }
 
