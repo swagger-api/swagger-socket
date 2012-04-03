@@ -1,4 +1,4 @@
-## SwaggerSocket: A REST over WebSocket Protocol
+## [SwaggerSocket](https://github.com/wordnik/swagger-sockets/wiki/Swagger-Socket-Protocol): A REST over WebSocket Protocol
 
 ### Getting started using the bi-directional samples
 The quickest way to see how the protocol works is to try the samples:
