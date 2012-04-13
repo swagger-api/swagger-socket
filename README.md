@@ -52,6 +52,7 @@ The Swagger Socket Client is defined as
            .path(document.location.toString())
            .listener(ss);
      swaggerSocket.open(request);
+```
 
 #### Sending requests -- You can send an array of Request or single request.
 
@@ -67,7 +68,6 @@ The Swagger Socket Client is defined as
             .method("POST")
             .data("BAR")
             .listener(ss);
-
     swaggerSocket.send(requests);
 ```
 
@@ -89,7 +89,6 @@ Then you are ready to start sending requests. As simple as:
       .body("Yo!")
       .format("JSON")
       .build(), new SwaggerSocketListener() {
-
       	override def error(e: SwaggerSocketException) {
            // Invoked when an exception occurs
 	    }
