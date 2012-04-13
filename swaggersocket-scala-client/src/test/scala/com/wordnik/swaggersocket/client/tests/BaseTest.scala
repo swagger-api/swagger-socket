@@ -23,7 +23,7 @@ import org.eclipse.jetty.server.Server
 import org.scalatest.{ FlatSpec, BeforeAndAfterAll }
 import org.scalatest.matchers.ShouldMatchers
 import org.eclipse.jetty.servlet.{ServletHolder, ServletContextHandler}
-import org.atmosphere.container.{JettyCometSupportWithWebSocket, Jetty7CometSupport}
+import org.atmosphere.container.{JettyAsyncSupportWithWebSocket}
 import com.wordnik.swaggersocket.server.SwaggerSocketProtocol
 import org.atmosphere.cpr.{AtmosphereFramework, ApplicationConfig, AtmosphereServlet}
 
@@ -52,7 +52,7 @@ class BaseTest extends Server with FlatSpec with BeforeAndAfterAll with ShouldMa
     setHandler(context)
     val a = new AtmosphereServlet();
     framework = a.framework()
-    framework.setCometSupport(new JettyCometSupportWithWebSocket(framework.getAtmosphereConfig))
+    framework.setCometSupport(new JettyAsyncSupportWithWebSocket(framework.getAtmosphereConfig))
     framework.addInitParameter(ApplicationConfig.WEBSOCKET_PROTOCOL, classOf[SwaggerSocketProtocol].getName)
     framework.addInitParameter("com.sun.jersey.config.property.packages", this.getClass.getPackage.getName)
     context.addServlet(new ServletHolder(a), "/*")

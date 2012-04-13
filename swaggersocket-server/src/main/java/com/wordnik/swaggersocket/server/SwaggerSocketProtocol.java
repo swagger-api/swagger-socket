@@ -140,7 +140,7 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
                 if (!delegateHandshake) {
                     return null;
                 } else {
-                    list.add(toAtmosphereRequest(resource.getRequest(), handshake));
+                    list.add(toAtmosphereRequest(resource.getRequest(), handshake, false));
                 }
             } else {
                 Message swaggerSocketMessage = mapper.readValue(data, Message.class);
@@ -156,7 +156,7 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
 
                 List<Request> requests = swaggerSocketMessage.getRequests();
                 for (Request r : requests) {
-                    list.add(toAtmosphereRequest(resource.getRequest(), r));
+                    list.add(toAtmosphereRequest(resource.getRequest(), r, requests.size() > 1));
                 }
             }
             return list;
@@ -241,13 +241,12 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
         return swaggerSocketRequest == null ? true : false;
     }
 
-    private AtmosphereRequest toAtmosphereRequest(HttpServletRequest r, ProtocolBase request) {
+    private AtmosphereRequest toAtmosphereRequest(AtmosphereRequest r, ProtocolBase request, boolean dispatchAsync) {
         AtmosphereRequest.Builder b = new AtmosphereRequest.Builder();
 
-        Map<String, String> headers = new HashMap<String, String>();
         if (request.getHeaders() != null) {
             for (Header h : request.getHeaders()) {
-                headers.put(h.getName(), h.getValue());
+                r.header(h.getName(), h.getValue());
             }
         }
 
@@ -278,15 +277,14 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
         }
 
         b.pathInfo(p)
-                .contentType(headers.get("Content-Type"))
-                .headers(headers)
+                .contentType(r.getHeader("Content-Type"))
                 .method(request.getMethod())
                 .queryStrings(queryStrings)
                 .requestURI(requestURI)
                 .requestURL(requestURL)
                 .request(r)
-                .dispatchRequestAsynchronously(true)
-                .destroyable(false)
+                .dispatchRequestAsynchronously(dispatchAsync)
+                .destroyable(true)
                 .body(request.getMessageBody() != null ? request.getMessageBody().toString() : "");
 
         AtmosphereRequest ar = b.build();

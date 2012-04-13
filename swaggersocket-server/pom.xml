@@ -11,7 +11,7 @@
     <artifactId>swaggersocket</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0-SNAPSHOT</version>
-    <name>swagger-socket</name>
+    <name>swaggersocket</name>
     <url>http://www.wordnik.com</url>
     <dependencies>
             <dependency>

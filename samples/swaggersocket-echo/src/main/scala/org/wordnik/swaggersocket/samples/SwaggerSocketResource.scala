@@ -13,18 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.wordnik.swaggersocket.client
+package org.wordnik.swaggersocket.samples
 
-import com.wordnik.swaggersocket.server.{Response, Request}
+import org.slf4j.LoggerFactory
+import javax.ws.rs.{Produces, POST, Path}
 
-trait SwaggerSocketListener {
+@Path("/swaggersocket")
+@Produces(Array("application/json"))
+class SwaggerSocketResource /* extend SwaggerSocket */ {
 
-  def close {}
+  val logger = LoggerFactory.getLogger(classOf[SwaggerSocketResource])
 
-  def error(e : SwaggerSocketException) {}
-
-  def message(req : Request, res: Response) {}
-
-  def messages(res : java.util.List[Response]) {}
+  @Path("/echo")
+  @POST
+  def swaggerSocket2(m: String): String = {
+    m
+  }
 
 }

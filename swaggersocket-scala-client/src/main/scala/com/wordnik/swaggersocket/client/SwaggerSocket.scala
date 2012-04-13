@@ -16,13 +16,12 @@
 package com.wordnik.swaggersocket.client
 
 import scala.collection.JavaConversions._
-import java.util.concurrent.{TimeoutException, TimeUnit, CountDownLatch}
 import org.slf4j.{Logger, LoggerFactory}
 import org.jfarcand.wcs.{TextListener, WebSocket}
 import com.wordnik.swaggersocket.server.RequestMessage.Builder
-import scala.collection.mutable
 import com.wordnik.swaggersocket.server.StatusMessage.Status
 import com.wordnik.swaggersocket.server._
+import java.util.concurrent.{ConcurrentHashMap, TimeoutException, TimeUnit, CountDownLatch}
 
 
 object SwaggerSocket {
@@ -36,7 +35,7 @@ object SwaggerSocket {
   }
 }
 
-case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: Boolean, activeRequests: mutable.Map[String, Request], w: WebSocket) {
+case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: Boolean, activeRequests: ConcurrentHashMap[String, Request], w: WebSocket) {
 
   val logger: Logger = LoggerFactory.getLogger(classOf[SwaggerSocket])
   val deserializer = new SwaggerSocketDeserializer
@@ -109,7 +108,7 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
     e.foreach(throw _)
 
     // Return a new instance with a unique identity
-    new SwaggerSocket(serverIdentity, timeoutInSeconds, true, mutable.Map[String, Request](), ws)
+    new SwaggerSocket(serverIdentity, timeoutInSeconds, true, new ConcurrentHashMap[String, Request](), ws)
 
   }
 
@@ -128,7 +127,7 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
     this
   }
 
-  def listener(l: SwaggerSocketListener) : SwaggerSocket = {
+  def listener(l: SwaggerSocketListener): SwaggerSocket = {
     w.listener(new TextListener {
 
       override def onOpen {
@@ -136,11 +135,13 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
       }
 
       override def onClose {
+        l.close
         logger.trace("onClose" + this)
       }
 
       override def onError(t: Throwable) {
-        l.error(new SwaggerSocketException(500, ""))
+        logger.error("", t)
+        l.error(new SwaggerSocketException(500, t.getMessage))
       }
 
       /* will we get partial responses?  I think large messages can definitely be chunked */
@@ -151,11 +152,14 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
         } else {
           val responses = deserializer.deserializeResponse(message)
           responses.foreach(response => {
-            val rq: Request = activeRequests(response.getUuid);
             try {
+              val rq: Request = activeRequests(response.getUuid);
               l.message(rq, response)
             } catch {
-              case ex: Throwable => l.error(new SwaggerSocketException(500, ex.getMessage))
+              case ex: Throwable => {
+                logger.error("", ex)
+                l.error(new SwaggerSocketException(500, ex.getMessage))
+              }
             } finally {
               activeRequests -= response.getUuid
             }
@@ -183,7 +187,7 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
         }
 
         override def onClose {
-          logger.trace("onClose" + this)
+          l.close
         }
 
         override def onError(t: Throwable) {

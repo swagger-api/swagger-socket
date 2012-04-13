@@ -46,6 +46,21 @@ object APIInvoker {
   def serialize(o: AnyRef): String = {
     mapper.writeValueAsString(o)
   }
+
+  def toPathValue(value: String): String = {
+    value match {
+      case v: String => encode(value)
+      case _ => ""
+    }
+  }
+
+  def encode(value: String): String = {
+    try {
+      return java.net.URLEncoder.encode(value, "utf-8").replaceAll("\\+", "%20");
+    } catch  {
+      case e:Exception => throw new RuntimeException(e.getMessage());
+    }
+  }
 }
 
 abstract class APIInvoker {

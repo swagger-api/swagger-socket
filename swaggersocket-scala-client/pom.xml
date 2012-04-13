@@ -35,7 +35,7 @@
         <dependency>
             <groupId>org.jfarcand</groupId>
             <artifactId>wcs</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.wordnik</groupId>
@@ -52,12 +52,7 @@
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-jersey</artifactId>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.atmosphere</groupId>
-                    <artifactId>atmosphere-compat-jetty</artifactId>
-                </exclusion>
-            </exclusions>
+
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>

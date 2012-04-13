@@ -28,10 +28,11 @@ trait TestResource {
   @ApiOperation(value = "Simple fetch method", notes = "", responseClass = "String")
   @ApiErrors(Array(
     new ApiError(code = 400, reason = "Bad request")))
-  def getById() = Profile("/simpleFetch", {
-    BroadcasterFactory.getDefault().lookup("perf-data", true).broadcast(Counter.increment)
+  def getById() : Response = {
+    Counter.increment
+//    BroadcasterFactory.getDefault().lookup("perf-data", true).broadcast(Counter.increment)
     Response.ok.entity(new ApiResponse(200, "success")).build
-  })
+  }
 
   @Suspend(scope = Suspend.SCOPE.APPLICATION)
   @GET
@@ -45,15 +46,15 @@ trait TestResource {
   }
 }
 
-@Path("/api/test.json")
-@Api(value = "/api/test", description = "Test resource")
+@Path("/test.json")
+@Api(value = "/test", description = "Test resource")
 @Produces(Array("application/json"))
 class TestResourceJSON extends Help
   with ProfileEndpointTrait
   with TestResource
 
-@Path("/api/test.xml")
-@Api(value = "/api/test", description = "Test resource")
+@Path("/test.xml")
+@Api(value = "/test", description = "Test resource")
 @Produces(Array("application/json"))
 class TestResourceXML extends Help
   with ProfileEndpointTrait

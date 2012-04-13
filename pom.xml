@@ -179,7 +179,6 @@
         <module>swaggersocket-scala-client</module>
         <module>swaggersocket.js</module>
         <module>samples/swaggersocket-echo</module>
-        <module>samples/swaggersocket-petstore</module>
         <module>samples/swaggersocket-wordnik</module>
         <module>samples/swaggersocket-twitter</module>
         <module>samples/swaggersocket-perftest</module>
@@ -347,7 +346,7 @@
         <scala-version>2.10.0-M1</scala-version>
         <jackson-version>1.8.3</jackson-version>
         <jersey-version>1.10</jersey-version>
-        <atmosphere-version>0.9-SNAPSHOT</atmosphere-version>
+        <atmosphere-version>0.9</atmosphere-version>
         <logback-version>0.9.26</logback-version>
     </properties>
 </project>
