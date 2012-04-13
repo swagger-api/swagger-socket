@@ -10,13 +10,18 @@ The quickest way to see how the protocol works is to try the samples:
     % mvn jetty:run
 
 ### SwaggerSocket Protocol Server Implementation
-The server side implementation of the SwaggerSocket Protocol is done via The Atmosphere Framework's WebSocketProtocol Extension Point API. The current implementation is named SwaggerSocketProtocol
-and can be either extended or replaced by properly defining the extension point in web.xml as:
+To enable SwaggerSocket, add the following in your web.xml
 
+    <servlet>
+        <description>SwaggerSocketServlet</description>
+        <servlet-name>SwaggerSocketServlet</servlet-name>
+        <servlet-class>com.wordnik.swaggersocket.server.SwaggerSocketServlet</servlet-class>
         <init-param>
-            <param-name>org.atmosphere.websocket.WebSocketProtocol</param-name>
-            <param-value>com.wordnik.swaggersocket.server.SwaggerSocketProtocol</param-value>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>com.wordnik.swaggersocket.samples</param-value>
         </init-param>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
 
 ### Swagger Socket JavaScript API
 The Swagger Socket Client is defined as
@@ -83,4 +88,7 @@ Then you are ready to start sending requests. As simple as:
 Once completed, just need to close
 
     ss.close
+
+### How the protocol works
+To read more about how the protocol works, take a look at the [SwaggerSocket Protocol Specification](https://github.com/wordnik/swagger-sockets/wiki/Swagger-Socket-Protocol)
 
