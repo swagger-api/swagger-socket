@@ -21,11 +21,6 @@ To enable SwaggerSocket, add the following in your web.xml. Currently, SwaggerSo
         <description>SwaggerSocketServlet</description>
         <servlet-name>SwaggerSocketServlet</servlet-name>
         <servlet-class>com.wordnik.swaggersocket.server.SwaggerSocketServlet</servlet-class>
-        <init-param>
-            <param-name>com.sun.jersey.config.property.packages</param-name>
-            <!-- Your resource package's name -->
-            <param-value>com.wordnik.swaggersocket.samples</param-value>
-        </init-param>
         <load-on-startup>0</load-on-startup>
     </servlet>
 ```
