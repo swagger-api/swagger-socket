@@ -181,7 +181,6 @@
         <module>samples/swaggersocket-echo</module>
         <module>samples/swaggersocket-wordnik</module>
         <module>samples/swaggersocket-twitter</module>
-        <module>samples/swaggersocket-perftest</module>
     </modules>
     <build>
         <extensions>
