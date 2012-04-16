@@ -12,11 +12,14 @@
 
             ss.onOpen = function(r) {
                 $('ul').prepend($('<li></li>').text("----------------------------"));
-                $('ul').prepend($('<li></li>').text("OPEN STATUS: " + r.getStatus()));
+                $('ul').prepend($('<li></li>').text("STATUS: " + r.getReasonPhrase()));
                 $('ul').prepend($('<li></li>').text("----------------------------"));
             };
             ss.onClose = function(r) {
-                $('ul').prepend($('<li></li>').text("Closed"));
+                $('ul').prepend($('<li></li>').text("----------------------------"));
+                $('ul').prepend($('<li></li>').text("STATUS: " + r.getReasonPhrase()));
+                $('ul').prepend($('<li></li>').text("Retrying "));
+                $('ul').prepend($('<li></li>').text("----------------------------"));
             };
 
             ss.onError = function(r) {
