@@ -34,11 +34,11 @@
             <name>Jeanfrancois Arcand</name>
             <email>jfarcand@apache.org</email>
         </developer>
-	<developer>
-	    <id>fehguy</id>
-	    <name>Tony Tam</name>
-	    <email>fehguy@gmail.com</email>
-	</developer>
+        <developer>
+            <id>fehguy</id>
+            <name>Tony Tam</name>
+            <email>fehguy@gmail.com</email>
+        </developer>
     </developers>
     <licenses>
         <license>
@@ -108,10 +108,9 @@
                 <version>${jackson-version}</version>
             </dependency>
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <version>2.5</version>
-                <scope>provided</scope>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-servlet_3.0_spec</artifactId>
+                <version>1.0</version>
             </dependency>
 
             <dependency>
@@ -342,7 +341,7 @@
         <scala-test-version>1.6.1</scala-test-version>
         <junit-version>4.8.1</junit-version>
         <slf4j-version>1.6.3</slf4j-version>
-        <scala-version>2.10.0-M1</scala-version>
+        <scala-version>2.9.2</scala-version>
         <jackson-version>1.8.3</jackson-version>
         <jersey-version>1.10</jersey-version>
         <atmosphere-version>0.9</atmosphere-version>
