@@ -11,7 +11,7 @@ The quickest way to see how the protocol works is to try the samples:
     % git clone git@github.com:wordnik/swagger-sockets.git
     % cd swagger-socket
     % mvn -N; mvn
-    % cd samples/swaggersocket-wordnik OR samples/swaggersocket-twitter
+    % cd samples/swaggersocket-echo OR samples/swaggersocket-twitter
     % mvn jetty:run
 ```
 
