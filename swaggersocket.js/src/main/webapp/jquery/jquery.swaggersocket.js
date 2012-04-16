@@ -376,12 +376,18 @@ jQuery.swaggersocket = function() {
                  * @param request
                  * @private
                  */
-                open : function(request, options) {
+                open : function(request, cFunction, options) {
+
+                    var _openFunction;
 
                     if (typeof(request) == "string") {
                         var path = request;
                         request = new jQuery.swaggersocket.Request();
                         request.method("POST").path(path);
+                    }
+
+                    if (typeof(cFunction) == 'function') {
+                        _openFunction = cFunction;
                     }
 
                     function _pushResponse(response, state, listener) {
@@ -398,6 +404,10 @@ jQuery.swaggersocket = function() {
                                      if (typeof(listener.onError) != 'undefined') {
                                         listener.onError(response);
                                     }
+                                }
+
+                                if (typeof(_openFunction) != 'undefined') {
+                                    _openFunction(_self, response);
                                 }
                             } else {
                                 switch (Object.prototype.toString.call(response)) {
@@ -447,7 +457,7 @@ jQuery.swaggersocket = function() {
                                         _identity = messageData.identity;
                                         r.status(messageData.status.statusCode).reasonPhrase(messageData.status.reasonPhrase);
                                         _pushResponse(r, response.state, listener);
-                                    } else {
+                                    } else if (typeof(messageData.responses) != 'undefined') {
                                         var _responses = new Array();
                                         var i = 0;
                                         jQuery.each(messageData.responses, function(index, res) {
