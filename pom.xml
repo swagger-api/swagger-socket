@@ -64,19 +64,19 @@
             <dependency>
                 <groupId>com.wordnik</groupId>
                 <artifactId>swaggersocket</artifactId>
-                <version>${pom.version}</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.wordnik</groupId>
                 <artifactId>swaggersocket.js</artifactId>
-                <version>${pom.version}</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.wordnik</groupId>
                 <artifactId>swaggersocket-scala-client</artifactId>
-                <version>${pom.version}</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
