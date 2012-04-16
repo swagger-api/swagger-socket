@@ -10,7 +10,7 @@ The quickest way to see how the protocol works is to try the samples:
     % mvn jetty:run
 
 ### SwaggerSocket Protocol Server Implementation
-To enable SwaggerSocket, add the following in your web.xml
+To enable SwaggerSocket, add the following in your web.xml. Currently, SwaggerSocket only supports [Jersey](http://jersey.java.net/) for REST Resources (other implementation like RestEasy and RESTLet are coming).  
 
 ```xml
     <servlet>
@@ -19,6 +19,7 @@ To enable SwaggerSocket, add the following in your web.xml
         <servlet-class>com.wordnik.swaggersocket.server.SwaggerSocketServlet</servlet-class>
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
+            <!-- Your resource package's name -->
             <param-value>com.wordnik.swaggersocket.samples</param-value>
         </init-param>
         <load-on-startup>0</load-on-startup>
@@ -36,9 +37,7 @@ The Swagger Socket Client is defined as
 
 ```javascript
     var ss = new jQuery.swaggersocket.SwaggerSocketListener();
-    ss.onOpen = function(response) {
-        val request = response.getRequest();
-    };
+    ss.onOpen = function(response) {};
     ss.onClose = function(Response) {}; // Called when the Websocket gets closed
     ss.onError = function(errorMessage, Response) {}; // When an error occurs
     ss.onResponse = function(Response) {}; // When a response is ready
@@ -54,7 +53,7 @@ The Swagger Socket Client is defined as
      swaggerSocket.open(request);
 ```
 
-#### Sending requests -- You can send an array of Request or single request.
+#### Sending requests -- You can send an array of Requests or single Request.
 
 ```javascript
     var requests = new Array();
