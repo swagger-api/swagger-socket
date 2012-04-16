@@ -53,14 +53,18 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-ext</artifactId>
                 <version>${slf4j-version}</version>
-                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j-version}</version>
-                <scope>compile</scope>
             </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j-version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.wordnik</groupId>
                 <artifactId>swaggersocket</artifactId>
@@ -107,6 +111,7 @@
                 <artifactId>jackson-mapper-asl</artifactId>
                 <version>${jackson-version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-servlet_3.0_spec</artifactId>
@@ -117,6 +122,7 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback-version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
@@ -131,18 +137,6 @@
                 <version>${scala-version}</version>
                 <scope>compile</scope>
             </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j-version}</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>${slf4j-version}</version>
-            </dependency>
-
 
             <!-- Test dependencies -->
             <dependency>
@@ -164,12 +158,6 @@
                 <scope>test</scope>
                 <classifier>jdk15</classifier>
             </dependency>
-            <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-mapper-asl</artifactId>
-                <version>${jackson-version}</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
