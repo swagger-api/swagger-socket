@@ -469,6 +469,9 @@ jQuery.swaggersocket = function() {
                                              */
 
                                             r.request(_requestsMap.get(res.uuid));
+                                            listener = jQuery.extend(r.getRequest().getListener(),
+                                                new jQuery.swaggersocket.SwaggerSocketListener());
+
                                             _pushResponse(r, response.state, listener)
                                             _responses[i++] = r;
                                             r = new jQuery.swaggersocket.Response();
