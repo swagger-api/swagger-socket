@@ -191,7 +191,13 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
     public String handleResponse(AtmosphereResponse res, String message) {
         if (invalidState((Request) res.getRequest().getAttribute(SWAGGERSOCKET_REQUEST))) {
             logger.error("Protocol error. Handshake not occurred yet!");
-            return message;
+            StatusMessage statusMessage = new StatusMessage.Builder().status(new StatusMessage.Status(501, "Protocol error. Handshake not occurred yet!"))
+                            .identity("0").build();
+            try {
+                return mapper.writeValueAsString(statusMessage);
+            } catch (IOException e) {
+                return "";
+            }
         }
 
         try {
@@ -205,9 +211,13 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
     public byte[] handleResponse(AtmosphereResponse res, byte[] message, int offset, int length) {
         if (invalidState((Request) res.getRequest().getAttribute(SWAGGERSOCKET_REQUEST))) {
             logger.error("Protocol error. Handshake not occurred yet!");
-            byte[] copy = new byte[length - offset];
-            System.arraycopy(message, 0, copy, offset, length);
-            return copy;
+            StatusMessage statusMessage = new StatusMessage.Builder().status(new StatusMessage.Status(501, "Protocol error. Handshake not occurred yet!"))
+                            .identity("0").build();
+            try {
+                return mapper.writeValueAsBytes(statusMessage);
+            } catch (IOException e) {
+                return new byte[0];
+            }
         }
 
         try {
