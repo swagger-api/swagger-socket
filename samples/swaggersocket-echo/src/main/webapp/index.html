@@ -11,7 +11,9 @@
             var swaggerSocket = new jQuery.swaggersocket.SwaggerSocket();
 
             ss.onOpen = function(r) {
+                $('ul').prepend($('<li></li>').text("----------------------------"));
                 $('ul').prepend($('<li></li>').text("OPEN STATUS: " + r.getStatus()));
+                $('ul').prepend($('<li></li>').text("----------------------------"));
             };
             ss.onClose = function(r) {
                 $('ul').prepend($('<li></li>').text("Closed"));
@@ -50,17 +52,11 @@
 
             getElementById('phrase').setAttribute('autocomplete', 'OFF');
             getElementById('send_message').onclick = function(event) {
+                $('ul').prepend($('<li></li>').text("----------------------------"));
 
-                request = new jQuery.swaggersocket.Request()
-                        .path("/echo")
-                        .method("POST")
-                        .data("Welcome to SwaggerSocket Echo demo!")
-                        .listener(ss);
-
-                swaggerSocket.send(request);
-
-
-                // Array is used for testing here. Single request can be used.
+                /**
+                 * Send the echo message with an extra message associated
+                 */
                 var requests = new Array();
                 requests[0] = new jQuery.swaggersocket.Request()
                         .path("/echo")
@@ -71,13 +67,27 @@
                 requests[1] = new jQuery.swaggersocket.Request()
                         .path("/echo")
                         .method("POST")
-                        .data("Second request tests")
+                        .data("An extra request added for testing purpose")
                         .listener(ss);
 
-                $('ul').prepend($('<li></li>').text("Request: " + requests[0].getUUID()));
-                $('ul').prepend($('<li></li>').text("Request: " + requests[1].getUUID()));
+                $('ul').prepend($('<li></li>').text("Sending an array of requests using uuid " + requests[0].getUUID() + " and " + requests[1].getUUID()));
+                $('ul').prepend($('<li></li>').text(""));
 
                 swaggerSocket.send(requests);
+
+                /**
+                 * Send a warm up request. This is just for demo purpose
+                 */
+                request = new jQuery.swaggersocket.Request()
+                        .path("/echo")
+                        .method("POST")
+                        .data("Welcome to SwaggerSocket Echo demo!")
+                        .listener(ss);
+
+                swaggerSocket.send(request);
+
+                $('ul').prepend($('<li></li>').text("Sending a warmup request using uuid " + request.getUUID()));
+                $('ul').prepend($('<li></li>').text("----------------------------"));
 
                 getElementById('phrase').value = '';
                 return false;
@@ -115,14 +125,10 @@
     </style>
 </head>
 <body>
-<h1>Swagger Socket Echo Sample. The sample demonstrates how the swaggersocket.js works and output some information about the protocol itself. Take a look at <a href="https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/webapp/index.html#L8">the code</a> </h1>
+<h1>Swagger Socket Echo Sample.</h1>
+<h2>The sample demonstrates how the swaggersocket.js works and output some information about the protocol itself. Take a look at <a href="https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/webapp/index.html#L8">the details</a>. Under the hood swaggersocket will execute many requests using a single websocket connection. </h2>
 <br/>
-<h2 id="s_h2" class='hidden'>Enter Resource URI. Must start with a '/'. By default only /echo works until you edit the SwaggerSocketResource class</h2>
-<div id='uri'>
-    <input id='path' type='text' value="/echo"/>
-</div>
-
-<h2 id="s_h" class='hidden'>Echo messages using Swagger Socket/h2>
+<h2 id="s_h" class='hidden'>Enter a message to be echo.</h2>
 
 <div id='sendMessage'>
     <input id='phrase' type='text'/>
@@ -130,7 +136,7 @@
 </div>
 <br/>
 
-<h2>Response</h2>
+<h2>Messages delivered asynchronously</h2>
 <ul></ul>
 </body>
 </html>
