@@ -341,7 +341,7 @@
         <scala-test-version>1.6.1</scala-test-version>
         <junit-version>4.8.1</junit-version>
         <slf4j-version>1.6.3</slf4j-version>
-        <scala-version>2.9.2</scala-version>
+        <scala-version>2.9.1-1</scala-version>
         <jackson-version>1.8.3</jackson-version>
         <jersey-version>1.10</jersey-version>
         <atmosphere-version>0.9</atmosphere-version>
