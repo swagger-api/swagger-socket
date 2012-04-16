@@ -7,11 +7,15 @@ You can also add bi-directional support to your REST resource by extending it us
 ### Getting started using the samples
 The quickest way to see how the protocol works is to try the samples:
 
+```bash
     % git clone git@github.com:wordnik/swagger-sockets.git
     % cd swagger-socket
     % mvn -N; mvn
     % cd samples/swaggersocket-wordnik OR samples/swaggersocket-twitter
     % mvn jetty:run
+```
+
+or take a look at [HelloWorld](https://github.com/wordnik/swagger-sockets/wiki/Getting-started-with-Swagger-Socket-and-Jersey) mini tutorial.
 
 ### SwaggerSocket Protocol Server Implementation
 To enable SwaggerSocket, add the following in your web.xml. Currently, SwaggerSocket only supports [Jersey](http://jersey.java.net/) for REST Resources (other implementation like RestEasy and RESTLet are coming).  
