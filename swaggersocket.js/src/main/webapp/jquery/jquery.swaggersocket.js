@@ -378,15 +378,27 @@ jQuery.swaggersocket = function() {
                  */
                 open : function(request, options) {
 
+                    if (typeof(request) == "string") {
+                        var path = request;
+                        request = new jQuery.swaggersocket.Request();
+                        request.method("POST").path(path);
+                    }
+
                     function _pushResponse(response, state, listener) {
 
                         if (state == "messageReceived") {
                             // Invoke onOpen only when the handshake occurs.
                             if (!_handshakeDone) {
-                                var r = new jQuery.swaggersocket.Response();
-                                r.reasonPhrase("open");
-                                if (typeof(listener.onOpen) != 'undefined') listener.onOpen(r);
-                                _handshakeDone = true;
+                                if (response.getStatus() < 400) {
+                                    if (typeof(listener.onOpen) != 'undefined') {
+                                        listener.onOpen(response);
+                                    }
+                                    _handshakeDone = true;
+                                } else {
+                                     if (typeof(listener.onError) != 'undefined') {
+                                        listener.onError(response);
+                                    }
+                                }
                             } else {
                                 switch (Object.prototype.toString.call(response)) {
                                     case "[object Array]":
@@ -398,9 +410,7 @@ jQuery.swaggersocket = function() {
                                         if (response.getStatus() < 400 && typeof(listener.onResponse) != 'undefined') {
                                             listener.onResponse(response);
                                         } else if (typeof(listener.onError) != 'undefined') {
-                                            var r = new jQuery.swaggersocket.Response();
-                                            r.status(response.status).reasonPhrase("error");
-                                            listener.onError("Unexpected State", r);
+                                            listener.onError(response);
                                         }
                                         break;
                                 }
@@ -431,7 +441,7 @@ jQuery.swaggersocket = function() {
                                 var listener = jQuery.extend(request.getListener(), new jQuery.swaggersocket.SwaggerSocketListener());
                                 var r = new jQuery.swaggersocket.Response();
 
-                                if (response.state == "messageReceived") {
+                                if (response.state == "messageReceived" || response.state == "opening") {
                                     _incompleteMessage = "";
                                     if (typeof(messageData.status) != 'undefined') {
                                         _identity = messageData.identity;
@@ -459,12 +469,8 @@ jQuery.swaggersocket = function() {
                                     r.reasonPhrase("close").status(503)
                                     listener.onClose(r);
                                 } else if (response.state == "error" && typeof(listener.onError) != 'undefined') {
-                                    r.status(response.status).reasonPhrase("error");
-                                    listener.onError("SwaggerSocket Error " + response.status, r);
-                                } else if (response.state == "opening") {
-                                    if (request.logLevel == 'debug') {
-                                        jQuery.atmosphere.debug("Underlying WebSocket open");
-                                    }
+                                    r.status(response.status).reasonPhrase("Unexpected error: " + response.responseBody);
+                                    listener.onError(r);
                                 }
                             } catch (err) {
                                 if (request.logLevel == 'debug') {
@@ -485,7 +491,9 @@ jQuery.swaggersocket = function() {
                 send : function(requests) {
                     if (typeof(_identity) == 'undefined') {
                         var listener = jQuery.extend(requests.getListener(), new jQuery.swaggersocket.SwaggerSocketListener());
-                        listener.onError("The open operation hasn't completed yet. Make sure your SwaggerSocketListener3onOpen has been invoked first.", null)
+                        var r = new jQuery.swaggersocket.Response();
+                        r.status("503").reasonPhrase("The open operation hasn't completed yet. Make sure your SwaggerSocketListener#onOpen has been invoked first.");
+                        listener.onError(r);
                         return;
                     }
 
@@ -966,6 +974,11 @@ function loadAtmosphere(jQuery) {
                 function _buildWebSocketUrl() {
                     var url = _request.url;
                     url = _attachHeaders();
+
+//                    if (_request.data != '') {
+//                        url += "&X-Atmosphere-Post-Body=" + rq.data;
+//                    }
+
                     if (url.indexOf("http") == -1 && url.indexOf("ws") == -1) {
                         url = jQuery.atmosphere.parseUri(document.location, url);
                     }
