@@ -15,16 +15,15 @@
  */
 package com.wordnik.swaggersocket.samples
 
-import javax.ws.rs.{Produces, POST, Path}
+import javax.ws.rs.{GET, Path}
 
-@Path("/swaggersocket")
-@Produces(Array("application/json"))
-class SwaggerSocketResource {
+@Path("/helloworld")
+class HelloWorld {
 
-  @Path("/echo")
-  @POST
-  def echo(m: String): String = {
-    m
+  @Path("/")
+  @GET
+  def get(): String = {
+    "Swagger Socket Hello World"
   }
 
 }

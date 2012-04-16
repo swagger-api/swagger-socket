@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <script type="text/javascript" src="jquery/jquery-1.6.4.js"></script>
+    <script type="text/javascript" src="jquery/jquery.form.js"></script>
+    <script type="text/javascript" src="jquery/jquery.swaggersocket.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            new jQuery.swaggersocket.SwaggerSocket()
+                    .open(document.location.toString() + "ss",
+                        function(swaggerSocket, r) {
+                            var ss = new jQuery.swaggersocket.SwaggerSocketListener();
+                            ss.onResponse = function(r) {
+                                $('ul').prepend($('<li></li>').text(r.getData()));
+                            };
+
+                            var request = new jQuery.swaggersocket.Request()
+                                    .method("GET")
+                                    .path('/helloworld')
+                                    .listener(ss);
+
+                            swaggerSocket.send(request)
+                        });
+        });
+    </script>
+    <style type='text/css'>
+        div {
+            border: 0px solid black;
+        }
+
+        input#phrase {
+            width: 20em;
+            height: 3em;
+            font-size: 100%;
+            background-color: #e0f0f0;
+        }
+
+        ul {
+            list-style-type: none;
+            text-align: left;
+        }
+
+        div.hidden {
+            display: none;
+        }
+
+        span.from {
+            font-weight: bold;
+        }
+
+        span.alert {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<ul></ul>
+</body>
+</html>
