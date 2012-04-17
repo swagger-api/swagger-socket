@@ -16,8 +16,16 @@
 package com.wordnik.swaggersocket.server;
 
 import org.atmosphere.cpr.AtmosphereServlet;
+import org.atmosphere.util.Version;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 
 public class SwaggerSocketServlet extends AtmosphereServlet {
+
+    private final Logger logger = LoggerFactory.getLogger(SwaggerSocketServlet.class);
 
     public SwaggerSocketServlet() {
         this(false);
@@ -34,4 +42,9 @@ public class SwaggerSocketServlet extends AtmosphereServlet {
         framework().addInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
     }
 
+    @Override
+    public void init(ServletConfig sc) throws ServletException {
+        super.init(sc);
+        logger.info("Swagger Socket installed {}", Version.getRawVersion());
+    }
 }
