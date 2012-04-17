@@ -469,8 +469,7 @@ jQuery.swaggersocket = function() {
                                              */
 
                                             r.request(_requestsMap.get(res.uuid));
-                                            listener = jQuery.extend(r.getRequest().getListener(),
-                                                new jQuery.swaggersocket.SwaggerSocketListener());
+                                            listener = jQuery.extend(r.request().getListener(), new jQuery.swaggersocket.SwaggerSocketListener());
 
                                             _pushResponse(r, response.state, listener)
                                             _responses[i++] = r;
@@ -506,7 +505,11 @@ jQuery.swaggersocket = function() {
                         var listener = jQuery.extend(requests.getListener(), new jQuery.swaggersocket.SwaggerSocketListener());
                         var r = new jQuery.swaggersocket.Response();
                         r.status("503").reasonPhrase("The open operation hasn't completed yet. Make sure your SwaggerSocketListener#onOpen has been invoked first.");
-                        listener.onError(r);
+
+                        if (typeof(listener.onError) != "undefined") {
+                            listener.onError(r);
+                        }
+                        jQuery.atmosphere.error("The open operation hasn't completed yet. Make sure your SwaggerSocketListener#onOpen has been invoked first.");
                         return;
                     }
 
@@ -987,10 +990,6 @@ function loadAtmosphere(jQuery) {
                 function _buildWebSocketUrl() {
                     var url = _request.url;
                     url = _attachHeaders();
-
-//                    if (_request.data != '') {
-//                        url += "&X-Atmosphere-Post-Body=" + rq.data;
-//                    }
 
                     if (url.indexOf("http") == -1 && url.indexOf("ws") == -1) {
                         url = jQuery.atmosphere.parseUri(document.location, url);
@@ -2296,6 +2295,10 @@ function loadAtmosphere(jQuery) {
 
             debug: function() {
                 jQuery.atmosphere.log('debug', arguments);
+            },
+
+            error: function() {
+                jQuery.atmosphere.log('error', arguments);
             }
         };
     }();
