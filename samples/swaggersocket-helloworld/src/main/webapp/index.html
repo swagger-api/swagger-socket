@@ -8,19 +8,24 @@
         $(document).ready(function() {
             new jQuery.swaggersocket.SwaggerSocket()
                     .open(document.location.toString() + "ss",
-                        function(swaggerSocket, r) {
-                            var ss = new jQuery.swaggersocket.SwaggerSocketListener();
-                            ss.onResponse = function(r) {
-                                $('ul').prepend($('<li></li>').text(r.getData()));
-                            };
+                            function(swaggerSocket, r) {
+                                if (r.getStatus() == 200) {
+                                    var ss = new jQuery.swaggersocket.SwaggerSocketListener();
+                                    ss.onResponse = function(r) {
+                                        $('ul').prepend($('<li></li>').text(r.getData()));
+                                    };
 
-                            var request = new jQuery.swaggersocket.Request()
-                                    .method("GET")
-                                    .path('/helloworld')
-                                    .listener(ss);
+                                    var request = new jQuery.swaggersocket.Request()
+                                            .method("GET")
+                                            .path('/helloworld')
+                                            .listener(ss);
 
-                            swaggerSocket.send(request)
-                        });
+                                    swaggerSocket.send(request);
+                                } else {
+                                    alert("Hansdshake failed");
+                                }
+                            }
+            );
         });
     </script>
     <style type='text/css'>
