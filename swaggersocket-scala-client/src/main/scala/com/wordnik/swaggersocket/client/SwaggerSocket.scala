@@ -67,10 +67,12 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
         }
 
         override def onClose {
+          w.removeListener(this)
           l.countDown
         }
 
         override def onError(t: Throwable) {
+          w.removeListener(this)
           e = Some(t);
           l.countDown
         }
@@ -91,6 +93,7 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
           } catch {
             case ex: Throwable => logger.error("", ex)
           } finally {
+            w.removeListener(this)
             l.countDown
           }
         }
@@ -183,14 +186,17 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
       w.listener(new TextListener {
 
         override def onOpen {
+          w.removeListener(this)
           logger.trace("OnOpen " + this)
         }
 
         override def onClose {
+          w.removeListener(this)
           l.close
         }
 
         override def onError(t: Throwable) {
+          w.removeListener(this)
           l.error(new SwaggerSocketException(500, ""))
         }
 
@@ -216,6 +222,7 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
             })
             l.messages(responses)
           }
+          w.removeListener(this)
         }
       })
     }
