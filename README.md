@@ -23,7 +23,7 @@ You can also look at our samples :
  * Simple Swagger Sockets Protocol Echo [client](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/webapp/index.html#L9) [server](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/scala/org/wordnik/swaggersocket/samples/SwaggerSocketResource.scala#L16)
 
 ### SwaggerSocket Protocol Server Implementation
-To enable SwaggerSocket, add the following in your web.xml. Currently, SwaggerSocket only supports [Jersey](http://jersey.java.net/) for REST Resources (other implementation like RestEasy and RESTLet are coming).  
+To enable SwaggerSocket, add the following in your web.xml. Currently, SwaggerSocket only supports [Jersey](http://jersey.java.net/) for REST Resources (other implementations like RestEasy and RESTLet are coming).  
 
 ```xml
     <servlet>
@@ -34,14 +34,14 @@ To enable SwaggerSocket, add the following in your web.xml. Currently, SwaggerSo
     </servlet>
 ```
 
-### Swagger Socket JavaScript API
-The Swagger Socket Client is defined as
+### SwaggerSocket JavaScript API
+The SwaggerSocket Client is defined as
 
 ```javascript
     var swaggerSocket = new jQuery.swaggersocket.SwaggerSocket();
 ```
 
-#### Listener are per Request. The response will be delivered as they come and can be correlated with their associated request using response.getRequest().
+#### Listeners are per Request. The responses will be delivered as they come and can be correlated with their associated request using response.getRequest().
 
 ```javascript
     var ss = new jQuery.swaggersocket.SwaggerSocketListener();
@@ -78,8 +78,8 @@ The Swagger Socket Client is defined as
     swaggerSocket.send(requests);
 ```
 
-### Swagger Socket Scala API
-The SwaggerSocket protocol can also be used using the Scala language. The SwaggerSocket Scala library is using Asynchronous I/O so all the API call are non blocking. First, you need to hanshake using
+### SwaggerSocket Scala API
+The SwaggerSocket protocol can also be used using the Scala language. The SwaggerSocket Scala library is using Asynchronous I/O so all the API calls are non blocking. First, you need to hanshake using
 
 ```scala
     val ss = SwaggerSocket().open(new Request.Builder().path(getTargetUrl + "/").build())
@@ -104,7 +104,7 @@ Then you are ready to start sending requests. As simple as:
         }
       })
 ```
-Once completed, just need to close
+Once completed, you just need to close
 
 ```scala
     ss.close
