@@ -16,7 +16,11 @@ The quickest way to see how the protocol works is to try the samples:
 ```
 
 or take a look at [HelloWorld](https://github.com/wordnik/swagger-sockets/wiki/Getting-started-with-Swagger-Socket-and-Jersey) mini tutorial. 
-You can also look at our samples (Twitter's Real Time Search [client](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-twitter/src/main/webapp/index.html#L10) [server](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-twitter/src/main/java/com/wordnik/swaggersocket/samples/TwitterFeed.java#L45), Wordnik's Real Time Search [client](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-wordnik/src/main/webapp/index.html#L10) [server](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-wordnik/src/main/scala/com/wordnik/swaggersocket/samples/WordnikResourceProxy.scala#L30) or Simple Swagger Sockets Protocol Echo [client](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/webapp/index.html#L9) [server](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/scala/org/wordnik/swaggersocket/samples/SwaggerSocketResource.scala#L16)
+You can also look at our samples :
+
+    # Twitter's Real Time Search [client](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-twitter/src/main/webapp/index.html#L10) [server](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-twitter/src/main/java/com/wordnik/swaggersocket/samples/TwitterFeed.java#L45)
+    # Wordnik's Real Time Search [client](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-wordnik/src/main/webapp/index.html#L10) [server](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-wordnik/src/main/scala/com/wordnik/swaggersocket/samples/WordnikResourceProxy.scala#L30) 
+    # Simple Swagger Sockets Protocol Echo [client](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/webapp/index.html#L9) [server](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/scala/org/wordnik/swaggersocket/samples/SwaggerSocketResource.scala#L16)
 
 ### SwaggerSocket Protocol Server Implementation
 To enable SwaggerSocket, add the following in your web.xml. Currently, SwaggerSocket only supports [Jersey](http://jersey.java.net/) for REST Resources (other implementation like RestEasy and RESTLet are coming).  
