@@ -347,7 +347,7 @@
         <scala-version>2.9.1-1</scala-version>
         <jackson-version>1.8.3</jackson-version>
         <jersey-version>1.10</jersey-version>
-        <atmosphere-version>1.0.0-SNAPSHOT</atmosphere-version>
+        <atmosphere-version>0.9.1</atmosphere-version>
         <logback-version>0.9.26</logback-version>
     </properties>
 </project>
