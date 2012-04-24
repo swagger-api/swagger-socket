@@ -150,10 +150,10 @@
     </dependencyManagement>
 
     <modules>
-        <module>swaggersocket-protocol</module>
-        <module>swaggersocket-server</module>
-        <module>swaggersocket-scala-client</module>
-        <module>swaggersocket.js</module>
+        <module>modules/swaggersocket-protocol</module>
+        <module>modules/swaggersocket-server</module>
+        <module>modules/swaggersocket-scala-client</module>
+        <module>modules/swaggersocket.js</module>
         <module>samples/swaggersocket-echo</module>
         <module>samples/swaggersocket-wordnik</module>
         <module>samples/swaggersocket-twitter</module>
