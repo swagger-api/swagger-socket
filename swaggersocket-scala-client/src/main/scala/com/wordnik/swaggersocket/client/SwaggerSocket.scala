@@ -24,6 +24,18 @@ import com.wordnik.swaggersocket.protocol.StatusMessage.Status
 import java.util.concurrent.{ConcurrentHashMap, TimeoutException, TimeUnit, CountDownLatch}
 import java.util.concurrent.atomic.AtomicInteger
 
+/**
+ * A WebSocket connection supporting the SwaggerSocket protocol. As simple as:
+ * <pre><blockquote>
+ *    val swaggerSocket = SwaggerSocket().open("ws://127.0.0.1")
+ *    swaggerSocket.send(new Request.Builder().path("/aResource").build, new SwaggerSocketListener() {
+
+      override def message(r: Request, s: Response) {
+      }
+    }
+ *
+ *</blockquote></pre>
+ */
 object SwaggerSocket {
 
   def apply(timeoutInSeconds: Int): SwaggerSocket = {
@@ -42,6 +54,21 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
   val serializer = new SwaggerSocketSerializer
   var path: String = "ws://localhost"
 
+
+    /**
+   * Open a WebSocket connection to a remote server.
+   * @param a {@link Request}
+   */
+  def open(url: String): SwaggerSocket = {
+    if (isConnected) throw new SwaggerSocketException(0, "Already Connected")
+    open(new Request.Builder().path(url).build)
+    this
+  }
+
+  /**
+   * Open a WebSocket connection to a remote server.
+   * @param a {@link Request}
+   */
   def open(request: Request): SwaggerSocket = {
     if (isConnected) throw new SwaggerSocketException(0, "Already Connected")
 
@@ -118,21 +145,37 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
 
   }
 
+  /**
+   * Close the underlying WebSocket connection.
+   */
   def close: SwaggerSocket = {
     w.close
     this
   }
 
+  /**
+   * Send a request.
+   * @param r a {@link Request}
+   */
   def send(r: Request): SwaggerSocket = {
     send(Array(r), null)
     this
   }
 
+  /**
+   * Send an array of request. The Listener will be invoked as soon as response arrive.
+   * @param r a {@link Request}
+   * @param l a {@link SwaggerSocketListener} response's listener
+   */
   def send(r: Request, l: SwaggerSocketListener): SwaggerSocket = {
     send(Array(r), l)
     this
   }
 
+  /**
+   * Add a {@link SwaggerSocketListener} response's listener.
+   * @param l  a {@link SwaggerSocketListener}
+   */
   def listener(l: SwaggerSocketListener): SwaggerSocket = {
     w.listener(new TextListener {
 
@@ -177,6 +220,20 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
     this
   }
 
+  /**
+   * Send a an array of {@link Request}
+   * @param r an array of {@link Request}
+   */
+  def send(r: Array[Request]): SwaggerSocket = {
+    send(r, null)
+    this
+  }
+
+  /**
+   * Send a an array of {@link Request} and invoke the {@link  SwaggerSocketListener} as soon as response are received.
+   * @param r an array of {@link Request}
+   * @param l a {@link SwaggerSocketListener} response's listener
+   */
   def send(r: Array[Request], l: SwaggerSocketListener): SwaggerSocket = {
 
     val requestMessage = new Builder().requests(r).identity(identity).build

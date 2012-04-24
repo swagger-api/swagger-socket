@@ -15,12 +15,23 @@
  */
 package com.wordnik.swaggersocket.client
 
+/**
+ * When a SwaggerSocket protocol exception occurs.
+ */
 class SwaggerSocketException(status : Int, reasonPhrase : String) extends RuntimeException {
 
+  /**
+   * Return the status code of the exception
+   * @return the status code of the exception
+   */
   def getStatusCode : Int = {
     status
   }
 
+  /**
+   * Return the reason phrase of the exception
+   * @return the reason phrase of the exception
+   */
   def getReasonPhrase : String = {
     reasonPhrase
   }
