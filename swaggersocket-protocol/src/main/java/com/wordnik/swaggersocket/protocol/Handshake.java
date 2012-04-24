@@ -13,16 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.wordnik.swaggersocket.server;
+package com.wordnik.swaggersocket.protocol;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.List;
 
 /**
- * Since this class is used in the client, should it be moved out
- * into a common package?
+ * The Hanshake object representing a SwaggerSocket's initial handshake between the client and server.
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Handshake extends ProtocolBase {

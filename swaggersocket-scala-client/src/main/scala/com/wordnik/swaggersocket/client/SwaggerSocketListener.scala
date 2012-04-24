@@ -15,7 +15,7 @@
  */
 package com.wordnik.swaggersocket.client
 
-import com.wordnik.swaggersocket.server.{Response, Request}
+import com.wordnik.swaggersocket.protocol.{Request, Response}
 
 trait SwaggerSocketListener {
 

@@ -23,15 +23,13 @@ import org.eclipse.jetty.server.Server
 import org.scalatest.{ FlatSpec, BeforeAndAfterAll }
 import org.scalatest.matchers.ShouldMatchers
 import org.eclipse.jetty.servlet.{ServletHolder, ServletContextHandler}
-import org.atmosphere.container.{JettyAsyncSupportWithWebSocket}
-import com.wordnik.swaggersocket.server.SwaggerSocketProtocol
-import org.atmosphere.cpr.{AtmosphereFramework, ApplicationConfig, AtmosphereServlet}
+import com.wordnik.swaggersocket.server.SwaggerSocketServlet
 
 class BaseTest extends Server with FlatSpec with BeforeAndAfterAll with ShouldMatchers {
   protected final val log: Logger = LoggerFactory.getLogger(classOf[BaseTest])
   protected var port1: Int = 0
   private var _connector: SelectChannelConnector = null
-  protected var framework: AtmosphereFramework = null
+  protected var framework: SwaggerSocketServlet = null
 
     override def beforeAll(configMap: Map[String, Any]) = {
     setUpGlobal
@@ -50,11 +48,8 @@ class BaseTest extends Server with FlatSpec with BeforeAndAfterAll with ShouldMa
     var context: ServletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS)
     context.setContextPath("/")
     setHandler(context)
-    val a = new AtmosphereServlet();
-    framework = a.framework()
-    framework.setCometSupport(new JettyAsyncSupportWithWebSocket(framework.getAtmosphereConfig))
-    framework.addInitParameter(ApplicationConfig.WEBSOCKET_PROTOCOL, classOf[SwaggerSocketProtocol].getName)
-    framework.addInitParameter("com.sun.jersey.config.property.packages", this.getClass.getPackage.getName)
+    val a = new SwaggerSocketServlet();
+    a.framework().addInitParameter("com.sun.jersey.config.property.packages", this.getClass.getPackage.getName)
     context.addServlet(new ServletHolder(a), "/*")
 
     start

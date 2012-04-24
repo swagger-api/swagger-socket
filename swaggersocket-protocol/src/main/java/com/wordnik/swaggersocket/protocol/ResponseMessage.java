@@ -13,27 +13,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.wordnik.swaggersocket.server;
+package com.wordnik.swaggersocket.protocol;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A Java object representing the SwaggerSocket protocol implementation.
+ * TODO: Add Builder
  */
-public class Message {
-
+public class ResponseMessage {
     private String identity;
-    private List<Request> requests;
+    private List<Response> responses;
 
-    public Message(){
+    public ResponseMessage() {}
+
+    public ResponseMessage(String identity, Response response) {
+        this.identity = identity;
+        responses = new ArrayList<Response>();
+        responses.add(response);
     }
 
-    public List<Request> getRequests() {
-        return requests;
+    public List<Response> getResponses() {
+        return responses;
     }
 
-    public void setRequests(List<Request> requests) {
-        this.requests = requests;
+    public void setResponses(List<Response> responses) {
+        this.responses = responses;
     }
 
     public String getIdentity() {
@@ -43,5 +48,4 @@ public class Message {
     public void setIdentity(String identity) {
         this.identity = identity;
     }
-
 }

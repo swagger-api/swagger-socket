@@ -13,17 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.wordnik.swaggersocket.server;
+package com.wordnik.swaggersocket.protocol;
 
-public class Header {
-
+public class QueryString {
     private String name;
     private String value;
 
-    public Header(){
+    public QueryString(){
     }
 
-    public Header(String name, String value){
+    public QueryString(String name, String value){
         this.name = name;
         this.value = value;
     }

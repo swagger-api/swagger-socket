@@ -13,33 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.wordnik.swaggersocket.server;
+package com.wordnik.swaggersocket.protocol;
 
-public class QueryString {
-    private String name;
-    private String value;
+public interface Method {
 
-    public QueryString(){
-    }
+    final String GET = "GET";
+    final String POST = "POST";
+    final String PUT = "PUT";
+    final String DELETE = "DELETE";
+    final String TRACE = "TRACE";
+    final String OPTIONS = "OPTIONS";
 
-    public QueryString(String name, String value){
-        this.name = name;
-        this.value = value;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
 }

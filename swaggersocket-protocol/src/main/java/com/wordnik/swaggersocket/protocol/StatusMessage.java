@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.wordnik.swaggersocket.server;
+package com.wordnik.swaggersocket.protocol;
 
 public class StatusMessage {
 

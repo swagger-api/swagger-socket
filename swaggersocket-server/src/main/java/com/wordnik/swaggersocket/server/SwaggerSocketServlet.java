@@ -23,6 +23,9 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
+/**
+ * The SwaggerSocket Servlet, which enable support for the SwaggerSocket Protocol.
+ */
 public class SwaggerSocketServlet extends AtmosphereServlet {
 
     private final Logger logger = LoggerFactory.getLogger(SwaggerSocketServlet.class);

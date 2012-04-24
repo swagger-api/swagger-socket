@@ -13,15 +13,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.wordnik.swaggersocket.server;
+package com.wordnik.swaggersocket.protocol;
 
-public interface Method {
+import java.util.List;
 
-    final String GET = "GET";
-    final String POST = "POST";
-    final String PUT = "PUT";
-    final String DELETE = "DELETE";
-    final String TRACE = "TRACE";
-    final String OPTIONS = "OPTIONS";
+/**
+ * A Java object representing the SwaggerSocket protocol implementation.
+ */
+public class Message {
+
+    private String identity;
+    private List<Request> requests;
+
+    public Message(){
+    }
+
+    public List<Request> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(List<Request> requests) {
+        this.requests = requests;
+    }
+
+    public String getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(String identity) {
+        this.identity = identity;
+    }
 
 }

@@ -18,11 +18,10 @@ package com.wordnik.swaggersocket.client
 import scala.collection.JavaConversions._
 import org.slf4j.{Logger, LoggerFactory}
 import org.jfarcand.wcs.{TextListener, WebSocket}
-import com.wordnik.swaggersocket.server.RequestMessage.Builder
-import com.wordnik.swaggersocket.server.StatusMessage.Status
-import com.wordnik.swaggersocket.server._
+import com.wordnik.swaggersocket.protocol.{StatusMessage, Handshake, Request}
+import com.wordnik.swaggersocket.protocol.RequestMessage.Builder
+import com.wordnik.swaggersocket.protocol.StatusMessage.Status
 import java.util.concurrent.{ConcurrentHashMap, TimeoutException, TimeUnit, CountDownLatch}
-
 
 object SwaggerSocket {
 

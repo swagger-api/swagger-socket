@@ -15,11 +15,20 @@
  */
 package com.wordnik.swaggersocket.server;
 
+import com.wordnik.swaggersocket.protocol.Handshake;
+import com.wordnik.swaggersocket.protocol.HandshakeMessage;
+import com.wordnik.swaggersocket.protocol.Header;
+import com.wordnik.swaggersocket.protocol.Message;
+import com.wordnik.swaggersocket.protocol.ProtocolBase;
+import com.wordnik.swaggersocket.protocol.QueryString;
+import com.wordnik.swaggersocket.protocol.Request;
+import com.wordnik.swaggersocket.protocol.Response;
+import com.wordnik.swaggersocket.protocol.ResponseMessage;
+import com.wordnik.swaggersocket.protocol.StatusMessage;
 import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResponse;
 import org.atmosphere.cpr.AtmosphereResource;
-import org.atmosphere.cpr.AtmosphereServlet;
 import org.atmosphere.websocket.WebSocket;
 import org.atmosphere.websocket.WebSocketProcessor;
 import org.atmosphere.websocket.WebSocketProtocol;
@@ -27,8 +36,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +44,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * The SwaggerSocket Protocol implementation.
+ */
 public class SwaggerSocketProtocol implements WebSocketProtocol {
 
     private final static String DELEGATE_HANDSHAKE = SwaggerSocketProtocol.class.getName() + ".delegateHandshake";

@@ -15,7 +15,7 @@
  */
 package com.wordnik.swaggersocket.client
 
-import com.wordnik.swaggersocket.server.{StatusMessage, ResponseMessage, Response}
+import com.wordnik.swaggersocket.protocol.{Response, ResponseMessage, StatusMessage}
 
 class SwaggerSocketDeserializer {
 

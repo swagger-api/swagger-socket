@@ -9,20 +9,20 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.wordnik</groupId>
     <artifactId>swaggersocket-project</artifactId>
-    <name>SwaggerSocket Protocol</name>
+    <name>swaggersocket-project</name>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>
     </description>
     <url>http://github.com/wordnik/swagger-atmosphere-ws-plugin</url>
     <scm>
-        <connection>scm:git:git@github.com:wordnik/swagger-atmosphere-ws-plugin.git</connection>
-        <url>https://github.com/wordnik/swagger-atmosphere-ws-plugin</url>
-        <developerConnection>scm:git:git@github.com:wordnik/swagger-atmosphere-ws-plugin.git</developerConnection>
+        <connection>scm:git:git@github.com:wordnik/swagger-sockets.git</connection>
+        <url>https://github.com/wordnik/swagger-sockets</url>
+        <developerConnection>scm:git:git@github.com:wordnik/swagger-sockets.git</developerConnection>
     </scm>
     <issueManagement>
-        <system>jira</system>
-        <url></url>
+        <system>github</system>
+        <url>https://github.com/wordnik/swagger-sockets/issues</url>
     </issueManagement>
 
     <prerequisites>
@@ -83,16 +83,24 @@
                 <version>${project.version}</version>
             </dependency>
 
+             <dependency>
+                <groupId>com.wordnik</groupId>
+                <artifactId>swaggersocket-protocol</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.atmosphere</groupId>
                 <artifactId>atmosphere-runtime</artifactId>
                 <version>${atmosphere-version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.atmosphere</groupId>
                 <artifactId>atmosphere-jersey</artifactId>
                 <version>${atmosphere-version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.atmosphere</groupId>
                 <artifactId>atmosphere-jquery</artifactId>
@@ -124,6 +132,7 @@
                 <version>${scala-version}</version>
                 <scope>compile</scope>
             </dependency>
+
             <dependency>
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-compiler</artifactId>
@@ -131,30 +140,11 @@
                 <scope>compile</scope>
             </dependency>
 
-            <!-- Test dependencies -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit-version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.scalatest</groupId>
-                <artifactId>scalatest_2.9.1</artifactId>
-                <version>${scala-test-version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.testng</groupId>
-                <artifactId>testng</artifactId>
-                <version>5.8</version>
-                <scope>test</scope>
-                <classifier>jdk15</classifier>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <modules>
+        <module>swaggersocket-protocol</module>
         <module>swaggersocket-server</module>
         <module>swaggersocket-scala-client</module>
         <module>swaggersocket.js</module>
@@ -197,7 +187,7 @@
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>7.6.0.RC4</version>
+                <version>7.6.0.v20120127</version>
                 <configuration>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                     <webAppConfig>
@@ -217,14 +207,6 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.8.1</version>
-                <configuration>
-                    <redirectTestOutputToFile>${surefire.redirectTestOutputToFile}</redirectTestOutputToFile>
                 </configuration>
             </plugin>
             <plugin>
@@ -340,7 +322,7 @@
         <surefire.redirectTestOutputToFile>true</surefire.redirectTestOutputToFile>
         <source.property>1.6</source.property>
         <target.property>1.6</target.property>
-        <jetty.maven.version>7.6.0.RC4</jetty.maven.version>
+        <jetty.version>7.6.0.v20120127</jetty.version>
         <scala-test-version>1.6.1</scala-test-version>
         <junit-version>4.8.1</junit-version>
         <slf4j-version>1.6.3</slf4j-version>

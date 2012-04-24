@@ -4,6 +4,7 @@
         <groupId>com.wordnik</groupId>
         <artifactId>swaggersocket-project</artifactId>
         <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../../</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -55,13 +56,7 @@
             <artifactId>jersey-json</artifactId>
             <version>${jersey-version}</version>
         </dependency>
-        <!-- Test dependencies -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <scope>test</scope>
-            <classifier>jdk15</classifier>
-        </dependency>
+
     </dependencies>
     <build>
         <finalName>${artifactId}</finalName>

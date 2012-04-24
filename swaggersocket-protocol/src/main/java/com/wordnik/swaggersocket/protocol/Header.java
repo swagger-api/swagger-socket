@@ -13,22 +13,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.wordnik.swaggersocket.client
+package com.wordnik.swaggersocket.protocol;
 
-import org.codehaus.jackson.map.ObjectMapper
-import com.wordnik.swaggersocket.protocol.{Handshake, HandshakeMessage, RequestMessage}
+public class Header {
 
-class SwaggerSocketSerializer {
+    private String name;
+    private String value;
 
-  val mapper:ObjectMapper  = new ObjectMapper()
+    public Header(){
+    }
 
-  def serializeRequests(requests : RequestMessage): String = {
-    mapper.writeValueAsString(requests)
-  }
+    public Header(String name, String value){
+        this.name = name;
+        this.value = value;
+    }
 
-  def serializeHandshake(h : Handshake) : String = {
-    val hm = new HandshakeMessage()
-    hm.setHandshake(h)
-    mapper.writeValueAsString(hm)
-  }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

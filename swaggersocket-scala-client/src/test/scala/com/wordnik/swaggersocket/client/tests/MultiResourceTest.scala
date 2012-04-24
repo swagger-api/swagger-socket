@@ -20,7 +20,7 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
-import com.wordnik.swaggersocket.server.{Response, Request, Handshake}
+import com.wordnik.swaggersocket.protocol.{Handshake, Request, Response}
 import java.util.concurrent.{TimeUnit, CountDownLatch}
 import com.wordnik.swaggersocket.client.{SwaggerSocketException, SwaggerSocketListener, SwaggerSocket}
 
