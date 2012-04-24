@@ -5,12 +5,20 @@ The SwaggerSocket protocol allows any existing REST Resource to be executed on t
 You can also add bi-directional support to your REST resource by extending it using the [Atmosphere Framework](http://github.com/Atmosphere/atmosphere).
 
 ### Getting started using the samples
-The quickest way to see how the protocol works is to try the samples:
+The quickest way to see how the protocol works is to try the samples. You can download them from here. Just do
+
+```bash
+  % unzip swaggersocket-{sample_name}-distribution
+  % chmod a+x ./bin/nettosphere.sh
+  % ./bin/nettosphere.sh
+```
+
+You can also build the workspace
 
 ```bash
     % git clone git@github.com:wordnik/swagger-sockets.git
     % cd swagger-socket
-    % mvn -N; mvn
+    % mvn 
     % cd samples/swaggersocket-echo OR samples/swaggersocket-twitter
     % mvn jetty:run
 ```
