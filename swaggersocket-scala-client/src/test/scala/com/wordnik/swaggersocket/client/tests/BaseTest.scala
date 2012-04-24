@@ -31,7 +31,7 @@ class BaseTest extends Server with FlatSpec with BeforeAndAfterAll with ShouldMa
   private var _connector: SelectChannelConnector = null
   protected var framework: SwaggerSocketServlet = null
 
-    override def beforeAll(configMap: Map[String, Any]) = {
+  override def beforeAll(configMap: Map[String, Any]) = {
     setUpGlobal
   }
 
@@ -49,7 +49,7 @@ class BaseTest extends Server with FlatSpec with BeforeAndAfterAll with ShouldMa
     context.setContextPath("/")
     setHandler(context)
     val a = new SwaggerSocketServlet();
-    a.framework().addInitParameter("com.sun.jersey.config.property.packages", this.getClass.getPackage.getName)
+    a.framework.addInitParameter("com.sun.jersey.config.property.packages", this.getClass.getPackage.getName)
     context.addServlet(new ServletHolder(a), "/*")
 
     start

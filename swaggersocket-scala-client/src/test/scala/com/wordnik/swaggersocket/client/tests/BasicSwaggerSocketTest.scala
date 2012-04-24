@@ -180,15 +180,16 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
     assert(responseCount == 2)
   }
 
-  it should "See if multiple request response body doesn't matching" in {
+  it should "See if multiple request response body aren't matching" in {
     val open = new Request.Builder().path(getTargetUrl + "/test").build()
     var cd: CountDownLatch = new CountDownLatch(2)
     val ss = SwaggerSocket()
-    var bodyMatch = false;
+    var bodyMatch = true;
     var request = new Request.Builder()
       .path("/b")
       .method("POST")
       .body("Yo!")
+      .attach("Yo!")
       .format("JSON")
       .build()
 
@@ -196,6 +197,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       .path("/a")
       .method("POST")
       .body("YoYo!")
+      .attach("YoYo!")
       .format("JSON")
       .build()
 
@@ -207,7 +209,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = "Yo!" == s.getMessageBody
+        bodyMatch = (r.attachment.toString == s.getMessageBody) && bodyMatch
         responseCount += 1
 
         cd.countDown()
@@ -220,7 +222,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
     cd.await(10, TimeUnit.SECONDS)
     ss.close
 
-    assert(!bodyMatch)
+    assert(bodyMatch)
     assert(responseCount == 2)
   }
 

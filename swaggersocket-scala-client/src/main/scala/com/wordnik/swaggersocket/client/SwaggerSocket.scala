@@ -22,6 +22,7 @@ import com.wordnik.swaggersocket.protocol.{StatusMessage, Handshake, Request}
 import com.wordnik.swaggersocket.protocol.RequestMessage.Builder
 import com.wordnik.swaggersocket.protocol.StatusMessage.Status
 import java.util.concurrent.{ConcurrentHashMap, TimeoutException, TimeUnit, CountDownLatch}
+import java.util.concurrent.atomic.AtomicInteger
 
 object SwaggerSocket {
 
@@ -66,12 +67,12 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
         }
 
         override def onClose {
-          w.removeListener(this)
+          ws.removeListener(this)
           l.countDown
         }
 
         override def onError(t: Throwable) {
-          w.removeListener(this)
+          ws.removeListener(this)
           e = Some(t);
           l.countDown
         }
@@ -92,7 +93,7 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
           } catch {
             case ex: Throwable => logger.error("", ex)
           } finally {
-            w.removeListener(this)
+            ws.removeListener(this)
             l.countDown
           }
         }
@@ -100,7 +101,10 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
 
       path = handshake.getPath
     } catch {
-      case t: Exception => e = Some(new SwaggerSocketException(0, t.getMessage))
+      case t: Exception => {
+        e = Some(new SwaggerSocketException(0, t.getMessage))
+        l.countDown()
+      }
     }
 
     if (!l.await(timeoutInSeconds, TimeUnit.SECONDS)) {
@@ -176,6 +180,8 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
   def send(r: Array[Request], l: SwaggerSocketListener): SwaggerSocket = {
 
     val requestMessage = new Builder().requests(r).identity(identity).build
+    val callback: AtomicInteger = new AtomicInteger(r.size)
+
     //	will we have race conditions here?
     r.foreach(request => {
       activeRequests += request.getUuid -> request
@@ -185,7 +191,6 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
       w.listener(new TextListener {
 
         override def onOpen {
-          w.removeListener(this)
           logger.trace("OnOpen " + this)
         }
 
@@ -209,7 +214,6 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
             responses.foreach(response => {
               // Is this response for us
               val rq: Request = activeRequests(response.getUuid);
-              if (r.contains(rq)) {
                 try {
                   l.message(rq, response)
                 } catch {
@@ -217,11 +221,12 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
                 } finally {
                   activeRequests -= response.getUuid
                 }
-              }
             })
             l.messages(responses)
           }
-          w.removeListener(this)
+          if (callback.decrementAndGet() == 0) {
+            w.removeListener(this)
+          }
         }
       })
     }
