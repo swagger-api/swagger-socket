@@ -312,7 +312,7 @@ jQuery.swaggersocket = function() {
          */
         SwaggerSocketListener : function() {
             var onResponse = function(response) {
-            }, onError = function(errorMsg, response) {
+            }, onError = function(response) {
             }, onClose = function(response) {
             }, onOpen = function(response) {
             }, onResponses = function(response) {
