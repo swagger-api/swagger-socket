@@ -20,7 +20,7 @@ import javax.ws.rs.{GET, Path}
 @Path("/helloworld")
 class HelloWorld {
 
-  @Path("/")
+  @Path("/sayHello")
   @GET
   def get(): String = {
     "Swagger Socket Hello World"

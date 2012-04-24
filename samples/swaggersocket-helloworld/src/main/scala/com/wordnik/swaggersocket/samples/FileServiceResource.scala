@@ -1,4 +1,4 @@
-package org.wordnik.swaggersocket.samples
+package com.wordnik.swaggersocket.samples
 
 /**
  *  Copyright 2012 Wordnik, Inc.

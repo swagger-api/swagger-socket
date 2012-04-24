@@ -11,11 +11,45 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.wordnik</groupId>
     <artifactId>swaggersocket-twitter</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <version>1.0.0-SNAPSHOT</version>
     <name>swaggersocket-twitter</name>
     <build>
         <finalName>${artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <executions>
+                    <execution>
+                        <id>distro-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/distribution.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin>
+            <plugin>
+                <executions>
+                    <execution>
+                        <id>distro-war</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.2</version>
+            </plugin>
+        </plugins>
     </build>
     <dependencies>
         <dependency>
@@ -25,6 +59,11 @@
         <dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-jersey</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.atmosphere</groupId>
+            <artifactId>nettosphere</artifactId>
+            <version>${nettosphere-version}</version>
         </dependency>
         <dependency>
             <groupId>com.ning</groupId>

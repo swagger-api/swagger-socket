@@ -17,6 +17,6 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>SwaggerSocketServlet</servlet-name>
-        <url-pattern>/ss/*</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 </web-app>
