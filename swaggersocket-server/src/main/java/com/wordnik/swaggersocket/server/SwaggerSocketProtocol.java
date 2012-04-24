@@ -251,7 +251,8 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
         Request swaggerSocketRequest =
                 Request.class.cast(res.getRequest().getAttribute(SWAGGERSOCKET_REQUEST));
 
-        builder.uuid(swaggerSocketRequest.getUuid()).method(swaggerSocketRequest.getMethod());
+        builder.uuid(swaggerSocketRequest.getUuid()).method(swaggerSocketRequest.getMethod())
+                .path(swaggerSocketRequest.getPath());
         String identity = (String) res.getRequest().getAttribute("swaggersocket.identity");
 
         return new ResponseMessage(identity, builder.build());
