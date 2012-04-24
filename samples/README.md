@@ -1,4 +1,4 @@
-## Three way to run the a sample
+## Three ways to run a sample
 
 ### Using mvn jetty:run
 
