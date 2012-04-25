@@ -26,16 +26,18 @@ Using Maven or SBT
 
 Manual download [here](http://search.maven.org/#search|ga|1|swaggersocket)
 
-### Getting started using the samples
+### Getting Started
 The quickest way to see how the protocol works is to try the samples. You can download them from [here](http://search.maven.org/#search|ga|1|swaggersocket). Just do
 
 ```bash
-  % unzip swaggersocket-{sample_name}-distribution
+  % unzip swaggersocket-{sample_name}-distribution.zip
   % chmod a+x ./bin/nettosphere.sh
   % ./bin/nettosphere.sh
 ```
 
-You can also build the sample yourself
+and then point your browser to http://127.0.0.1:8080
+
+You can also build the sample yourself and use Jetty instead of NettoSphere.
 
 ```bash
   % git clone git@github.com:wordnik/swagger-sockets.git
@@ -45,15 +47,17 @@ You can also build the sample yourself
   % mvn jetty:run
 ```
 
-or take a look at [HelloWorld](https://github.com/wordnik/swagger-sockets/wiki/Getting-started-with-SwaggerSocket-and-Jersey) mini tutorial. 
-You can also look at our samples :
+Take a look at [HelloWorld](https://github.com/wordnik/swagger-sockets/wiki/Getting-started-with-SwaggerSocket-and-Jersey) mini tutorial. 
+You can also look at our real time samples:
 
  * Twitter's Real Time Search [client code](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-twitter/src/main/webapp/index.html#L10) | [server code](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-twitter/src/main/java/com/wordnik/swaggersocket/samples/TwitterFeed.java#L45) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-twitter/1.0.0/swaggersocket-twitter-1.0.0-distribution.zip)
  * Wordnik's Real Time Search [client code](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-wordnik/src/main/webapp/index.html#L10) | [server code](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-wordnik/src/main/scala/com/wordnik/swaggersocket/samples/WordnikResourceProxy.scala#L30) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-wordnik/1.0.0/swaggersocket-wordnik-1.0.0-distribution.zip)
  * Simple Swagger Sockets Protocol Echo [client code](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/webapp/index.html#L9) | [server code](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/scala/org/wordnik/swaggersocket/samples/SwaggerSocketResource.scala#L16) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-echo/1.0.0/swaggersocket-echo-1.0.0-distribution.zip)
 
-### SwaggerSocket Protocol Server Implementation
-To enable SwaggerSocket, add the following in your web.xml. Currently, SwaggerSocket only supports [Jersey](http://jersey.java.net/) for REST Resources (other implementations like RestEasy and RESTLet are coming).  
+You can also download our [war files](http://search.maven.org/#search|ga|1|swaggersocket) and deploy them to any WebServer [supporting WebSockets](https://github.com/Atmosphere/atmosphere/wiki/Supported-WebServers-and-Browsers).
+
+## Quick Start
+To enable SwaggerSocket, add the following in your web.xml.  
 
 ```xml
     <servlet>
