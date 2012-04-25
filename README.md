@@ -43,7 +43,7 @@ You can also build the sample yourself and use Jetty instead of NettoSphere.
 
 ```bash
   % git clone git@github.com:wordnik/swagger-sockets.git
-  % cd swagger-socket
+  % cd swagger-sockets
   % mvn 
   % cd samples/swaggersocket-echo OR samples/swaggersocket-twitter
   % mvn jetty:run
