@@ -16,11 +16,11 @@ The quickest way to see how the protocol works is to try the samples. You can do
 You can also build the workspace
 
 ```bash
-    % git clone git@github.com:wordnik/swagger-sockets.git
-    % cd swagger-socket
-    % mvn 
-    % cd samples/swaggersocket-echo OR samples/swaggersocket-twitter
-    % mvn jetty:run
+  % git clone git@github.com:wordnik/swagger-sockets.git
+  % cd swagger-socket
+  % mvn 
+  % cd samples/swaggersocket-echo OR samples/swaggersocket-twitter
+  % mvn jetty:run
 ```
 
 or take a look at [HelloWorld](https://github.com/wordnik/swagger-sockets/wiki/Getting-started-with-Swagger-Socket-and-Jersey) mini tutorial. 
