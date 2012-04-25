@@ -4,6 +4,28 @@ The SwaggerSocket protocol allows any existing REST Resource to be executed on t
 
 You can also add bi-directional support to your REST resource by extending it using the [Atmosphere Framework](http://github.com/Atmosphere/atmosphere).
 
+### Download SwaggerSocket
+
+Using Maven or SBT
+
+```xml
+    <!-- Server side -->
+    <dependency>
+       <groupId>com.wordnik</groupId>
+       <artifactId>swaggersocket</artifactId>
+       <version>1.0.0</version>
+    </dependency>
+    <!-- Client side --> 
+     <dependency>
+       <groupId>com.wordnik</groupId>
+       <artifactId>swaggersocket.js</artifactId>
+       <version>1.0.0</version>
+       <type>war</type>
+    </dependency>   
+```
+
+Manual download [here](http://search.maven.org/#search|ga|1|swaggersocket)
+
 ### Getting started using the samples
 The quickest way to see how the protocol works is to try the samples. You can download them from [here](http://search.maven.org/#search|ga|1|swaggersocket). Just do
 
@@ -13,7 +35,7 @@ The quickest way to see how the protocol works is to try the samples. You can do
   % ./bin/nettosphere.sh
 ```
 
-You can also build the workspace
+You can also build the sample yourself
 
 ```bash
   % git clone git@github.com:wordnik/swagger-sockets.git
