@@ -1,4 +1,4 @@
-## [SwaggerSocket](https://github.com/wordnik/swagger-sockets/wiki/SwaggerSocket-Protocol): A REST over WebSocket Protocol
+## [SwaggerSocket](https://github.com/wordnik/swaggersocket/wiki/SwaggerSocket-Protocol): A REST over WebSocket Protocol
 
 The SwaggerSocket protocol allows any existing REST Resources to be executed on top of the WebSocket Protocol. Resources can be deployed as it is, without any modification and take advantage of the SwaggerSocket protocol.
 
@@ -49,12 +49,12 @@ You can also build the sample yourself and use Jetty instead of NettoSphere.
   % mvn jetty:run
 ```
 
-Take a look at [HelloWorld](https://github.com/wordnik/swagger-sockets/wiki/Getting-started-with-SwaggerSocket-and-Jersey) mini tutorial. 
+Take a look at [HelloWorld](https://github.com/wordnik/swaggersocket/wiki/Getting-started-with-SwaggerSocket-and-Jersey) mini tutorial. 
 You can also look at our real time samples:
 
- * Twitter's Real Time Search [client code](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-twitter/src/main/webapp/index.html#L10) | [server code](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-twitter/src/main/java/com/wordnik/swaggersocket/samples/TwitterFeed.java#L45) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-twitter/1.0.0/swaggersocket-twitter-1.0.0-distribution.zip)
- * Wordnik's Real Time Search [client code](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-wordnik/src/main/webapp/index.html#L10) | [server code](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-wordnik/src/main/scala/com/wordnik/swaggersocket/samples/WordnikResourceProxy.scala#L30) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-wordnik/1.0.0/swaggersocket-wordnik-1.0.0-distribution.zip)
- * Simple Swagger Sockets Protocol Echo [client code](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/webapp/index.html#L9) | [server code](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/scala/org/wordnik/swaggersocket/samples/SwaggerSocketResource.scala#L16) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-echo/1.0.0/swaggersocket-echo-1.0.0-distribution.zip)
+ * Twitter's Real Time Search [client code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-twitter/src/main/webapp/index.html#L10) | [server code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-twitter/src/main/java/com/wordnik/swaggersocket/samples/TwitterFeed.java#L45) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-twitter/1.0.0/swaggersocket-twitter-1.0.0-distribution.zip)
+ * Wordnik's Real Time Search [client code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-wordnik/src/main/webapp/index.html#L10) | [server code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-wordnik/src/main/scala/com/wordnik/swaggersocket/samples/WordnikResourceProxy.scala#L30) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-wordnik/1.0.0/swaggersocket-wordnik-1.0.0-distribution.zip)
+ * Simple Swagger Sockets Protocol Echo [client code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-echo/src/main/webapp/index.html#L9) | [server code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-echo/src/main/scala/org/wordnik/swaggersocket/samples/SwaggerSocketResource.scala#L16) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-echo/1.0.0/swaggersocket-echo-1.0.0-distribution.zip)
 
 You can also download our [war files](http://search.maven.org/#search|ga|1|swaggersocket) and deploy them to any WebServer [supporting WebSockets](https://github.com/Atmosphere/atmosphere/wiki/Supported-WebServers-and-Browsers).
 
@@ -151,4 +151,4 @@ Once completed, you just need to close
 ```
 
 ### How the protocol works
-To read more about how the protocol works, take a look at the [SwaggerSocket Protocol Specification](https://github.com/wordnik/swagger-sockets/wiki/Swagger-Socket-Protocol)
+To read more about how the protocol works, take a look at the [SwaggerSocket Protocol Specification](https://github.com/wordnik/swaggersocket/wiki/Swagger-Socket-Protocol)
