@@ -4,6 +4,10 @@ The SwaggerSocket protocol allows any existing REST Resources to be executed on 
 
 You can also add bi-directional support to your REST resources by extending your application using the [Atmosphere Framework](http://github.com/Atmosphere/atmosphere).
 
+### Join the community
+
+You can subscribe to our Google Group(https://groups.google.com/forum/?fromgroups#!forum/swagger-swaggersocket) or follow us on [Twitter](https://twitter.com/#!/swaggersocket)
+
 ### Download SwaggerSocket
 
 Using Maven or SBT
@@ -146,4 +150,3 @@ Once completed, you just need to close
 
 ### How the protocol works
 To read more about how the protocol works, take a look at the [SwaggerSocket Protocol Specification](https://github.com/wordnik/swagger-sockets/wiki/Swagger-Socket-Protocol)
-
