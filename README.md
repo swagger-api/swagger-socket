@@ -6,7 +6,7 @@ You can also add bi-directional support to your REST resources by extending your
 
 ### Join the community
 
-You can subscribe to our Google Group(https://groups.google.com/forum/?fromgroups#!forum/swagger-swaggersocket) or follow us on [Twitter](https://twitter.com/#!/swaggersocket)
+You can subscribe to our [Google Group](https://groups.google.com/forum/?fromgroups#!forum/swagger-swaggersocket) or follow us on [Twitter](https://twitter.com/#!/swaggersocket)
 
 ### Download SwaggerSocket
 
