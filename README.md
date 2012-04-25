@@ -55,7 +55,7 @@ The SwaggerSocket Client is defined as
     var ss = new jQuery.swaggersocket.SwaggerSocketListener();
     ss.onOpen = function(response) {};
     ss.onClose = function(Response) {}; // Called when the Websocket gets closed
-    ss.onError = function(errorMessage, Response) {}; // When an error occurs
+    ss.onError = function(Response) {}; // When an error occurs
     ss.onResponse = function(Response) {}; // When a response is ready
     ss.onResponses = function (Response) {}; // A List of all the ready responses
 ```
