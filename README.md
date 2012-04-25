@@ -2,8 +2,6 @@
 
 The SwaggerSocket protocol allows any existing REST Resources to be executed on top of the WebSocket Protocol. Resources can be deployed as it is, without any modification and take advantage of the SwaggerSocket protocol.
 
-You can also add bi-directional support to your REST resources by extending your application using the [Atmosphere Framework](http://github.com/Atmosphere/atmosphere).
-
 ### Join the community
 
 You can subscribe to our [Google Group](https://groups.google.com/forum/?fromgroups#!forum/swagger-swaggersocket) or follow us on [Twitter](https://twitter.com/#!/swaggersocket)
@@ -59,6 +57,10 @@ You can also look at our real time samples:
  * Simple Swagger Sockets Protocol Echo [client code](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/webapp/index.html#L9) | [server code](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/scala/org/wordnik/swaggersocket/samples/SwaggerSocketResource.scala#L16) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-echo/1.0.0/swaggersocket-echo-1.0.0-distribution.zip)
 
 You can also download our [war files](http://search.maven.org/#search|ga|1|swaggersocket) and deploy them to any WebServer [supporting WebSockets](https://github.com/Atmosphere/atmosphere/wiki/Supported-WebServers-and-Browsers).
+
+### Add bi-directional support to your REST application
+
+You can also add bi-directional support to your REST resources by extending your application using the [Atmosphere Framework](http://github.com/Atmosphere/atmosphere).
 
 ## Quick Start
 To enable SwaggerSocket, add the following in your web.xml.  
