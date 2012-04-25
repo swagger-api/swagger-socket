@@ -23,7 +23,7 @@ You can also build the workspace
   % mvn jetty:run
 ```
 
-or take a look at [HelloWorld](https://github.com/wordnik/swagger-sockets/wiki/Getting-started-with-Swagger-Socket-and-Jersey) mini tutorial. 
+or take a look at [HelloWorld](https://github.com/wordnik/swagger-sockets/wiki/Getting-started-with-SwaggerSocket-and-Jersey) mini tutorial. 
 You can also look at our samples :
 
  * Twitter's Real Time Search [client code](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-twitter/src/main/webapp/index.html#L10) | [server code](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-twitter/src/main/java/com/wordnik/swaggersocket/samples/TwitterFeed.java#L45) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-twitter/1.0.0/swaggersocket-twitter-1.0.0-distribution.zip)
