@@ -62,7 +62,7 @@ You can also download our [war files](http://search.maven.org/#search|ga|1|swagg
 
 You can also add bi-directional support to your REST resources by extending your application using the [Atmosphere Framework](http://github.com/Atmosphere/atmosphere).
 
-## Quick Start
+## Quick Overview
 To enable SwaggerSocket, add the following in your web.xml.  
 
 ```xml
