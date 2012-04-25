@@ -1,8 +1,8 @@
 ## [SwaggerSocket](https://github.com/wordnik/swagger-sockets/wiki/Swagger-Socket-Protocol): A REST over WebSocket Protocol
 
-The SwaggerSocket protocol allows any existing REST Resource to be executed on top of the WebSocket Protocol. Resources can be deployed as it is, without any modification and take advantage of the SwaggerSocket protocol.
+The SwaggerSocket protocol allows any existing REST Resources to be executed on top of the WebSocket Protocol. Resources can be deployed as it is, without any modification and take advantage of the SwaggerSocket protocol.
 
-You can also add bi-directional support to your REST resource by extending it using the [Atmosphere Framework](http://github.com/Atmosphere/atmosphere).
+You can also add bi-directional support to your REST resources by extending your application using the [Atmosphere Framework](http://github.com/Atmosphere/atmosphere).
 
 ### Download SwaggerSocket
 
