@@ -5,7 +5,7 @@ The SwaggerSocket protocol allows any existing REST Resource to be executed on t
 You can also add bi-directional support to your REST resource by extending it using the [Atmosphere Framework](http://github.com/Atmosphere/atmosphere).
 
 ### Getting started using the samples
-The quickest way to see how the protocol works is to try the samples. You can download them from here. Just do
+The quickest way to see how the protocol works is to try the samples. You can download them from [here](http://search.maven.org/#search|ga|1|swaggersocket). Just do
 
 ```bash
   % unzip swaggersocket-{sample_name}-distribution
@@ -26,9 +26,9 @@ You can also build the workspace
 or take a look at [HelloWorld](https://github.com/wordnik/swagger-sockets/wiki/Getting-started-with-Swagger-Socket-and-Jersey) mini tutorial. 
 You can also look at our samples :
 
- * Twitter's Real Time Search [client](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-twitter/src/main/webapp/index.html#L10) [server](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-twitter/src/main/java/com/wordnik/swaggersocket/samples/TwitterFeed.java#L45)
- * Wordnik's Real Time Search [client](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-wordnik/src/main/webapp/index.html#L10) [server](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-wordnik/src/main/scala/com/wordnik/swaggersocket/samples/WordnikResourceProxy.scala#L30) 
- * Simple Swagger Sockets Protocol Echo [client](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/webapp/index.html#L9) [server](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/scala/org/wordnik/swaggersocket/samples/SwaggerSocketResource.scala#L16)
+ * Twitter's Real Time Search [client](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-twitter/src/main/webapp/index.html#L10) [server](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-twitter/src/main/java/com/wordnik/swaggersocket/samples/TwitterFeed.java#L45) [download](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-twitter/1.0.0/swaggersocket-twitter-1.0.0-distribution.zip)
+ * Wordnik's Real Time Search [client](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-wordnik/src/main/webapp/index.html#L10) [server](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-wordnik/src/main/scala/com/wordnik/swaggersocket/samples/WordnikResourceProxy.scala#L30) [download](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-wordnik/1.0.0/swaggersocket-wordnik-1.0.0-distribution.zip)
+ * Simple Swagger Sockets Protocol Echo [client](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/webapp/index.html#L9) [server](https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-echo/src/main/scala/org/wordnik/swaggersocket/samples/SwaggerSocketResource.scala#L16) [download](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-echo/1.0.0/swaggersocket-echo-1.0.0-distribution.zip)
 
 ### SwaggerSocket Protocol Server Implementation
 To enable SwaggerSocket, add the following in your web.xml. Currently, SwaggerSocket only supports [Jersey](http://jersey.java.net/) for REST Resources (other implementations like RestEasy and RESTLet are coming).  
