@@ -151,4 +151,4 @@ Once completed, you just need to close
 ```
 
 ### How the protocol works
-To read more about how the protocol works, take a look at the [SwaggerSocket Protocol Specification](https://github.com/wordnik/swaggersocket/wiki/Swagger-Socket-Protocol)
+To read more about how the protocol works, take a look at the [SwaggerSocket Protocol Specification](https://github.com/wordnik/swaggersocket/wiki/SwaggerSocket-Protocol)
