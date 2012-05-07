@@ -32,6 +32,7 @@ import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.websocket.WebSocket;
 import org.atmosphere.websocket.WebSocketProcessor;
 import org.atmosphere.websocket.WebSocketProtocol;
+import org.atmosphere.websocket.WebSocketResponseFilter;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +56,7 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
     private static final Logger logger = LoggerFactory.getLogger(SwaggerSocketProtocol.class);
     private final ObjectMapper mapper;
     private boolean delegateHandshake = false;
+    private final SwaggerSocketResponseFilter serializer = new SwaggerSocketResponseFilter();
 
     public SwaggerSocketProtocol() {
         mapper = new ObjectMapper();
@@ -77,6 +79,7 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
     @Override
     public void onOpen(WebSocket webSocket) {
         webSocket.resource().suspend(-1, false);
+        webSocket.webSocketResponseFilter(serializer);
     }
 
     /**
@@ -98,7 +101,7 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
         if (t.response() != null) {
 
             Request swaggerSocketRequest =
-                    Request.class.cast(t.response().getRequest().getAttribute(SWAGGERSOCKET_REQUEST));
+                    Request.class.cast(t.response().request().getAttribute(SWAGGERSOCKET_REQUEST));
 
             if (swaggerSocketRequest == null) {
                 logger.debug("Handshake mapping (could be expected) {} : {}", t.response().getStatus(), t.response().getStatusMessage());
@@ -186,57 +189,6 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
         return onMessage(webSocket, new String(data, offset, length));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean inspectResponse() {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String handleResponse(AtmosphereResponse res, String message) {
-        if (invalidState((Request) res.getRequest().getAttribute(SWAGGERSOCKET_REQUEST))) {
-            logger.error("Protocol error. Handshake not occurred yet!");
-            StatusMessage statusMessage = new StatusMessage.Builder().status(new StatusMessage.Status(501, "Protocol error. Handshake not occurred yet!"))
-                            .identity("0").build();
-            try {
-                return mapper.writeValueAsString(statusMessage);
-            } catch (IOException e) {
-                return "";
-            }
-        }
-
-        try {
-            return mapper.writeValueAsString(wrapMessage(res, message));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public byte[] handleResponse(AtmosphereResponse res, byte[] message, int offset, int length) {
-        if (invalidState((Request) res.getRequest().getAttribute(SWAGGERSOCKET_REQUEST))) {
-            logger.error("Protocol error. Handshake not occurred yet!");
-            StatusMessage statusMessage = new StatusMessage.Builder().status(new StatusMessage.Status(501, "Protocol error. Handshake not occurred yet!"))
-                            .identity("0").build();
-            try {
-                return mapper.writeValueAsBytes(statusMessage);
-            } catch (IOException e) {
-                return new byte[0];
-            }
-        }
-
-        try {
-            return mapper.writeValueAsBytes(wrapMessage(res, new String(message, offset, length, res.getCharacterEncoding())));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private ResponseMessage wrapMessage(AtmosphereResponse res, String message) {
         Response.Builder builder = new Response.Builder();
 
@@ -249,11 +201,11 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
         }
 
         Request swaggerSocketRequest =
-                Request.class.cast(res.getRequest().getAttribute(SWAGGERSOCKET_REQUEST));
+                Request.class.cast(res.request().getAttribute(SWAGGERSOCKET_REQUEST));
 
         builder.uuid(swaggerSocketRequest.getUuid()).method(swaggerSocketRequest.getMethod())
                 .path(swaggerSocketRequest.getPath());
-        String identity = (String) res.getRequest().getAttribute("swaggersocket.identity");
+        String identity = (String) res.request().getAttribute("swaggersocket.identity");
 
         return new ResponseMessage(identity, builder.build());
     }
@@ -313,4 +265,64 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
         return ar;
     }
 
-}
+    private final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
+
+        @Override
+        public String filter(AtmosphereResponse r, String message) {
+
+            // This is the handshake, nothing to do.
+            if (r.request() == null) {
+                return message;
+            }
+
+            if (invalidState((Request) r.request().getAttribute(SWAGGERSOCKET_REQUEST))) {
+                logger.error("Protocol error. Handshake not occurred yet!");
+                StatusMessage statusMessage = new StatusMessage.Builder().status(new StatusMessage.Status(501, "Protocol error. Handshake not occurred yet!"))
+                        .identity("0").build();
+                try {
+                    return mapper.writeValueAsString(statusMessage);
+                } catch (IOException e) {
+                    return "";
+                }
+            }
+
+            try {
+                return mapper.writeValueAsString(wrapMessage(r, message));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public byte[] filter(AtmosphereResponse r, byte[] message) {
+            return filter(r, message, 0, message.length);
+        }
+
+        @Override
+        public byte[] filter(AtmosphereResponse r, byte[] message, int offset, int length) {
+
+            // This is the handshake, nothing to do.
+            if (r.request() == null) {
+                return message;
+            }
+
+            if (invalidState((Request) r.request().getAttribute(SWAGGERSOCKET_REQUEST))) {
+                logger.error("Protocol error. Handshake not occurred yet!");
+                StatusMessage statusMessage = new StatusMessage.Builder().status(new StatusMessage.Status(501, "Protocol error. Handshake not occurred yet!"))
+                        .identity("0").build();
+                try {
+                    return mapper.writeValueAsBytes(statusMessage);
+                } catch (IOException e) {
+                    return new byte[0];
+                }
+            }
+
+            try {
+                return mapper.writeValueAsBytes(wrapMessage(r, new String(message, offset, length, r.request().getCharacterEncoding())));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+} 
