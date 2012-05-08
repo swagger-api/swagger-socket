@@ -41,6 +41,7 @@ public class SwaggerSocketServlet extends AtmosphereServlet {
     public SwaggerSocketServlet(boolean isFilter, boolean autoDetectHandlers) {
         super(isFilter, autoDetectHandlers);
         framework().setWebSocketProtocolClassName(SwaggerSocketProtocol.class.getName());
+        framework().interceptor(new SwaggerSocketProtocolHttpSupport());
         framework().addInitParameter("org.atmosphere.useNative", "true");
         framework().addInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
     }

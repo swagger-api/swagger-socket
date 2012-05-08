@@ -40,7 +40,7 @@ class BaseTest extends Server with FlatSpec with BeforeAndAfterAll with ShouldMa
   }
 
   def setUpGlobal = {
-    port1 = findFreePort
+    port1 = 8080
     _connector = new SelectChannelConnector
     _connector.setPort(port1)
     addConnector(_connector)
