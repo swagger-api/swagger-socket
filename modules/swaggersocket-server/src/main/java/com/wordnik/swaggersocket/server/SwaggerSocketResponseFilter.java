@@ -59,7 +59,7 @@ final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
     public byte[] filter(AtmosphereResponse r, byte[] message, int offset, int length) {
 
         // This is the handshake, nothing to do.
-        if (r.request() == null || r.request().getAttribute("swaggersocket.identity") != null) {
+        if (r.request() == null || r.request().getAttribute("swaggersocket.handshake") != null) {
             return message;
         }
 

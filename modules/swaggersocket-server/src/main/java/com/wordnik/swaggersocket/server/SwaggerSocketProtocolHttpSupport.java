@@ -28,9 +28,6 @@ import org.atmosphere.cpr.AtmosphereInterceptor;
 import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResponse;
-import org.atmosphere.cpr.Broadcaster;
-import org.atmosphere.cpr.BroadcasterFactory;
-import org.atmosphere.cpr.HeaderConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,8 +39,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SwaggerSocketProtocolHttpSupport implements AtmosphereInterceptor {
 
@@ -80,6 +77,23 @@ public class SwaggerSocketProtocolHttpSupport implements AtmosphereInterceptor {
 
             AtmosphereFramework framework = r.getAtmosphereConfig().framework();
             response.asyncIOWriter(new AsyncIOWriterAdapter() {
+
+                private void flushData(AtmosphereResponse r, byte[] data) throws IOException {
+                    AtomicInteger expectedResponseCount = (AtomicInteger) request.getAttribute("ResponseCountNumber");
+
+                    AtmosphereResource resource = (AtmosphereResource) request.getSession().getAttribute("PendingResource");
+                    if (resource != null) {
+                        resource.getResponse().getOutputStream().write(data);
+                        if (expectedResponseCount == null || expectedResponseCount.decrementAndGet() == 0) {
+                            resource.resume();
+                        }
+                        r.flushBuffer();
+                    } else {
+                        r.write(data);
+                    }
+                }
+
+
                 @Override
                 public AsyncIOWriter redirect(AtmosphereResponse r, String location) throws IOException {
                     return this;
@@ -99,43 +113,19 @@ public class SwaggerSocketProtocolHttpSupport implements AtmosphereInterceptor {
 
                 @Override
                 public AsyncIOWriter write(AtmosphereResponse r, String data) throws IOException {
-                    String s = serializer.filter(r, data);
-                    AtmosphereResource resource = (AtmosphereResource) request.getSession().getAttribute("PendingResource");
-                    if (resource != null) {
-                        resource.getResponse().getOutputStream().write(s.getBytes());
-                        resource.resume();
-                        r.flushBuffer();
-                    } else {
-                        r.write(s);
-                    }
+                    flushData(r, serializer.filter(r, data).getBytes(r.getCharacterEncoding()));
                     return this;
                 }
 
                 @Override
                 public AsyncIOWriter write(AtmosphereResponse r, byte[] data) throws IOException {
-                    byte s[] = serializer.filter(r, data);
-                    AtmosphereResource resource = (AtmosphereResource) request.getSession().getAttribute("PendingResource");
-                    if (resource != null) {
-                        resource.getResponse().getOutputStream().write(s);
-                        resource.resume();
-                        r.flushBuffer();
-                    } else {
-                        r.write(s);
-                    }
+                    flushData(r, serializer.filter(r, data));
                     return this;
                 }
 
                 @Override
                 public AsyncIOWriter write(AtmosphereResponse r, byte[] data, int offset, int length) throws IOException {
-                    byte s[] = serializer.filter(r, data, offset, length);
-                    AtmosphereResource resource = (AtmosphereResource) request.getSession().getAttribute("PendingResource");
-                    if (resource != null) {
-                        resource.getResponse().getOutputStream().write(s);
-                        resource.resume();
-                        r.flushBuffer();
-                    } else {
-                        r.write(s);
-                    }
+                    flushData(r, serializer.filter(r, data, offset, length));
                     return this;
                 }
 
@@ -202,8 +192,10 @@ public class SwaggerSocketProtocolHttpSupport implements AtmosphereInterceptor {
                     for (Request req : requests) {
                         list.add(SwaggerSocketProtocol.toAtmosphereRequest(request, req, requests.size() > 1));
                     }
+                    request.setAttribute("swaggersocket.identity", identity);
                 }
 
+                request.setAttribute("ResponseCountNumber", new AtomicInteger(list.size()));
                 for (AtmosphereRequest ar : list) {
                     try {
                         ar.setAttribute(SWAGGER_SOCKET_DISPATCHED, "true");
