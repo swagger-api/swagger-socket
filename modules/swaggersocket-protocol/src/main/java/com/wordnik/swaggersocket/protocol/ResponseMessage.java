@@ -41,6 +41,11 @@ public class ResponseMessage {
         this.responses = responses;
     }
 
+    public ResponseMessage response(Response response) {
+        responses.add(response);
+        return this;
+    }
+
     public String getIdentity() {
         return identity;
     }

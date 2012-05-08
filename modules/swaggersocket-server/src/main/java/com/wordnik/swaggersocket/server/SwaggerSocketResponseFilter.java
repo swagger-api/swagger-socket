@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
@@ -44,7 +45,12 @@ final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
         }
 
         try {
-            return mapper.writeValueAsString(wrapMessage(r, message));
+            ResponseMessage m = wrapMessage(r, message);
+            if (m != null) {
+                return mapper.writeValueAsString(m);
+            } else {
+                return null;
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -75,7 +81,12 @@ final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
         }
 
         try {
-            return mapper.writeValueAsBytes(wrapMessage(r, new String(message, offset, length, r.request().getCharacterEncoding())));
+            ResponseMessage m = wrapMessage(r, new String(message, offset, length, r.request().getCharacterEncoding()));
+            if (m != null) {
+                return mapper.writeValueAsBytes(m);
+            } else {
+                return null;
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -103,6 +114,27 @@ final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
                 .path(swaggerSocketRequest.getPath());
         String identity = (String) res.request().getAttribute("swaggersocket.identity");
 
-        return new ResponseMessage(identity, builder.build());
+        AtomicInteger expectedResponseCount = (AtomicInteger) res.request().getAttribute("ResponseCountNumber");
+        ResponseMessage m = null;
+        if (expectedResponseCount != null) {
+            m = (ResponseMessage) res.request().getAttribute(ResponseMessage.class.getName());
+            if (m != null) {
+                m.response(builder.build());
+            } else {
+                m = new ResponseMessage(identity, builder.build());
+            }
+
+            if (expectedResponseCount.decrementAndGet() == 0) {
+                return m;
+            } else {
+                res.request().setAttribute(ResponseMessage.class.getName(), m);
+                return null;
+            }
+        }
+
+        if (m == null) {
+            m = new ResponseMessage(identity, builder.build());
+        }
+        return m;
     }
 }
