@@ -39,6 +39,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -68,7 +70,12 @@ public class SwaggerSocketProtocolHttpSupport implements AtmosphereInterceptor {
 
             // Suspend to keep the connection OPEN.
             if (request.getMethod() == "GET") {
-                request.getSession().setAttribute("PendingResource", r);
+                BlockingQueue<AtmosphereResource> queue = (BlockingQueue<AtmosphereResource>) request.getSession().getAttribute("PendingResource");
+                if (queue == null) {
+                    queue = new LinkedBlockingQueue<AtmosphereResource>();
+                    request.getSession().setAttribute("PendingResource", queue);
+                }
+                queue.offer(r);
                 r.suspend();
                 return Action.SUSPEND;
             }
@@ -77,13 +84,17 @@ public class SwaggerSocketProtocolHttpSupport implements AtmosphereInterceptor {
             response.asyncIOWriter(new AsyncIOWriterAdapter() {
 
                 private void flushData(AtmosphereResponse r, byte[] data) throws IOException {
-                    AtmosphereResource resource = (AtmosphereResource) request.getSession().getAttribute("PendingResource");
-                    if (resource != null) {
-                        synchronized(resource) {
-                            request.getSession().removeAttribute("PendingResource");
-                            resource.getResponse().getOutputStream().write(data);
-                            resource.resume();
+                    BlockingQueue<AtmosphereResource> queue = (BlockingQueue<AtmosphereResource>) request.getSession().getAttribute("PendingResource");
+                    if (queue != null) {
+                        AtmosphereResource resource;
+                        try {
+                            resource = queue.take();
+                        } catch (InterruptedException e) {
+                            throw new IOException(e);
                         }
+
+                        resource.getResponse().getOutputStream().write(data);
+                        resource.resume();
                         r.flushBuffer();
                     } else {
                         r.write(data);
