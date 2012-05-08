@@ -79,8 +79,11 @@ public class SwaggerSocketProtocolHttpSupport implements AtmosphereInterceptor {
                 private void flushData(AtmosphereResponse r, byte[] data) throws IOException {
                     AtmosphereResource resource = (AtmosphereResource) request.getSession().getAttribute("PendingResource");
                     if (resource != null) {
-                        resource.getResponse().getOutputStream().write(data);
-                        resource.resume();
+                        synchronized(resource) {
+                            request.getSession().removeAttribute("PendingResource");
+                            resource.getResponse().getOutputStream().write(data);
+                            resource.resume();
+                        }
                         r.flushBuffer();
                     } else {
                         r.write(data);
