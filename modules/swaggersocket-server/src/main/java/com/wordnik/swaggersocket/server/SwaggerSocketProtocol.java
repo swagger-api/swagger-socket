@@ -77,7 +77,6 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
      */
     @Override
     public void onOpen(WebSocket webSocket) {
-        webSocket.resource().suspend(-1, false);
         webSocket.webSocketResponseFilter(serializer);
     }
 

@@ -34,14 +34,8 @@ final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
         }
 
         if (invalidState((Request) r.request().getAttribute(SWAGGERSOCKET_REQUEST))) {
-            logger.error("Protocol error. Handshake not occurred yet!");
-            StatusMessage statusMessage = new StatusMessage.Builder().status(new StatusMessage.Status(501, "Protocol error. Handshake not occurred yet!"))
-                    .identity("0").build();
-            try {
-                return mapper.writeValueAsString(statusMessage);
-            } catch (IOException e) {
-                return "";
-            }
+            logger.error("Response's body not allowed on handshake {}", message);
+            return null;
         }
 
         try {
@@ -69,15 +63,10 @@ final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
             return message;
         }
 
+
         if (invalidState((Request) r.request().getAttribute(SWAGGERSOCKET_REQUEST))) {
-            logger.error("Protocol error. Handshake not occurred yet!");
-            StatusMessage statusMessage = new StatusMessage.Builder().status(new StatusMessage.Status(501, "Protocol error. Handshake not occurred yet!"))
-                    .identity("0").build();
-            try {
-                return mapper.writeValueAsBytes(statusMessage);
-            } catch (IOException e) {
-                return new byte[0];
-            }
+            logger.error("Response's body not allowed on handshake {}", message);
+            return null;
         }
 
         try {
