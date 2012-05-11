@@ -129,6 +129,10 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
       path = handshake.getPath
     } catch {
       case t: Exception => {
+        logger.error("open", t)
+
+        // TODO: Remove
+        t.printStackTrace()
         e = Some(new SwaggerSocketException(0, t.getMessage))
         l.countDown()
       }
