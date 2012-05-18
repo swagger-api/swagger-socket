@@ -84,7 +84,7 @@ public class TwitterFeed {
                                     if (response.getStatusCode() != 200) {
                                         feed.resumeAll();
                                         feed.destroy();
-                                        logger.info("Twitter Search API unavaileble\n{}", s);
+                                        logger.info("Twitter Search API unavailable\n{}", s);
                                         return null;
                                     }
 

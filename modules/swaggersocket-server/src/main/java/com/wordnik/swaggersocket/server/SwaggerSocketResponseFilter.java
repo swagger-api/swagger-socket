@@ -4,16 +4,20 @@ import com.wordnik.swaggersocket.protocol.Header;
 import com.wordnik.swaggersocket.protocol.Request;
 import com.wordnik.swaggersocket.protocol.Response;
 import com.wordnik.swaggersocket.protocol.ResponseMessage;
-import com.wordnik.swaggersocket.protocol.StatusMessage;
+import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResponse;
+import org.atmosphere.cpr.FrameworkConfig;
 import org.atmosphere.websocket.WebSocketResponseFilter;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.wordnik.swaggersocket.server.LongPollingBroadcastFilter.END_MESSAGE;
 
 
 final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
@@ -70,6 +74,40 @@ final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
         }
 
         try {
+
+            AtmosphereResource ar = (AtmosphereResource) r.request().getAttribute(FrameworkConfig.ATMOSPHERE_RESOURCE);
+            if (ar.transport().equals(AtmosphereResource.TRANSPORT.LONG_POLLING)) {
+                // We need to make sure we have the entire message
+                String m = "";
+                try {
+                    m = new String(message, offset, length, r.getCharacterEncoding());
+                } catch (UnsupportedEncodingException e) {
+                    logger.trace("", e);
+                }
+
+                if (!m.endsWith(END_MESSAGE)) {
+                    StringBuffer cummulatedMessage = (StringBuffer) ar.getRequest().getAttribute("swaggersocket.message");
+                    if (cummulatedMessage == null) {
+                        ar.getRequest().setAttribute("swaggersocket.message", new StringBuffer(m));
+                    } else {
+                        cummulatedMessage.append(m);
+                    }
+                    return null;
+                } else {
+                    m = m.substring(0, m.indexOf(END_MESSAGE));
+                    StringBuffer cummulatedMessage = (StringBuffer) ar.getRequest().getAttribute("swaggersocket.message");
+                    ResponseMessage rm;
+                    if (cummulatedMessage == null) {
+                        rm = wrapMessage(r, m);
+                    } else {
+                        cummulatedMessage.append(m);
+                        rm = wrapMessage(r, cummulatedMessage.toString());
+                    }
+                    ar.getRequest().removeAttribute("swaggersocket.message");
+                    return mapper.writeValueAsBytes(rm);
+                }
+            }
+
             ResponseMessage m = wrapMessage(r, new String(message, offset, length, r.request().getCharacterEncoding()));
             if (m != null) {
                 return mapper.writeValueAsBytes(m);
