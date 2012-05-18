@@ -666,7 +666,7 @@ function loadAtmosphere(jQuery) {
         };
 
         return {
-            version : 0.9,
+            version : 1.0,
             requests : [],
             callbacks : [],
 
@@ -720,6 +720,7 @@ function loadAtmosphere(jQuery) {
                     trackMessageLength : false ,
                     messageDelimiter : '|',
                     connectTimeout : -1,
+                    dropAtmosphereHeaders : false,
                     onError : function(response) {
                     },
                     onClose : function(response) {
@@ -1603,15 +1604,17 @@ function loadAtmosphere(jQuery) {
                             if (update) {
                                 var responseText = ajaxRequest.responseText;
 
-                                // Do not fail on trying to retrieve headers. Chrome migth fail with
-                                // Refused to get unsafe header
-                                // Let the failure happens later with a better error message
-                                try {
-                                    var tempDate = ajaxRequest.getResponseHeader('X-Cache-Date');
-                                    if (tempDate != null || tempDate != undefined) {
-                                        _request.lastTimestamp = tempDate.split(" ").pop();
+                                if (!_request.dropAtmosphereHeaders) {
+                                    // Do not fail on trying to retrieve headers. Chrome migth fail with
+                                    // Refused to get unsafe header
+                                    // Let the failure happens later with a better error message
+                                    try {
+                                        var tempDate = ajaxRequest.getResponseHeader('X-Cache-Date');
+                                        if (tempDate != null || tempDate != undefined) {
+                                            _request.lastTimestamp = tempDate.split(" ").pop();
+                                        }
+                                    } catch (e) {
                                     }
-                                } catch (e) {
                                 }
 
                                 this.previousLastIndex = rq.lastIndex;
@@ -1772,29 +1775,31 @@ function loadAtmosphere(jQuery) {
                         }
                     }
 
-                    ajaxRequest.setRequestHeader("X-Atmosphere-Framework", jQuery.atmosphere.version);
-                    ajaxRequest.setRequestHeader("X-Atmosphere-Transport", request.transport);
-                    if (request.lastTimestamp != undefined) {
-                        ajaxRequest.setRequestHeader("X-Cache-Date", request.lastTimestamp);
-                    } else {
-                        ajaxRequest.setRequestHeader("X-Cache-Date", 0);
-                    }
-
-                    if (request.trackMessageLength) {
-                        ajaxRequest.setRequestHeader("X-Atmosphere-TrackMessageSize", "true")
-                    }
-
-                    if (request.contentType != '') {
-                        ajaxRequest.setRequestHeader("Content-Type", request.contentType);
-                    }
-                    ajaxRequest.setRequestHeader("X-Atmosphere-tracking-id", _uuid);
-
-                    jQuery.each(request.headers, function(name, value) {
-                        var h = jQuery.isFunction(value) ? value.call(this, ajaxRequest, request, create, _response) : value;
-                        if (h != null) {
-                            ajaxRequest.setRequestHeader(name, h);
+                    if (!_request.dropAtmosphereHeaders) {
+                        ajaxRequest.setRequestHeader("X-Atmosphere-Framework", jQuery.atmosphere.version);
+                        ajaxRequest.setRequestHeader("X-Atmosphere-Transport", request.transport);
+                        if (request.lastTimestamp != undefined) {
+                            ajaxRequest.setRequestHeader("X-Cache-Date", request.lastTimestamp);
+                        } else {
+                            ajaxRequest.setRequestHeader("X-Cache-Date", 0);
                         }
-                    });
+
+                        if (request.trackMessageLength) {
+                            ajaxRequest.setRequestHeader("X-Atmosphere-TrackMessageSize", "true")
+                        }
+
+                        if (request.contentType != '') {
+                            ajaxRequest.setRequestHeader("Content-Type", request.contentType);
+                        }
+                        ajaxRequest.setRequestHeader("X-Atmosphere-tracking-id", _uuid);
+
+                        jQuery.each(request.headers, function(name, value) {
+                            var h = jQuery.isFunction(value) ? value.call(this, ajaxRequest, request, create, _response) : value;
+                            if (h != null) {
+                                ajaxRequest.setRequestHeader(name, h);
+                            }
+                        });
+                    }
                 }
 
                 function _reconnect(ajaxRequest, request, force) {
@@ -1928,7 +1933,7 @@ function loadAtmosphere(jQuery) {
 
                     return {
                         open: function() {
-                            var iframe, cdoc;
+                            var iframe = doc.createElement("iframe");
 
                             url = _attachHeaders(rq);
                             if (rq.data != '') {
@@ -1938,59 +1943,83 @@ function loadAtmosphere(jQuery) {
                             // Finally attach a timestamp to prevent Android and IE caching.
                             url = jQuery.atmosphere.prepareURL(url);
 
-                            doc = new ActiveXObject("htmlfile");
-                            doc.open();
-                            doc.close();
-
-                            iframe = doc.createElement("iframe");
                             iframe.src = url;
                             doc.body.appendChild(iframe);
 
-                            cdoc = iframe.contentDocument || iframe.contentWindow.document;
+                            // For the server to respond in a consistent format regardless of user agent, we polls response text
+                            var cdoc = iframe.contentDocument || iframe.contentWindow.document;
+
                             stop = jQuery.atmosphere.iterate(function() {
-                                if (!cdoc.firstChild) {
-                                    return;
-                                }
-
-                                var response = cdoc.body.lastChild;
-
-                                // Detects connection failure
-                                if (!response) {
-                                    _prepareCallback("Connection Failure", "error", 500, rq.transport);
-                                    return false;
-                                }
-
                                 try {
-                                    response.innerText = "";
-                                    _prepareCallback("", "opening", 200, rq.transport);
+                                    if (!cdoc.firstChild) {
+                                        return;
+                                    }
 
-                                    stop = jQuery.atmosphere.iterate(function() {
-                                        var clone = response.cloneNode(true), text;
+                                    // Detects connection failure
+                                    if (cdoc.readyState === "complete") {
+                                        try {
+                                            jQuery.noop(cdoc.fileSize);
+                                        } catch(e) {
+                                            _prepareCallback("Connection Failure", "error", 500, rq.transport);
+                                            return false;
+                                        }
+                                    }
 
-                                        // Adds a character not CR and LF to circumvent an Internet Explorer bug
-                                        // If the contents of an element ends with one or more CR or LF, Internet Explorer ignores them in the innerText property
+                                    var res = cdoc.body ? cdoc.body.lastChild : cdoc;
+                                    var readResponse = function() {
+                                        // Clones the element not to disturb the original one
+                                        var clone = res.cloneNode(true);
+
+                                        // If the last character is a carriage return or a line feed, IE ignores it in the innerText property
+                                        // therefore, we add another non-newline character to preserve it
                                         clone.appendChild(cdoc.createTextNode("."));
-                                        text = clone.innerText;
-                                        text = text.substring(0, text.length - 1);
 
-                                        if (text) {
-                                            response.innerText = "";
-                                            var isJunkEnded = true;
+                                        var text = clone.innerText;
+                                        var isJunkEnded = true;
 
-                                            if (text.indexOf("<!-- Welcome to the Atmosphere Framework.") == -1) {
-                                                isJunkEnded = false;
-                                            }
+                                        if (text.indexOf("<!-- Welcome to the Atmosphere Framework.") == -1) {
+                                            isJunkEnded = false;
+                                        }
 
-                                            if (isJunkEnded) {
-                                                var endOfJunk = "<!-- EOD -->";
-                                                var endOfJunkLenght = endOfJunk.length;
-                                                var junkEnd = text.indexOf(endOfJunk) + endOfJunkLenght;
+                                        if (isJunkEnded) {
+                                            var endOfJunk = "<!-- EOD -->";
+                                            var endOfJunkLenght = endOfJunk.length;
+                                            var junkEnd = text.indexOf(endOfJunk) + endOfJunkLenght;
 
-                                                text = text.substring(junkEnd);
-                                            }
-                                            text = text.substring(0, text.length - 1);
+                                            text = text.substring(junkEnd);
+                                        }
+                                        return text.substring(0, text.length - 1);
+                                    };
 
+                                    //To support text/html content type
+                                    if (!jQuery.nodeName(res, "pre")) {
+                                        // Injects a plaintext element which renders text without interpreting the HTML and cannot be stopped
+                                        // it is deprecated in HTML5, but still works
+                                        var head = cdoc.head || cdoc.getElementsByTagName("head")[0] || cdoc.documentElement || cdoc;
+                                        var script = cdoc.createElement("script");
+
+                                        script.text = "document.write('<plaintext>')";
+
+                                        head.insertBefore(script, head.firstChild);
+                                        head.removeChild(script);
+
+                                        // The plaintext element will be the response container
+                                        res = cdoc.body.lastChild;
+                                    }
+
+                                    // Handles open event
+                                    _prepareCallback(readResponse(), "opening", 200, rq.transport);
+
+                                    // Handles message and close event
+                                    stop = jQuery.atmosphere.iterate(function() {
+                                        var text = readResponse();
+                                        if (text.length > rq.lastIndex) {
+                                            _response.status = 200;
                                             _prepareCallback(text, "messageReceived", 200, rq.transport);
+
+                                            // Empties response every time that it is handled
+                                            res.innerText = "";
+                                            rq.lastIndex = 0;
                                         }
 
                                         if (cdoc.readyState === "complete") {
@@ -1998,7 +2027,7 @@ function loadAtmosphere(jQuery) {
                                             _ieStreaming(rq);
                                             return false;
                                         }
-                                    });
+                                    }, null);
 
                                     return false;
                                 } catch (err) {
@@ -2110,7 +2139,7 @@ function loadAtmosphere(jQuery) {
                     };
 
                     if (typeof(message) == 'object') {
-                        rq = $.extend(rq, message);
+                        rq = jQuery.extend(rq, message);
                     }
 
                     return rq;
@@ -2460,6 +2489,96 @@ function loadAtmosphere(jQuery) {
             }
         };
     }();
+
+    /*
+     * jQuery stringifyJSON
+     * http://github.com/flowersinthesand/jquery-stringifyJSON
+     *
+     * Copyright 2011, Donghwan Kim
+     * Licensed under the Apache License, Version 2.0
+     * http://www.apache.org/licenses/LICENSE-2.0
+     */
+// This plugin is heavily based on Douglas Crockford's reference implementation
+    (function($) {
+
+        var escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g, meta = {
+            '\b' : '\\b',
+            '\t' : '\\t',
+            '\n' : '\\n',
+            '\f' : '\\f',
+            '\r' : '\\r',
+            '"' : '\\"',
+            '\\' : '\\\\'
+        };
+
+        function quote(string) {
+            return '"' + string.replace(escapable, function(a) {
+                var c = meta[a];
+                return typeof c === "string" ? c : "\\u" + ("0000" + a.charCodeAt(0).toString(16)).slice(-4);
+            }) + '"';
+        }
+
+        function f(n) {
+            return n < 10 ? "0" + n : n;
+        }
+
+        function str(key, holder) {
+            var i, v, len, partial, value = holder[key], type = typeof value;
+
+            if (value && typeof value === "object" && typeof value.toJSON === "function") {
+                value = value.toJSON(key);
+                type = typeof value;
+            }
+
+            switch (type) {
+                case "string":
+                    return quote(value);
+                case "number":
+                    return isFinite(value) ? String(value) : "null";
+                case "boolean":
+                    return String(value);
+                case "object":
+                    if (!value) {
+                        return "null";
+                    }
+
+                    switch (Object.prototype.toString.call(value)) {
+                        case "[object Date]":
+                            return isFinite(value.valueOf()) ? '"' + value.getUTCFullYear() + "-" + f(value.getUTCMonth() + 1) + "-" + f(value.getUTCDate()) + "T" +
+                                f(value.getUTCHours()) + ":" + f(value.getUTCMinutes()) + ":" + f(value.getUTCSeconds()) + "Z" + '"' : "null";
+                        case "[object Array]":
+                            len = value.length;
+                            partial = [];
+                            for (i = 0; i < len; i++) {
+                                partial.push(str(i, value) || "null");
+                            }
+
+                            return "[" + partial.join(",") + "]";
+                        default:
+                            partial = [];
+                            for (i in value) {
+                                if (Object.prototype.hasOwnProperty.call(value, i)) {
+                                    v = str(i, value);
+                                    if (v) {
+                                        partial.push(quote(i) + ":" + v);
+                                    }
+                                }
+                            }
+
+                            return "{" + partial.join(",") + "}";
+                    }
+            }
+        }
+
+        $.stringifyJSON = function(value) {
+            if (window.JSON && window.JSON.stringify) {
+                return window.JSON.stringify(value);
+            }
+
+            return str("", {"": value});
+        };
+
+    }(jQuery));
 
     /*
      * jQuery stringifyJSON
