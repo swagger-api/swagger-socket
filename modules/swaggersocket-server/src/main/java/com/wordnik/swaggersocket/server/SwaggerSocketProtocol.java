@@ -222,6 +222,10 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
             requestURI = r.getRequestURI() + p.substring(1);
         }
 
+        if (!p.startsWith("/")) {
+            p = "/" + p;
+        }
+
         b.pathInfo(p)
                 .contentType(r.getHeader("Content-Type"))
                 .method(request.getMethod())
