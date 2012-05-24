@@ -15,13 +15,13 @@ Using Maven or SBT
     <dependency>
        <groupId>com.wordnik</groupId>
        <artifactId>swaggersocket</artifactId>
-       <version>1.0.0</version>
+       <version>1.1.0</version>
     </dependency>
     <!-- Client side --> 
      <dependency>
        <groupId>com.wordnik</groupId>
        <artifactId>swaggersocket.js</artifactId>
-       <version>1.0.0</version>
+       <version>1.1.0</version>
        <type>war</type>
     </dependency>   
 ```
