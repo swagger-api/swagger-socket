@@ -23,6 +23,7 @@ import com.wordnik.swaggersocket.protocol.StatusMessage;
 import org.atmosphere.cpr.Action;
 import org.atmosphere.cpr.AsyncIOWriter;
 import org.atmosphere.cpr.AsyncIOWriterAdapter;
+import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereFramework;
 import org.atmosphere.cpr.AtmosphereInterceptor;
 import org.atmosphere.cpr.AtmosphereRequest;
@@ -56,6 +57,10 @@ public class SwaggerSocketProtocolHttpSupport implements AtmosphereInterceptor {
     public SwaggerSocketProtocolHttpSupport() {
         this.mapper = new ObjectMapper();
         serializer = new SwaggerSocketResponseFilter(mapper);
+    }
+
+    @Override
+    public void configure(AtmosphereConfig config) {
     }
 
     @Override
@@ -230,5 +235,10 @@ public class SwaggerSocketProtocolHttpSupport implements AtmosphereInterceptor {
 
         }
         return Action.CONTINUE;
+    }
+
+    @Override
+    public void postInspect(AtmosphereResource r) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }
