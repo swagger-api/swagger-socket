@@ -666,7 +666,7 @@ function loadAtmosphere(jQuery) {
         };
 
         return {
-            version : 1.0,
+            version : "1.0",
             requests : [],
             callbacks : [],
 
@@ -681,6 +681,8 @@ function loadAtmosphere(jQuery) {
             onReconnect : function(request, response) {
             },
             onMessagePublished : function(response) {
+            },
+            onTransportFailure : function(response) {
             },
 
             AtmosphereRequest : function(options) {
@@ -732,6 +734,8 @@ function loadAtmosphere(jQuery) {
                     onReconnect : function(request, response) {
                     },
                     onMessagePublished : function(response) {
+                    },
+                    onTransportFailure : function (reason, request) {
                     }
                 };
 
@@ -898,17 +902,13 @@ function loadAtmosphere(jQuery) {
 
                     } else if (_request.transport == 'websocket') {
                         if (!_supportWebsocket()) {
-                            jQuery.atmosphere.log(_request.logLevel, ["Websocket is not supported, using request.fallbackTransport (" + _request.fallbackTransport + ")"]);
-                            _open('opening', _request.fallbackTransport, _request);
-                            _reconnectWithFallbackTransport();
+                            _reconnectWithFallbackTransport("Websocket is not supported, using request.fallbackTransport (" + _request.fallbackTransport + ")");
                         } else {
                             _executeWebSocket(false);
                         }
                     } else if (_request.transport == 'sse') {
                         if (!_supportSSE()) {
-                            jQuery.atmosphere.log(_request.logLevel, ["Server Side Events(SSE) is not supported, using request.fallbackTransport (" + _request.fallbackTransport + ")"]);
-                            _open('opening', _request.fallbackTransport, _request);
-                            _reconnectWithFallbackTransport();
+                            _reconnectWithFallbackTransport("Server Side Events(SSE) is not supported, using request.fallbackTransport (" + _request.fallbackTransport + ")");
                         } else {
                             _executeSSE(false);
                         }
@@ -1093,7 +1093,7 @@ function loadAtmosphere(jQuery) {
                 function _buildWebSocketUrl() {
                     var url = _request.url;
                     url = _attachHeaders();
-                    return decodeURI($('<a href="' + url + '"/>')[0].href.replace(/^http/, "ws"));
+                    return decodeURI(jQuery('<a href="' + url + '"/>')[0].href.replace(/^http/, "ws"));
                 }
 
                 /**
@@ -1190,9 +1190,7 @@ function loadAtmosphere(jQuery) {
                         if (_abordingConnection) {
                             jQuery.atmosphere.log(_request.logLevel, ["SSE closed normally"]);
                         } else if (!sseOpened) {
-                            jQuery.atmosphere.log(_request.logLevel, ["SSE failed. Downgrading to fallback transport and resending"]);
-                            _open('opening', _request.fallbackTransport, _request);
-                            _reconnectWithFallbackTransport();
+                            _reconnectWithFallbackTransport("SSE failed. Downgrading to fallback transport and resending");
                         } else if (_request.reconnect && (_response.transport == 'sse')) {
                             if (_requestCount++ < _request.maxRequest) {
                                 _request.requestCount = _requestCount;
@@ -1343,9 +1341,7 @@ function loadAtmosphere(jQuery) {
                         if (_abordingConnection) {
                             jQuery.atmosphere.log(_request.logLevel, ["Websocket closed normally"]);
                         } else if (!webSocketOpened) {
-                            jQuery.atmosphere.log(_request.logLevel, ["Websocket failed. Downgrading to Comet and resending"]);
-                            _open('opening', _request.fallbackTransport, _request);
-                            _reconnectWithFallbackTransport();
+                            _reconnectWithFallbackTransport("Websocket failed. Downgrading to Comet and resending");
 
                         } else if (_request.reconnect && _response.transport == 'websocket') {
                             if (_request.reconnect && _requestCount++ < _request.maxRequest) {
@@ -1409,13 +1405,20 @@ function loadAtmosphere(jQuery) {
                  *
                  * @private
                  */
-                function _reconnectWithFallbackTransport() {
-                    _request.transport = _request.fallbackTransport;
+                function _reconnectWithFallbackTransport(errorMessage) {
+                    jQuery.atmosphere.log(_request.logLevel, [errorMessage]);
 
+                    if (typeof(_request.onTransportFailure) != 'undefined') {
+                        _request.onTransportFailure(errorMessage, _request);
+                    } else if (typeof(jQuery.atmosphere.onTransportFailure) != 'undefined') {
+                        jQuery.atmosphere.onTransportFailure(errorMessage, _request);
+                    }
+
+                    _request.transport = _request.fallbackTransport;
                     if (_request.reconnect && _request.transport != 'none' || _request.transport == null) {
                         _request.method = _request.fallbackMethod;
                         _response.transport = _request.fallbackTransport;
-                        _executeRequest();
+                        _execute();
                     }
                 }
 
@@ -2168,13 +2171,11 @@ function loadAtmosphere(jQuery) {
                         _websocket.send(data);
 
                     } catch (e) {
-                        jQuery.atmosphere.log(_request.logLevel, ["Websocket failed. Downgrading to Comet and resending " + data]);
-
                         _websocket.onclose = function(message) {
                         };
                         _websocket.close();
 
-                        _reconnectWithFallbackTransport();
+                        _reconnectWithFallbackTransport("Websocket failed. Downgrading to Comet and resending " + data);
                         _pushAjaxMessage(message);
                     }
                 }
@@ -2236,29 +2237,40 @@ function loadAtmosphere(jQuery) {
                         func(_response);
                     };
 
-                    _invokeFunction(_response);
+                    var messages = typeof(_response.responseBody) == 'string' ? _response.responseBody.split(_request.messageDelimiter) : new Array(_response.responseBody);
+                    for (i = 0; i < messages.length; i++) {
 
-                    // Invoke global callbacks
-                    if (jQuery.atmosphere.callbacks.length > 0) {
-                        jQuery.atmosphere.debug("Invoking " + jQuery.atmosphere.callbacks.length + " global callbacks: " + _response.state);
-                        try {
-                            jQuery.each(jQuery.atmosphere.callbacks, call);
-                        } catch (e) {
-                            jQuery.atmosphere.log(_request.logLevel, ["Callback exception" + e]);
+                        if (messages.length > 1 && messages[i].length == 0) {
+                            continue;
+                        }
+                        _response.responseBody = jQuery.trim(messages[i]);
+                        _invokeFunction(_response);
+
+                        // Invoke global callbacks
+                        if (jQuery.atmosphere.callbacks.length > 0) {
+                            if (_request.logLevel == 'debug') {
+                                jQuery.atmosphere.debug("Invoking " + jQuery.atmosphere.callbacks.length + " global callbacks: " + _response.state);
+                            }
+                            try {
+                                jQuery.each(jQuery.atmosphere.callbacks, call);
+                            } catch (e) {
+                                jQuery.atmosphere.log(_request.logLevel, ["Callback exception" + e]);
+                            }
+                        }
+
+                        // Invoke request callback
+                        if (typeof(_request.callback) == 'function') {
+                            if (_request.logLevel == 'debug') {
+                                jQuery.atmosphere.debug("Invoking request callbacks");
+                            }
+                            try {
+                                _request.callback(_response);
+                            } catch (e) {
+                                jQuery.atmosphere.log(_request.logLevel, ["Callback exception" + e]);
+                            }
                         }
                     }
 
-                    // Invoke request callback
-                    if (typeof(_request.callback) == 'function') {
-                        if (_request.logLevel == 'debug') {
-                            jQuery.atmosphere.debug("Invoking request callbacks");
-                        }
-                        try {
-                            _request.callback(_response);
-                        } catch (e) {
-                            jQuery.atmosphere.log(_request.logLevel, ["Callback exception" + e]);
-                        }
-                    }
                 }
 
                 /**
@@ -2499,7 +2511,7 @@ function loadAtmosphere(jQuery) {
      * http://www.apache.org/licenses/LICENSE-2.0
      */
 // This plugin is heavily based on Douglas Crockford's reference implementation
-    (function($) {
+    (function(jQuery) {
 
         var escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g, meta = {
             '\b' : '\\b',
@@ -2570,97 +2582,7 @@ function loadAtmosphere(jQuery) {
             }
         }
 
-        $.stringifyJSON = function(value) {
-            if (window.JSON && window.JSON.stringify) {
-                return window.JSON.stringify(value);
-            }
-
-            return str("", {"": value});
-        };
-
-    }(jQuery));
-
-    /*
-     * jQuery stringifyJSON
-     * http://github.com/flowersinthesand/jquery-stringifyJSON
-     *
-     * Copyright 2011, Donghwan Kim
-     * Licensed under the Apache License, Version 2.0
-     * http://www.apache.org/licenses/LICENSE-2.0
-     */
-// This plugin is heavily based on Douglas Crockford's reference implementation
-    (function($) {
-
-        var escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g, meta = {
-            '\b' : '\\b',
-            '\t' : '\\t',
-            '\n' : '\\n',
-            '\f' : '\\f',
-            '\r' : '\\r',
-            '"' : '\\"',
-            '\\' : '\\\\'
-        };
-
-        function quote(string) {
-            return '"' + string.replace(escapable, function(a) {
-                var c = meta[a];
-                return typeof c === "string" ? c : "\\u" + ("0000" + a.charCodeAt(0).toString(16)).slice(-4);
-            }) + '"';
-        }
-
-        function f(n) {
-            return n < 10 ? "0" + n : n;
-        }
-
-        function str(key, holder) {
-            var i, v, len, partial, value = holder[key], type = typeof value;
-
-            if (value && typeof value === "object" && typeof value.toJSON === "function") {
-                value = value.toJSON(key);
-                type = typeof value;
-            }
-
-            switch (type) {
-                case "string":
-                    return quote(value);
-                case "number":
-                    return isFinite(value) ? String(value) : "null";
-                case "boolean":
-                    return String(value);
-                case "object":
-                    if (!value) {
-                        return "null";
-                    }
-
-                    switch (Object.prototype.toString.call(value)) {
-                        case "[object Date]":
-                            return isFinite(value.valueOf()) ? '"' + value.getUTCFullYear() + "-" + f(value.getUTCMonth() + 1) + "-" + f(value.getUTCDate()) + "T" +
-                                f(value.getUTCHours()) + ":" + f(value.getUTCMinutes()) + ":" + f(value.getUTCSeconds()) + "Z" + '"' : "null";
-                        case "[object Array]":
-                            len = value.length;
-                            partial = [];
-                            for (i = 0; i < len; i++) {
-                                partial.push(str(i, value) || "null");
-                            }
-
-                            return "[" + partial.join(",") + "]";
-                        default:
-                            partial = [];
-                            for (i in value) {
-                                if (Object.prototype.hasOwnProperty.call(value, i)) {
-                                    v = str(i, value);
-                                    if (v) {
-                                        partial.push(quote(i) + ":" + v);
-                                    }
-                                }
-                            }
-
-                            return "{" + partial.join(",") + "}";
-                    }
-            }
-        }
-
-        $.stringifyJSON = function(value) {
+        jQuery.stringifyJSON = function(value) {
             if (window.JSON && window.JSON.stringify) {
                 return window.JSON.stringify(value);
             }
