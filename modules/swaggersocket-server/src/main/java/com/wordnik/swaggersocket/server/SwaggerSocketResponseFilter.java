@@ -74,7 +74,6 @@ final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
         }
 
         try {
-
             AtmosphereResource ar = (AtmosphereResource) r.request().getAttribute(FrameworkConfig.ATMOSPHERE_RESOURCE);
             if (ar.transport().equals(AtmosphereResource.TRANSPORT.LONG_POLLING)) {
                 // We need to make sure we have the entire message
@@ -85,26 +84,35 @@ final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
                     logger.trace("", e);
                 }
 
-                if (!m.endsWith(END_MESSAGE)) {
-                    StringBuffer cummulatedMessage = (StringBuffer) ar.getRequest().getAttribute("swaggersocket.message");
-                    if (cummulatedMessage == null) {
-                        ar.getRequest().setAttribute("swaggersocket.message", new StringBuffer(m));
+                if (ar.isSuspended()) {
+                    if (!m.endsWith(END_MESSAGE)) {
+                        StringBuffer cumulatedMessage = (StringBuffer) ar.getRequest().getAttribute("swaggersocket.message");
+                        if (cumulatedMessage == null) {
+                            ar.getRequest().setAttribute("swaggersocket.message", new StringBuffer(m));
+                        } else {
+                            cumulatedMessage.append(m);
+                        }
+                        return null;
                     } else {
-                        cummulatedMessage.append(m);
+                        m = m.substring(0, m.indexOf(END_MESSAGE));
+                        StringBuffer cumulatedMessage = (StringBuffer) ar.getRequest().getAttribute("swaggersocket.message");
+                        ResponseMessage rm;
+                        if (cumulatedMessage == null) {
+                            rm = wrapMessage(r, m);
+                        } else {
+                            cumulatedMessage.append(m);
+                            rm = wrapMessage(r, cumulatedMessage.toString());
+                        }
+                        ar.getRequest().removeAttribute("swaggersocket.message");
+                        return mapper.writeValueAsBytes(rm);
                     }
-                    return null;
                 } else {
-                    m = m.substring(0, m.indexOf(END_MESSAGE));
-                    StringBuffer cummulatedMessage = (StringBuffer) ar.getRequest().getAttribute("swaggersocket.message");
-                    ResponseMessage rm;
-                    if (cummulatedMessage == null) {
-                        rm = wrapMessage(r, m);
+                    ResponseMessage rm = wrapMessage(r, m);
+                    if (rm != null) {
+                        return mapper.writeValueAsBytes(rm);
                     } else {
-                        cummulatedMessage.append(m);
-                        rm = wrapMessage(r, cummulatedMessage.toString());
+                        return null;
                     }
-                    ar.getRequest().removeAttribute("swaggersocket.message");
-                    return mapper.writeValueAsBytes(rm);
                 }
             }
 
@@ -151,7 +159,7 @@ final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
                 m = new ResponseMessage(identity, builder.build());
             }
 
-            if (expectedResponseCount.decrementAndGet() == 0) {
+            if (expectedResponseCount.decrementAndGet() <= 0) {
                 return m;
             } else {
                 res.request().setAttribute(ResponseMessage.class.getName(), m);
