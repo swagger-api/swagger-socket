@@ -171,19 +171,17 @@ public class SwaggerSocketProtocolHttpSupport implements AtmosphereInterceptor {
                 }
 
                 String data = d.toString();
-                AtomicBoolean handshakeDone = (AtomicBoolean) request.getSession().getAttribute("swaggersocket.handshakeDone");
-
+                String handshakeTx = data.substring(0, 20);
                 logger.debug(data);
                 List<AtmosphereRequest> list = new ArrayList<AtmosphereRequest>();
-                if (handshakeDone == null || !handshakeDone.get()) {
+                if (handshakeTx.replaceAll(" ", "").startsWith("{\"handshake\"")) {
+                    request.getSession().invalidate();
                     HandshakeMessage handshakeMessage = mapper.readValue(data, HandshakeMessage.class);
 
                     // We have got a valid Handshake message, so we are ready to serve resource.
-                    handshakeDone = new AtomicBoolean(true);
                     Handshake handshake = handshakeMessage.getHandshake();
                     String identity = UUID.randomUUID().toString();
 
-                    request.getSession().setAttribute("swaggersocket.handshakeDone", handshakeDone);
                     request.getSession().setAttribute("swaggersocket.identity", identity);
                     request.setAttribute("swaggersocket.handshake", identity);
 
@@ -239,6 +237,5 @@ public class SwaggerSocketProtocolHttpSupport implements AtmosphereInterceptor {
 
     @Override
     public void postInspect(AtmosphereResource r) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 }
