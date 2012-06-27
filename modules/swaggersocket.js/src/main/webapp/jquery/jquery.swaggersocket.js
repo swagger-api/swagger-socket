@@ -722,6 +722,7 @@ function loadAtmosphere(jQuery) {
                     trackMessageLength : false ,
                     messageDelimiter : '|',
                     connectTimeout : -1,
+                    reconnectTimeout : 0,
                     dropAtmosphereHeaders : false,
                     onError : function(response) {
                     },
@@ -1418,7 +1419,9 @@ function loadAtmosphere(jQuery) {
                     if (_request.reconnect && _request.transport != 'none' || _request.transport == null) {
                         _request.method = _request.fallbackMethod;
                         _response.transport = _request.fallbackTransport;
-                        _execute();
+                        _request.id = setTimeout(function() {
+                            _execute();
+                        }, _request.reconnectTimeout);
                     }
                 }
 
@@ -1561,9 +1564,7 @@ function loadAtmosphere(jQuery) {
                                 }
 
                                 _response.state = "error";
-                                _invokeCallback();
-                                ajaxRequest.abort();
-                                _activeRequest = null;
+                                _reconnect(ajaxRequest, rq, true);
                             };
                         }
 
@@ -1807,9 +1808,11 @@ function loadAtmosphere(jQuery) {
 
                 function _reconnect(ajaxRequest, request, force) {
                     if (force || (request.suspend && ajaxRequest.status == 200 && request.transport != 'streaming' && _subscribed)) {
-                        _open('re-opening', request.transport, request);
                         if (request.reconnect) {
-                            _executeRequest();
+                            _open('re-opening', request.transport, request);
+                            rq.id = setTimeout(function() {
+                                _executeRequest();
+                            }, rq.reconnectTimeout);
                         }
                     }
                 }
@@ -2092,7 +2095,14 @@ function loadAtmosphere(jQuery) {
                  * @private
                  */
                 function _pushIE(message) {
-                    _pushAjaxMessage(message);
+                    if (_request.enableXDR && jQuery.atmosphere.checkCORSSupport()) {
+                        var rq = _getPushRequest(message);
+                        // Do not reconnect since we are pushing.
+                        rq.reconnect = false;
+                        _jsonp(rq);
+                    } else {
+                        _pushAjaxMessage(message);
+                    }
                 }
 
                 /**
