@@ -13,6 +13,7 @@ jQuery.swaggersocket = function() {
         },
 
         _identity : 0,
+        _logLevel : 'debug',
 
         /**
          * Handshake object.
@@ -494,7 +495,7 @@ jQuery.swaggersocket = function() {
                                     listener.onError(r);
                                 }
                             } catch (err) {
-                                if (request.logLevel == 'debug') {
+                                if (jQuery.swaggersocket._logLevel == 'debug') {
                                     jQuery.atmosphere.debug(err)
                                 }
                                 _incompleteMessage = _incompleteMessage + response.responseBody;
