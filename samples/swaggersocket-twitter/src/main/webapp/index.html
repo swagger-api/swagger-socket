@@ -89,6 +89,7 @@
                 lastHashtag.forEach(function(tag) {
                     swaggerSocket.send(new jQuery.swaggersocket.Request()
                             .path(tag)
+                            .dataFormat("application/json")
                             .method("GET")
                             .listener(ss));
                 });

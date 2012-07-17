@@ -13,7 +13,7 @@ jQuery.swaggersocket = function() {
         },
 
         _identity : 0,
-        _logLevel : 'debug',
+        _logLevel : 'info',
 
         /**
          * Handshake object.
@@ -22,7 +22,7 @@ jQuery.swaggersocket = function() {
         _Handshake : function() {
             var _protocolVersion = "1.0",
                 _protocolName = "SwaggerSocket",
-                _dataFormat = "JSON",
+                _dataFormat = "application/json",
                 _method = "POST",
                 _uuid = 0,
                 _path = "/",
@@ -113,7 +113,7 @@ jQuery.swaggersocket = function() {
             var _uuid = jQuery.atmosphere.guid(),
                 _headers = null,
                 _queryString = null,
-                _dataFormat = "JSON",
+                _dataFormat = "application/json",
                 _data = "",
                 _listener = null,
                 _method = "POST",
@@ -221,7 +221,7 @@ jQuery.swaggersocket = function() {
                             s += "\"queryString\" : [" + jQuery.stringifyJSON(_queryString) + "]";
                         }
 
-                        if (_dataFormat.toLowerCase().indexOf("json") == -1) {
+                        if (_dataFormat.toLowerCase().indexOf("json") == -1 || _data == "") {
                             s += ",\"messageBody\" : \"" + _data + "\"}";
                         } else {
                             s += ",\"messageBody\" : " + _data + "}";
@@ -496,7 +496,7 @@ jQuery.swaggersocket = function() {
                                 }
                             } catch (err) {
                                 if (jQuery.swaggersocket._logLevel == 'debug') {
-                                    jQuery.atmosphere.debug(err)
+                                    jQuery.atmosphere.debug(err.type)
                                 }
                                 _incompleteMessage = _incompleteMessage + response.responseBody;
                             }
