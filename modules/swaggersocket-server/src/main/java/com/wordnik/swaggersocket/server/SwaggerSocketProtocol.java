@@ -52,12 +52,11 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
     private final static String DELEGATE_HANDSHAKE = SwaggerSocketProtocol.class.getName() + ".delegateHandshake";
 
     private static final Logger logger = LoggerFactory.getLogger(SwaggerSocketProtocol.class);
-    private final ObjectMapper mapper;
+    private static final ObjectMapper mapper = new ObjectMapper();
     private boolean delegateHandshake = false;
     private final SwaggerSocketResponseFilter serializer;
 
     public SwaggerSocketProtocol() {
-        mapper = new ObjectMapper();
         serializer = new SwaggerSocketResponseFilter(mapper);
     }
 
@@ -187,7 +186,7 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
         return onMessage(webSocket, new String(data, offset, length));
     }
 
-    protected final AtmosphereRequest toAtmosphereRequest(AtmosphereRequest r, ProtocolBase request, boolean dispatchAsync) {
+    protected final static AtmosphereRequest toAtmosphereRequest(AtmosphereRequest r, ProtocolBase request, boolean dispatchAsync) {
         AtmosphereRequest.Builder b = new AtmosphereRequest.Builder();
 
         if (request.getHeaders() != null) {
