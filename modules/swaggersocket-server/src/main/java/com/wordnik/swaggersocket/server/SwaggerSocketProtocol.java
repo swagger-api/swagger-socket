@@ -187,7 +187,7 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
         return onMessage(webSocket, new String(data, offset, length));
     }
 
-    protected final static AtmosphereRequest toAtmosphereRequest(AtmosphereRequest r, ProtocolBase request, boolean dispatchAsync) {
+    protected final AtmosphereRequest toAtmosphereRequest(AtmosphereRequest r, ProtocolBase request, boolean dispatchAsync) {
         AtmosphereRequest.Builder b = new AtmosphereRequest.Builder();
 
         if (request.getHeaders() != null) {
@@ -226,8 +226,19 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
             p = "/" + p;
         }
 
+        Object body = request.getMessageBody();
+        if (body != null && request.getDataFormat().indexOf("json") != -1) {
+            try {
+                body = mapper.writeValueAsString(body);
+            } catch (IOException e) {
+                logger.warn("", e);
+            }
+        } else if (body == null) {
+            body = "";
+        }
+
         b.pathInfo(p)
-                .contentType(r.getHeader("Content-Type"))
+                .contentType(request.getDataFormat())
                 .method(request.getMethod())
                 .queryStrings(queryStrings)
                 .requestURI(requestURI)
@@ -235,7 +246,7 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
                 .request(r)
                 .dispatchRequestAsynchronously(dispatchAsync)
                 .destroyable(true)
-                .body(request.getMessageBody() != null ? request.getMessageBody().toString() : "");
+                .body(body.toString());
 
         AtmosphereRequest ar = b.build();
         ar.setAttribute(SwaggerSocketResponseFilter.SWAGGERSOCKET_REQUEST, request);
