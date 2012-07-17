@@ -20,7 +20,7 @@ import org.atmosphere.cpr.PerRequestBroadcastFilter;
 
 public class LongPollingBroadcastFilter implements PerRequestBroadcastFilter{
 
-    public final static String END_MESSAGE = "<||>";
+    public final static String END_MESSAGE = "|";
 
     @Override
     public BroadcastAction filter(AtmosphereResource r, Object originalMessage, Object message) {
