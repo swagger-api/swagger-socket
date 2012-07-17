@@ -219,7 +219,11 @@ jQuery.swaggersocket = function() {
                             }
                             s += "\"queryString\" : [" + jQuery.stringifyJSON(_queryString) + "]";
                         }
-                        s += ",\"messageBody\" : \"" + _data + "\"}";
+                        if (_dataFormat != 'JSON') {
+                            s += ",\"messageBody\" : \"" + _data + "\"}";
+                        } else {
+                            s += ",\"messageBody\" : " + _data + "}";
+                        }
                         return s;
                     }
             };
