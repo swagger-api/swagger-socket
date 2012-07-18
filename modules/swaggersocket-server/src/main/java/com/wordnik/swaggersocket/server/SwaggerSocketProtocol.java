@@ -225,17 +225,6 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
             p = "/" + p;
         }
 
-        Object body = request.getMessageBody();
-        if (body != null && request.getDataFormat().indexOf("json") != -1) {
-            try {
-                body = mapper.writeValueAsString(body);
-            } catch (IOException e) {
-                logger.warn("", e);
-            }
-        } else if (body == null) {
-            body = "";
-        }
-
         b.pathInfo(p)
                 .contentType(request.getDataFormat())
                 .method(request.getMethod())
@@ -245,7 +234,7 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
                 .request(r)
                 .dispatchRequestAsynchronously(dispatchAsync)
                 .destroyable(true)
-                .body(body.toString());
+                .body(request.getMessageBody().toString());
 
         AtmosphereRequest ar = b.build();
         ar.setAttribute(SwaggerSocketResponseFilter.SWAGGERSOCKET_REQUEST, request);
