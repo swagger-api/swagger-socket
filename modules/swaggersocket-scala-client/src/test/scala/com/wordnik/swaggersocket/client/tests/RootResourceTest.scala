@@ -38,7 +38,7 @@ class RootResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
       .path("/b")
       .method("POST")
       .body("Yo!")
-      .format("JSON")
+      .format("application/json")
       .build(), new SwaggerSocketListener() {
 
       override def error(e: SwaggerSocketException) {
@@ -69,7 +69,7 @@ class RootResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
       .method("POST")
       .body("Yo!")
       .attach("Yo!")
-      .format("JSON")
+      .format("application/json")
       .build()
 
     var request2 = new Request.Builder()
@@ -77,7 +77,7 @@ class RootResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
       .method("POST")
       .body("YoYo!")
       .attach("YoYo!")
-      .format("JSON")
+      .format("application/json")
       .build()
 
     var responseCount = 0
@@ -116,7 +116,7 @@ class RootResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
       .path("/pet.json/1")
       .method("GET")
       .body("Yo!")
-      .format("JSON")
+      .format("application/json")
       .build(), new SwaggerSocketListener() {
 
       override def error(e: SwaggerSocketException) {

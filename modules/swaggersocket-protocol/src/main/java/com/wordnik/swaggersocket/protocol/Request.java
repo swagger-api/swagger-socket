@@ -47,7 +47,7 @@ public class Request extends ProtocolBase {
     }
 
     public final static class Builder {
-        private String dataFormat = "JSON";
+        private String dataFormat = "application/json";
         private List<Header> headers = Collections.<Header>emptyList();
         private List<QueryString> queryString = Collections.<QueryString>emptyList();
         private String path = "/";

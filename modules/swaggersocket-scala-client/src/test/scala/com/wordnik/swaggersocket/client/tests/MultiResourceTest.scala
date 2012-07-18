@@ -39,7 +39,7 @@ class MultiResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
       .path("/test/d")
       .method("POST")
       .body("Yo!")
-      .format("JSON")
+      .format("application/json")
       .build()
 
     // This will hit RootResource.scala
@@ -47,7 +47,7 @@ class MultiResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
       .path("/c")
       .method("POST")
       .body("YoYo!")
-      .format("JSON")
+      .format("application/json")
       .build()
 
     var responseCount = 0

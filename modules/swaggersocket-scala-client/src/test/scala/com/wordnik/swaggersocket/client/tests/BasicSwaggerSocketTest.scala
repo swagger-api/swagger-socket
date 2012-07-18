@@ -38,7 +38,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       .path("/b")
       .method("POST")
       .body("Yo!")
-      .format("JSON")
+      .format("application/json")
       .build(), new SwaggerSocketListener() {
 
       override def error(e: SwaggerSocketException) {
@@ -68,7 +68,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       .path("/b")
       .method("POST")
       .body("Yo!")
-      .format("JSON")
+      .format("application/json")
       .build()
 
     var listener = new SwaggerSocketListener() {
@@ -101,14 +101,14 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       .path("/b")
       .method("POST")
       .body("Yo!")
-      .format("JSON")
+      .format("application/json")
       .build()
 
     var request2 = new Request.Builder()
       .path("/a")
       .method("POST")
       .body("Yo!")
-      .format("JSON")
+      .format("application/json")
       .build()
 
     var responseCount = 0
@@ -145,14 +145,14 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       .path("/b")
       .method("POST")
       .body("Yo!")
-      .format("JSON")
+      .format("application/json")
       .build()
 
     var request2 = new Request.Builder()
       .path("/a")
       .method("POST")
       .body("Yo!")
-      .format("JSON")
+      .format("application/json")
       .build()
 
     var responseCount = 0
@@ -163,7 +163,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = "Yo!" == s.getMessageBody
+        bodyMatch = "\"Yo!\"" == s.getMessageBody
         responseCount += 1
 
         cd.countDown()
@@ -185,20 +185,22 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
     var cd: CountDownLatch = new CountDownLatch(2)
     val ss = SwaggerSocket()
     var bodyMatch = true;
+    var jsonYo = "\"Yo!\"";
     var request = new Request.Builder()
       .path("/b")
       .method("POST")
       .body("Yo!")
-      .attach("Yo!")
-      .format("JSON")
+      .attach(jsonYo)
+      .format("application/json")
       .build()
 
+    jsonYo = "\"YoYo!\"";
     var request2 = new Request.Builder()
       .path("/a")
       .method("POST")
       .body("YoYo!")
-      .attach("YoYo!")
-      .format("JSON")
+      .attach(jsonYo)
+      .format("application/json")
       .build()
 
     var responseCount = 0
@@ -235,14 +237,14 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       .path("/b")
       .method("POST")
       .body("Yo!")
-      .format("JSON")
+      .format("application/json")
       .build()
 
     var request2 = new Request.Builder()
       .path("/a")
       .method("POST")
       .body("YoYo!")
-      .format("JSON")
+      .format("application/json")
       .build()
 
     var responseCount = 0
@@ -253,7 +255,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = r.getMessageBody == s.getMessageBody
+        bodyMatch = "\"" + r.getMessageBody + "\""== s.getMessageBody
         responseCount += 1
 
         cd.countDown()
@@ -293,7 +295,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       .path("/baaa")
       .method("POST")
       .body("Yo!")
-      .format("JSON")
+      .format("application/json")
       .build(), new SwaggerSocketListener() {
 
       override def error(e: SwaggerSocketException) {
@@ -322,14 +324,14 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       .path("/baaa")
       .method("POST")
       .body("Yo!")
-      .format("JSON")
+      .format("application/json")
       .build()
 
     var request2 = new Request.Builder()
       .path("/abbb")
       .method("POST")
       .body("YoYo!")
-      .format("JSON")
+      .format("application/json")
       .build()
 
     var errorCode: Array[Int] = new Array[Int](2)

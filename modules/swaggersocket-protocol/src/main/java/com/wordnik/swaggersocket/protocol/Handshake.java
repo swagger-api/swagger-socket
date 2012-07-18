@@ -27,7 +27,7 @@ public class Handshake extends ProtocolBase {
 
     private String protocolName = "SwaggerSocket";
     private String protocolVersion = "1.0";
-    private String dataFormat = "JSON";
+    private String dataFormat = "application/json";
 
     public Handshake() {
     }
@@ -64,7 +64,7 @@ public class Handshake extends ProtocolBase {
     public final static class Builder {
         private String protocolName = "SwaggerSocket";
         private String protocolVersion = "1.0";
-        private String dataFormat = "JSON";
+        private String dataFormat = "application/json";
         private List<Header> headers;
         private List<QueryString> queryString;
         private String path;

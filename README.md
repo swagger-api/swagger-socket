@@ -134,7 +134,7 @@ Then you are ready to start sending requests. As simple as:
       .path("/b")
       .method("POST")
       .body("Yo!")
-      .format("JSON")
+      .dataFormat("application/json")
       .build(), new SwaggerSocketListener() {
       	override def error(e: SwaggerSocketException) {
            // Invoked when an exception occurs
