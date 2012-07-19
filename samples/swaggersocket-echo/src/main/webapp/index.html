@@ -48,6 +48,7 @@
             function open() {
                 var request = new jQuery.swaggersocket.Request()
                         .path(document.location.toString() + 'swaggersocket')
+                        .dataFormat("text/plain")
                         .listener(ss);
 
                 swaggerSocket.open(request);
@@ -63,6 +64,7 @@
                 var requests = new Array();
                 requests[0] = new jQuery.swaggersocket.Request()
                         .path("/echo")
+                        .dataFormat("text/plain")
                         .method("POST")
                         .data(getElementByIdValue('phrase'))
                         .listener(ss);
@@ -70,6 +72,7 @@
                 requests[1] = new jQuery.swaggersocket.Request()
                         .path("/echo")
                         .method("POST")
+                        .dataFormat("text/plain")
                         .data("An extra request added for testing purpose")
                         .listener(ss);
 
@@ -84,6 +87,7 @@
                 request = new jQuery.swaggersocket.Request()
                         .path("/echo")
                         .method("POST")
+                        .dataFormat("text/plain")
                         .data("Welcome to SwaggerSocket Echo demo!")
                         .listener(ss);
 

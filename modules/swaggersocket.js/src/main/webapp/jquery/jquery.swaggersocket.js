@@ -1,9 +1,6 @@
 jQuery.swaggersocket = function() {
 
-    jQuery(document).ready(function() {
-        loadAtmosphere(jQuery);
-    });
-
+    loadAtmosphere(jQuery);
     return {
 
         version : 1.0,
@@ -14,7 +11,8 @@ jQuery.swaggersocket = function() {
             maxRequest : 60,
             reconnect : true,
             maxStreamingLength : 10000000,
-            fallbackMethod : 'GET',
+            method : 'POST',
+            fallbackMethod : 'POST',
             fallbackTransport : 'long-polling',
             enableXDR : false,
             executeCallbackBeforeReconnect : false,
