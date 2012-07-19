@@ -419,67 +419,66 @@ jQuery.swaggersocket = function() {
                                             listener.onOpen(response);
                                         } catch (err) {
                                             if (jQuery.swaggersocket._logLevel == 'debug') {
-                                                jQuery.atmosphere.debug(err.type)
+                                                jQuery.atmosphere.debug(err.type);
                                             }
                                         }
                                     }
                                     _handshakeDone = true;
                                 } else {
-                                    if (typeof(listener.onError) != 'undefined') {
-                                        try {
-                                            listener.onError(response);
-                                        } catch (err) {
-                                            if (jQuery.swaggersocket._logLevel == 'debug') {
-                                                jQuery.atmosphere.debug(err.type)
-                                            }
+                                     if (typeof(listener.onError) != 'undefined') {
+                                         try {
+                                             listener.onError(response);
+                                         } catch (err) {
+                                             if (jQuery.swaggersocket._logLevel == 'debug') {
+                                                 jQuery.atmosphere.debug(err.type);
+                                             }
+                                         }
+                                    }
+                                }
+
+                                if (typeof(_openFunction) != 'undefined') {
+                                    try {
+                                        _openFunction(_self, response);
+                                    } catch (err) {
+                                        if (jQuery.swaggersocket._logLevel == 'debug') {
+                                            jQuery.atmosphere.debug(err.type);
                                         }
                                     }
                                 }
-                            }
-
-                            if (typeof(_openFunction) != 'undefined') {
-                                try {
-                                    _openFunction(_self, response);
-                                } catch (err) {
-                                    if (jQuery.swaggersocket._logLevel == 'debug') {
-                                        jQuery.atmosphere.debug(err.type)
-                                    }
+                            } else {
+                                switch (Object.prototype.toString.call(response)) {
+                                    case "[object Array]":
+                                        if (typeof(listener.onResponses) != 'undefined') {
+                                            try {
+                                                listener.onResponses(response);
+                                            } catch (err) {
+                                                if (jQuery.swaggersocket._logLevel == 'debug') {
+                                                    jQuery.atmosphere.debug(err.type);
+                                                }
+                                            }
+                                        }
+                                        return;
+                                    default:
+                                        if (response.getStatus() < 400 && typeof(listener.onResponse) != 'undefined') {
+                                            try {
+                                                listener.onResponse(response);
+                                            } catch (err) {
+                                                if (jQuery.swaggersocket._logLevel == 'debug') {
+                                                    jQuery.atmosphere.debug(err.type);
+                                                }
+                                            }
+                                        } else if (typeof(listener.onError) != 'undefined') {
+                                             try {
+                                                 listener.onError(response);
+                                             } catch (err) {
+                                                 if (jQuery.swaggersocket._logLevel == 'debug') {
+                                                     jQuery.atmosphere.debug(err.type);
+                                                 }
+                                             }                                        
+                                        }
+                                        break;
                                 }
                             }
-                        } else {
-                            switch (Object.prototype.toString.call(response)) {
-                                case "[object Array]":
-                                    if (typeof(listener.onResponses) != 'undefined') {
-                                        try {
-                                            listener.onResponses(response);
-                                        } catch (err) {
-                                            if (jQuery.swaggersocket._logLevel == 'debug') {
-                                                jQuery.atmosphere.debug(err.type)
-                                            }
-                                        }
-                                    }
-                                    return;
-                                default:
-                                    if (response.getStatus() < 400 && typeof(listener.onResponse) != 'undefined') {
-                                        try {
-                                            listener.onResponse(response);
-                                        } catch (err) {
-                                            if (jQuery.swaggersocket._logLevel == 'debug') {
-                                                jQuery.atmosphere.debug(err.type)
-                                            }
-                                        }
-                                    } else if (typeof(listener.onError) != 'undefined') {
-                                        try {
-                                            listener.onError(response);
-                                        } catch (err) {
-                                            if (jQuery.swaggersocket._logLevel == 'debug') {
-                                                jQuery.atmosphere.debug(err.type)
-                                            }
-                                        }
-                                    }
-                                    break;
-                            }
-
                         }
                     };
 
@@ -555,15 +554,13 @@ jQuery.swaggersocket = function() {
                                     }
                                 } else if (response.state == 're-opening') {
                                     response.request.method = 'GET';
-                                } else if ((response.state == "closed" || response.state == "unsubscribe")
-                                        && typeof(listener.onClose) != 'undefined') {
-
+                                } else if (response.state == "closed" && typeof(listener.onClose) != 'undefined') {
                                     r.reasonPhrase("close").status(503);
                                     try {
                                         listener.onClose(r);
                                     } catch (err) {
                                         if (jQuery.swaggersocket._logLevel == 'debug') {
-                                            jQuery.atmosphere.debug(err.type)
+                                            jQuery.atmosphere.debug(err.type);
                                         }
                                     }
                                 } else if (response.state == "error" && typeof(listener.onError) != 'undefined') {
@@ -572,13 +569,13 @@ jQuery.swaggersocket = function() {
                                         listener.onError(r);
                                     } catch (err) {
                                         if (jQuery.swaggersocket._logLevel == 'debug') {
-                                            jQuery.atmosphere.debug(err.type)
+                                            jQuery.atmosphere.debug(err.type);
                                         }
                                     }
                                 }
                             } catch (err) {
                                 if (jQuery.swaggersocket._logLevel == 'debug') {
-                                    jQuery.atmosphere.debug(err.type)
+                                    jQuery.atmosphere.debug(err.type);
                                 }
                                 _incompleteMessage = _incompleteMessage + response.responseBody;
                             }
@@ -619,7 +616,9 @@ jQuery.swaggersocket = function() {
                             fallbackTransport : 'long-polling',
                             data: data
                         });
-                    };
+                    }
+
+                    ;
 
                     switch (Object.prototype.toString.call(requests)) {
                         case "[object Array]":
