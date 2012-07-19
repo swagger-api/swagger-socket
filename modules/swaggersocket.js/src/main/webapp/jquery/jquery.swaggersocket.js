@@ -422,8 +422,8 @@ jQuery.swaggersocket = function() {
                                                 jQuery.atmosphere.debug(err.type)
                                             }
                                         }
-                                        _handshakeDone = true;
                                     }
+                                    _handshakeDone = true;
                                 } else {
                                     if (typeof(listener.onError) != 'undefined') {
                                         try {
