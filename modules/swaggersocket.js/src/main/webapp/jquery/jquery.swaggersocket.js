@@ -6,10 +6,24 @@ jQuery.swaggersocket = function() {
 
     return {
 
-        version : 0.1,
+        version : 1.0,
 
-        Options : function () {
-            // TODO: Implement me.
+        Options : {
+            timeout : 300000,
+            transport : 'websocket',
+            maxRequest : 60,
+            reconnect : true,
+            maxStreamingLength : 10000000,
+            fallbackMethod : 'GET',
+            fallbackTransport : 'long-polling',
+            enableXDR : false,
+            executeCallbackBeforeReconnect : false,
+            withCredentials : false,
+            trackMessageLength : false,
+            messageDelimiter : '|',
+            connectTimeout : -1,
+            reconnectInterval : 0,
+            dropAtmosphereHeaders : true
         },
 
         _identity : 0,
@@ -444,14 +458,33 @@ jQuery.swaggersocket = function() {
                         .queryString(request.getQueryString())
                         .method(request.getMethod());
 
+                    if (typeof(options) == 'undefined') {
+                        options = jQuery.swaggersocket.Options;
+                    } else {
+                        options = jQuery.extend(options, jQuery.swaggersocket.Options);
+                    }
+
                     var _incompleteMessage = "";
                     _socket = jQuery.atmosphere.subscribe(request.getPath(), _loggingCallback, jQuery.atmosphere.request = {
-                        logLevel : 'info',
+                        logLevel : jQuery.swaggersocket._logLevel,
                         headers : { "SwaggerSocket": "1.0"},
-                        transport : 'websocket',
+                        transport : options.transport,
                         method : request.getMethod(),
-                        fallbackTransport : 'long-polling',
-                        fallbackMethod : 'POST',
+                        fallbackTransport : options.fallbackTransport,
+                        fallbackMethod : options.fallbackMethod,
+                        timeout : options.timeout,
+                        maxRequest :options.maxRequest,
+                        reconnect : options.reconnect,
+                        maxStreamingLength : options.maxStreamingLength,
+                        enableXDR : options.enableXDR,
+                        executeCallbackBeforeReconnect : options.executeCallbackBeforeReconnect,
+                        withCredentials : options.withCredentials,
+                        trackMessageLength : options.trackMessageLength,
+                        messageDelimiter : options.messageDelimiter,
+                        connectTimeout : options.connectTimeout,
+                        reconnectInterval : options.reconnectInterval,
+                        dropAtmosphereHeaders : options.dropAtmosphereHeaders,
+
                         callback : function(response) {
                             try {
                                 var data = _incompleteMessage + response.responseBody;
