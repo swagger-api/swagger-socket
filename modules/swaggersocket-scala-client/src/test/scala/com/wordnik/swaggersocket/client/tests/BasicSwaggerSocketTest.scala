@@ -163,7 +163,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = "\"Yo!\"" == s.getMessageBody
+        bodyMatch = "Yo!" == s.getMessageBody
         responseCount += 1
 
         cd.countDown()
@@ -185,21 +185,17 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
     var cd: CountDownLatch = new CountDownLatch(2)
     val ss = SwaggerSocket()
     var bodyMatch = true;
-    var jsonYo = "\"Yo!\"";
     var request = new Request.Builder()
       .path("/b")
       .method("POST")
       .body("Yo!")
-      .attach(jsonYo)
       .format("application/json")
       .build()
 
-    jsonYo = "\"YoYo!\"";
     var request2 = new Request.Builder()
       .path("/a")
       .method("POST")
       .body("YoYo!")
-      .attach(jsonYo)
       .format("application/json")
       .build()
 
@@ -211,7 +207,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = (r.attachment.toString == s.getMessageBody) && bodyMatch
+        bodyMatch = (r.getMessageBody == s.getMessageBody) && bodyMatch
         responseCount += 1
 
         cd.countDown()
@@ -255,7 +251,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = "\"" + r.getMessageBody + "\""== s.getMessageBody
+        bodyMatch = r.getMessageBody == s.getMessageBody
         responseCount += 1
 
         cd.countDown()
