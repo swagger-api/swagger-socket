@@ -2,7 +2,7 @@
     <parent>
         <groupId>com.wordnik</groupId>
         <artifactId>swaggersocket-project</artifactId>
-        <version>1.2</version>
+        <version>1.3-SNAPSHOT</version>
         <relativePath>../../</relativePath>
     </parent>
 
@@ -10,7 +10,7 @@
     <groupId>com.wordnik</groupId>
     <artifactId>swaggersocket-protocol</artifactId>
     <packaging>jar</packaging>
-    <version>1.2</version>
+    <version>1.3-SNAPSHOT</version>
     <name>swaggersocket-protocol</name>
     <url>http://www.wordnik.com</url>
     <dependencies>
