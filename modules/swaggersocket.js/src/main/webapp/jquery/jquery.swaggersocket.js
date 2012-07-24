@@ -415,11 +415,23 @@ jQuery.swaggersocket = function() {
                             if (!_handshakeDone) {
                                 if (response.getStatus() < 400) {
                                     if (typeof(listener.onOpen) != 'undefined') {
-                                        try {
-                                            listener.onOpen(response);
-                                        } catch (err) {
-                                            if (jQuery.swaggersocket._logLevel == 'debug') {
-                                                jQuery.atmosphere.debug(err.type);
+                                        if (response.transport != 'websocket') {
+                                            setTimeout(function() {
+                                                try {
+                                                    listener.onOpen(response);
+                                                } catch (err) {
+                                                    if (jQuery.swaggersocket._logLevel == 'debug') {
+                                                        jQuery.atmosphere.debug(err.type);
+                                                    }
+                                                }
+                                            }, 100);
+                                        } else {
+                                            try {
+                                                listener.onOpen(response);
+                                            } catch (err) {
+                                                if (jQuery.swaggersocket._logLevel == 'debug') {
+                                                    jQuery.atmosphere.debug(err.type);
+                                                }
                                             }
                                         }
                                     }
@@ -437,11 +449,23 @@ jQuery.swaggersocket = function() {
                                 }
 
                                 if (typeof(_openFunction) != 'undefined') {
-                                    try {
-                                        _openFunction(_self, response);
-                                    } catch (err) {
-                                        if (jQuery.swaggersocket._logLevel == 'debug') {
-                                            jQuery.atmosphere.debug(err.type);
+                                    if (response.transport != 'websocket') {
+                                        setTimeout(function() {
+                                            try {
+                                                _openFunction(_self, response);
+                                            } catch (err) {
+                                                if (jQuery.swaggersocket._logLevel == 'debug') {
+                                                    jQuery.atmosphere.debug(err.type);
+                                                }
+                                            }
+                                        }, 100);
+                                    } else {
+                                        try {
+                                            _openFunction(_self, response);
+                                        } catch (err) {
+                                            if (jQuery.swaggersocket._logLevel == 'debug') {
+                                                jQuery.atmosphere.debug(err.type);
+                                            }
                                         }
                                     }
                                 }
@@ -474,7 +498,7 @@ jQuery.swaggersocket = function() {
                                                  if (jQuery.swaggersocket._logLevel == 'debug') {
                                                      jQuery.atmosphere.debug(err.type);
                                                  }
-                                             }                                        
+                                             }
                                         }
                                         break;
                                 }
