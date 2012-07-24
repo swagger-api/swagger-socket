@@ -32,89 +32,80 @@ jQuery.swaggersocket = function() {
          * @private
          */
         _Handshake : function() {
-            var _protocolVersion = "1.0",
-                _protocolName = "SwaggerSocket",
-                _dataFormat = "application/json",
-                _method = "POST",
-                _uuid = 0,
-                _path = "/",
-                _headers = null,
-                _queryString = null,
+            var _protocolVersion = "1.0", _protocolName = "SwaggerSocket", _dataFormat = "application/json", _method = "POST", _uuid = 0, _path = "/", _headers = null, _queryString = null, _self = {
+                protocolVersion : function(protocolVersion) {
+                    _protocolVersion = protocolVersion;
+                    return this;
+                },
 
-                _self = {
-                    protocolVersion : function(protocolVersion) {
-                        _protocolVersion = protocolVersion;
-                        return this;
-                    },
+                path : function(path) {
+                    _path = path;
+                    return this;
+                },
 
-                    path : function(path) {
-                        _path = path;
-                        return this;
-                    },
+                getPath : function() {
+                    return path;
+                },
 
-                    getPath : function() {
-                        return path;
-                    },
+                method : function(method) {
+                    _method = method;
+                    return this;
+                },
 
-                    method : function(method) {
-                        _method = method;
-                        return this;
-                    },
+                getMethod : function() {
+                    return _method;
+                },
 
-                    getMethod : function() {
-                        return _method;
-                    },
+                dataFormat : function(dataFormat) {
+                    _dataFormat = dataFormat;
+                    return this;
+                },
 
-                    dataFormat : function(dataFormat) {
-                        _dataFormat = dataFormat;
-                        return this;
-                    },
+                getDataFormat : function() {
+                    return _dataFormat;
+                },
 
-                    getDataFormat : function() {
-                        return _dataFormat;
-                    },
+                headers : function(headers) {
+                    _headers = headers;
+                    return this;
+                },
 
-                    headers : function(headers) {
-                        _headers = headers;
-                        return this;
-                    },
+                getHeaders : function() {
+                    return _headers;
+                },
 
-                    getHeaders : function() {
-                        return _headers;
-                    },
+                getQueryString : function() {
+                    return _queryString;
+                },
 
-                    getQueryString : function() {
-                        return _queryString;
-                    },
+                queryString : function(queryString) {
+                    _queryString = queryString;
+                    return this;
+                },
 
-                    queryString : function(queryString) {
-                        _queryString = queryString;
-                        return this;
-                    },
+                toJSON : function() {
+                    var s = "{ \"handshake\" : { \"protocolVersion\" : \""
+                        + _protocolVersion
+                        + "\",\"protocolName\" : \"" + _protocolName
+                        + "\", \"uuid\" : \"" + _uuid
+                        + "\", \"path\" : \"" + _path + "\","
+                        + "\"dataFormat\" : \" " + _dataFormat + "\"";
 
-                    toJSON : function() {
-                        var s =  "{ \"handshake\" : { \"protocolVersion\" : \""
-                            + _protocolVersion
-                            + "\",\"protocolName\" : \"" + _protocolName
-                            + "\", \"uuid\" : \"" + _uuid
-                            + "\", \"path\" : \"" + _path + "\","
-                            + "\"dataFormat\" : \" " + _dataFormat + "\"";
-
-                        if (_headers != null) {
-                            s +=  ",\"headers\" : [" + jQuery.stringifyJSON(_headers) + "],";
-                        }
-
-                        if (_queryString != null) {
-                            if (_headers == null) {
-                                s += ",";
-                            }
-                            s += "\"queryString\" : [" + jQuery.stringifyJSON(_queryString) + "]";
-                        }
-
-                        s += "}}";
-                        return s;
+                    if (_headers != null) {
+                        s += ",\"headers\" : [" + jQuery.stringifyJSON(_headers) + "],";
                     }
-                };
+
+                    if (_queryString != null) {
+                        if (_headers == null) {
+                            s += ",";
+                        }
+                        s += "\"queryString\" : [" + jQuery.stringifyJSON(_queryString) + "]";
+                    }
+
+                    s += "}}";
+                    return s;
+                }
+            };
             return _self;
         },
 
@@ -122,124 +113,115 @@ jQuery.swaggersocket = function() {
          * SwaggerSocket Request object.
          */
         Request : function() {
-            var _uuid = jQuery.atmosphere.guid(),
-                _headers = null,
-                _queryString = null,
-                _dataFormat = "application/json",
-                _data = "",
-                _listener = null,
-                _method = "POST",
-                _path = "/",
+            var _uuid = jQuery.atmosphere.guid(), _headers = null, _queryString = null, _dataFormat = "application/json", _data = "", _listener = null, _method = "POST", _path = "/", _self = {
 
-                _self = {
+                uuid : function(uuid) {
+                    _uuid = uuid;
+                    return this;
+                },
 
-                    uuid : function(uuid) {
-                        _uuid = uuid;
-                        return this;
-                    },
+                getUUID : function() {
+                    return _uuid;
+                },
 
-                    getUUID : function() {
-                        return _uuid;
-                    },
+                path : function(path) {
+                    _path = path;
+                    return this;
+                },
 
-                    path : function(path) {
-                        _path = path;
-                        return this;
-                    },
+                getPath : function() {
+                    return _path;
+                },
 
-                    getPath : function() {
-                        return _path;
-                    },
+                method : function(method) {
+                    _method = method;
+                    return this;
+                },
 
-                    method : function(method) {
-                        _method = method;
-                        return this;
-                    },
+                getMethod : function() {
+                    return _method;
+                },
 
-                    getMethod : function() {
-                        return _method;
-                    },
+                headers : function(headers) {
+                    _headers = headers;
+                    return this;
+                },
 
-                    headers : function(headers) {
-                        _headers = headers;
-                        return this;
-                    },
+                getHeaders : function() {
+                    return _headers;
+                },
 
-                    getHeaders : function() {
-                        return _headers;
-                    },
+                dataFormat : function(dataFormat) {
+                    _dataFormat = dataFormat;
+                    return this;
+                },
 
-                    dataFormat : function(dataFormat) {
-                        _dataFormat = dataFormat;
-                        return this;
-                    },
+                getDataFormat : function() {
+                    return _dataFormat;
+                },
 
-                    getDataFormat : function() {
-                        return _dataFormat;
-                    },
+                queryString : function(queryString) {
+                    _queryString = queryString;
+                    return this;
+                },
 
-                    queryString : function(queryString) {
-                        _queryString = queryString;
-                        return this;
-                    },
+                getQueryString : function() {
+                    return _queryString;
+                },
 
-                    getQueryString : function() {
-                        return _queryString;
-                    },
+                data : function(data) {
+                    _data = data;
+                    return this;
+                },
 
-                    data : function(data) {
-                        _data = data;
-                        return this;
-                    },
+                getData : function() {
+                    return _data;
+                },
 
-                    getData : function() {
-                        return _data;
-                    },
+                listener : function(listener) {
+                    _listener = listener;
+                    return this;
+                },
 
-                    listener : function(listener) {
-                        _listener = listener;
-                        return this;
-                    },
+                getListener : function() {
+                    return _listener;
+                },
 
-                    getListener : function() {
-                        return _listener;
-                    },
+                /**
+                 * The
+                 * @param identity
+                 */
+                _toCompleteJSON : function(identity) {
+                    return "{ \"identity\" : \"" + identity + "\","
+                        + "\"requests\" : [ {"
+                        + this._toJSON()
+                        + "] }";
+                },
 
-                    /**
-                     * The
-                     * @param identity
-                     */
-                    _toCompleteJSON : function(identity) {
-                        return "{ \"identity\" : \"" + identity + "\","
-                            + "\"requests\" : [ {"
-                            + this._toJSON()
-                            + "] }";
-                    },
+                _toJSON : function() {
+                    var s = "\"uuid\" : \"" + _uuid + "\","
+                        + "\"method\" : \"" + _method + "\","
+                        + "\"path\" : \"" + _path + "\","
+                        + "\"dataFormat\" : \"" + _dataFormat + "\"";
 
-                    _toJSON : function() {
-                        var s =  "\"uuid\" : \"" + _uuid + "\","
-                            + "\"method\" : \"" + _method + "\","
-                            + "\"path\" : \"" + _path + "\","
-                            + "\"dataFormat\" : \"" + _dataFormat + "\"";
-
-                        if (_headers != null) {
-                            s +=  ",\"headers\" : [" + jQuery.stringifyJSON(_headers) + "],";
-                        }
-
-                        if (_queryString != null) {
-                            if (_headers == null) {
-                                s += ",";
-                            }
-                            s += "\"queryString\" : [" + jQuery.stringifyJSON(_queryString) + "]";
-                        }
-
-                        if (_dataFormat.toLowerCase().indexOf("json") == -1 || _data == "") {
-                            s += ",\"messageBody\" : \"" + _data + "\"}";
-                        } else {
-                            s += ",\"messageBody\" : " + _data + "}";
-                        }
-                        return s;
+                    if (_headers != null) {
+                        s += ",\"headers\" : [" + jQuery.stringifyJSON(_headers) + "],";
                     }
+
+                    if (_queryString != null) {
+                        if (_headers == null) {
+                            s += ",";
+                        }
+                        s += "\"queryString\" : [" + jQuery.stringifyJSON(_queryString) + "]";
+                    }
+
+                    if (_dataFormat.toLowerCase().indexOf("json") == -1 || _data == "") {
+                        s += ",\"messageBody\" : \"" + _data + "\"}";
+                    } else {
+                        s += ",\"messageBody\" : " + _data + "}";
+                    }
+                    return s;
+                }
             };
             return _self;
         },
@@ -249,80 +231,72 @@ jQuery.swaggersocket = function() {
          */
         Response : function() {
 
-            var _uuid = 0,
-                _request = null,
-                _status = "200",
-                _reasonPhrase = "OK",
-                _path = '/',
-                _headers = [],
-                _data = "",
+            var _uuid = 0, _request = null, _status = "200", _reasonPhrase = "OK", _path = '/', _headers = [], _data = "", _self = {
 
-                _self = {
+                uuid : function(uuid) {
+                    _uuid = uuid;
+                    return this;
+                },
 
-                    uuid : function(uuid) {
-                        _uuid = uuid;
-                        return this;
-                    },
+                getUUID : function() {
+                    return _uuid;
+                },
 
-                    getUUID : function() {
-                        return _uuid;
-                    },
+                request : function(request) {
+                    _request = request;
+                    return this;
+                },
 
-                    request : function(request) {
-                        _request = request;
-                        return this;
-                    },
+                getRequest : function() {
+                    return _request;
+                },
 
-                    getRequest : function() {
-                        return _request;
-                    },
+                path : function(path) {
+                    _path = path;
+                    return this;
+                },
 
-                    path : function(path) {
-                        _path = path;
-                        return this;
-                    },
+                getPath : function() {
+                    return _path;
+                },
 
-                    getPath : function() {
-                        return _path;
-                    },
+                status : function(status) {
+                    _status = status;
+                    return this;
+                },
 
-                    status : function(status) {
-                        _status = status;
-                        return this;
-                    },
+                getStatus : function() {
+                    return _status;
+                },
 
-                    getStatus : function() {
-                        return _status;
-                    },
+                headers : function(headers) {
+                    _headers = headers;
+                    return this;
+                },
 
-                    headers : function(headers) {
-                        _headers = headers;
-                        return this;
-                    },
+                getHeaders : function() {
+                    return _headers;
+                },
 
-                    getHeaders : function() {
-                        return _headers;
-                    },
+                reasonPhrase : function(reasonPhrase) {
+                    _reasonPhrase = reasonPhrase;
+                    return this;
+                },
 
-                    reasonPhrase : function(reasonPhrase) {
-                        _reasonPhrase = reasonPhrase;
-                        return this;
-                    },
+                getReasonPhrase : function() {
+                    return _reasonPhrase;
+                },
 
-                    getReasonPhrase : function() {
-                        return _reasonPhrase;
-                    },
+                data : function(data) {
+                    _data = data;
+                    return this;
+                },
 
-                    data : function(data) {
-                        _data = data;
-                        return this;
-                    },
-
-                    getData : function() {
-                        return _data;
-                    }
-                };
-                return _self;
+                getData : function() {
+                    return _data;
+                }
+            };
+            return _self;
         },
 
         /**
@@ -437,14 +411,14 @@ jQuery.swaggersocket = function() {
                                     }
                                     _handshakeDone = true;
                                 } else {
-                                     if (typeof(listener.onError) != 'undefined') {
-                                         try {
-                                             listener.onError(response);
-                                         } catch (err) {
-                                             if (jQuery.swaggersocket._logLevel == 'debug') {
-                                                 jQuery.atmosphere.debug(err.type);
-                                             }
-                                         }
+                                    if (typeof(listener.onError) != 'undefined') {
+                                        try {
+                                            listener.onError(response);
+                                        } catch (err) {
+                                            if (jQuery.swaggersocket._logLevel == 'debug') {
+                                                jQuery.atmosphere.debug(err.type);
+                                            }
+                                        }
                                     }
                                 }
 
@@ -492,19 +466,21 @@ jQuery.swaggersocket = function() {
                                                 }
                                             }
                                         } else if (typeof(listener.onError) != 'undefined') {
-                                             try {
-                                                 listener.onError(response);
-                                             } catch (err) {
-                                                 if (jQuery.swaggersocket._logLevel == 'debug') {
-                                                     jQuery.atmosphere.debug(err.type);
-                                                 }
-                                             }
+                                            try {
+                                                listener.onError(response);
+                                            } catch (err) {
+                                                if (jQuery.swaggersocket._logLevel == 'debug') {
+                                                    jQuery.atmosphere.debug(err.type);
+                                                }
+                                            }
                                         }
                                         break;
                                 }
                             }
                         }
-                    };
+                    }
+
+                    ;
 
                     // TODO : check request and options' type.
                     // TODO: Support debug level
@@ -733,6 +709,8 @@ function HashMap() {
 
 function loadAtmosphere(jQuery) {
     /**
+     * Copyright 2012 Jeanfrancois Arcand
+     *
      * Licensed under the Apache License, Version 2.0 (the "License");
      * you may not use this file except in compliance with the License.
      * You may obtain a copy of the License at
@@ -746,18 +724,17 @@ function loadAtmosphere(jQuery) {
      * limitations under the License.
      */
     /*
-     * Part of this code has been taked from
-     *
-     * jQuery Stream @VERSION
-     * Comet Streaming JavaScript Library
-     * http://code.google.com/p/jquery-stream/
+     * IE streaming/XDR supports is copied/highly inspired by http://code.google.com/p/jquery-stream/
      *
      * Copyright 2011, Donghwan Kim
      * Licensed under the Apache License, Version 2.0
      * http://www.apache.org/licenses/LICENSE-2.0
      *
-     * Compatible with jQuery 1.5+
-     */
+     * LocalStorage supports is copied/highly inspired by https://github.com/flowersinthesand/jquery-socket
+     * Copyright 2011, Donghwan Kim
+     * Licensed under the Apache License, Version 2.0
+     * http://www.apache.org/licenses/LICENSE-2.0
+     * */
     /**
      * Official documentation of this library: https://github.com/Atmosphere/atmosphere/wiki/jQuery.atmosphere.js-API
      */
@@ -792,6 +769,8 @@ function loadAtmosphere(jQuery) {
             onMessagePublished : function(response) {
             },
             onTransportFailure : function(response) {
+            },
+            onLocalMessage : function (response) {
             },
 
             AtmosphereRequest : function(options) {
@@ -834,6 +813,7 @@ function loadAtmosphere(jQuery) {
                     reconnectInterval : 0,
                     dropAtmosphereHeaders : true,
                     uuid : 0,
+                    shared : false,
                     onError : function(response) {
                     },
                     onClose : function(response) {
@@ -847,6 +827,8 @@ function loadAtmosphere(jQuery) {
                     onMessagePublished : function(response) {
                     },
                     onTransportFailure : function (reason, request) {
+                    },
+                    onLocalMessage : function (request) {
                     }
                 };
 
@@ -923,6 +905,30 @@ function loadAtmosphere(jQuery) {
                  */
                 var _abordingConnection = false;
 
+                /**
+                 * A local "channel' of communication.
+                 * @private
+                 */
+                var _localSocketF = null;
+
+                /**
+                 * The storage used.
+                 * @private
+                 */
+                var _storageService;
+
+                /**
+                 * Local communication
+                 * @private
+                 */
+                var _localStorageService = null;
+
+                /**
+                 * A Unique ID
+                 * @private
+                 */
+                var guid = jQuery.now();
+
                 // Automatic call to subscribe
                 _subscribe(options);
 
@@ -998,6 +1004,27 @@ function loadAtmosphere(jQuery) {
                  * @private
                  */
                 function _execute() {
+                    // Shared across multiple tabs/windows.
+                    if (_request.shared && !jQuery.browser.opera) {
+                        _localStorageService = _local(_request);
+                        if (_localStorageService != null) {
+                            if (_request.logLevel == 'debug') {
+                                jQuery.atmosphere.debug("Storage service available. All communication will be local");
+                            }
+
+                            if (_localStorageService.open(_request)) {
+                                // Local connection.
+                                return;
+                            }
+                        }
+
+                        if (_request.logLevel == 'debug') {
+                            jQuery.atmosphere.debug("No Storage service available.");
+                        }
+                        // Wasn't local or an error occurred
+                        _localStorageService = null;
+                    }
+
                     if (_request.transport != 'websocket' && _request.transport != 'sse') {
                         _open('opening', _request.transport, _request);
                         _executeRequest();
@@ -1017,10 +1044,298 @@ function loadAtmosphere(jQuery) {
                     }
                 }
 
+                function _local(request) {
+                    var connector, orphan, name = "atmosphere-" + request.url, connectors = {
+                        storage: function() {
+                            if (!jQuery.atmosphere.supportStorage()) {
+                                return;
+                            }
+
+                            var storage = window.localStorage, get = function(key) {
+                                return jQuery.parseJSON(storage.getItem(name + "-" + key));
+                            }, set = function(key, value) {
+                                storage.setItem(name + "-" + key, jQuery.stringifyJSON(value));
+                            };
+
+                            return {
+                                init: function() {
+                                    set("children", get("children").concat([guid]));
+                                    jQuery(window).on("storage.socket", function(event) {
+                                        event = event.originalEvent;
+                                        if (event.key === name && event.newValue) {
+                                            listener(event.newValue);
+                                        }
+                                    });
+                                    return get("opened");
+                                },
+                                signal: function(type, data) {
+                                    storage.setItem(name, jQuery.stringifyJSON({target: "p", type: type, data: data}));
+                                },
+                                close: function() {
+                                    var index, children = get("children");
+
+                                    jQuery(window).off("storage.socket");
+                                    if (children) {
+                                        index = jQuery.inArray(request.id, children);
+                                        if (index > -1) {
+                                            children.splice(index, 1);
+                                            set("children", children);
+                                        }
+                                    }
+                                }
+                            };
+                        },
+                        windowref: function() {
+                            var win = window.open("", name.replace(/\W/g, ""));
+
+                            if (!win || win.closed || !win.callbacks) {
+                                return;
+                            }
+
+                            return {
+                                init: function() {
+                                    win.callbacks.push(listener);
+                                    win.children.push(options.id);
+                                    return win.opened;
+                                },
+                                signal: function(type, data) {
+                                    if (!win.closed && win.fire) {
+                                        win.fire(jQuery.stringifyJSON({target: "p", type: type, data: data}));
+                                    }
+                                },
+                                close : function() {
+                                    function remove(array, e) {
+                                        var index = jQuery.inArray(e, array);
+                                        if (index > -1) {
+                                            array.splice(index, 1);
+                                        }
+                                    }
+
+                                    // Removes traces only if the parent is alive
+                                    if (!orphan) {
+                                        remove(win.callbacks, listener);
+                                        remove(win.children, options.id);
+                                    }
+                                }
+
+                            };
+                        }
+                    };
+
+                    // Receives open, close and message command from the parent
+                    function listener(string) {
+                        var command = jQuery.parseJSON(string), data = command.data;
+
+                        if (command.target === "c") {
+                            switch (command.type) {
+                                case "open":
+                                    _open("opening", 'local', _request)
+                                    break;
+                                case "close":
+                                    orphan = true;
+                                    if (data.reason === "aborted") {
+                                        _close();
+                                    } else {
+                                        _prepareCallback("", "closed", 200, _request.transport);
+                                        // Gives the heir some time to reconnect
+                                        if (data.heir === guid) {
+                                            _close();
+                                        } else {
+                                            setTimeout(function() {
+                                                _close();
+                                            }, 100);
+                                        }
+                                    }
+                                    break;
+                                case "message":
+                                    _prepareCallback(data, "messageReceived", 200, request.transport);
+                                    break;
+                                case "localMessage":
+                                    _localMessage(data);
+                                    break;
+                            }
+                        }
+                    }
+
+                    // Finds the parent socket's traces from the cookie
+                    if (!new RegExp("(?:^|; )(" + encodeURIComponent(name) + ")=([^;]*)").test(document.cookie)) {
+                        return;
+                    }
+
+                    // Chooses a connector
+                    connector = connectors.storage() || connectors.windowref();
+                    if (!connector) {
+                        return;
+                    }
+
+                    return {
+                        open: function() {
+                            var parentOpened;
+
+                            parentOpened = connector.init();
+                            if (parentOpened) {
+                                // Firing the open event without delay robs the user of the opportunity to bind connecting event handlers
+                                setTimeout(function() {
+                                    _open("opening", 'local', request)
+                                }, 50);
+                            }
+                            return parentOpened;
+                        },
+                        send: function(event) {
+                            connector.signal("send", event);
+                        },
+                        localSend: function(event) {
+                            connector.signal("localSend", jQuery.stringifyJSON({id: guid , event: event}));
+                        },
+                        close: function() {
+                            // Do not signal the parent if this method is executed by the unload event handler
+                            if (!_abordingConnection) {
+                                connector.signal("close");
+                                connector.close();
+                            }
+                        }
+                    };
+                }
+
+                ;
+
+                function share() {
+                    var storageService, name = "atmosphere-" + _request.url, servers = {
+                        // Powered by the storage event and the localStorage
+                        // http://www.w3.org/TR/webstorage/#event-storage
+                        storage: function() {
+                            if (!jQuery.atmosphere.supportStorage()) {
+                                return;
+                            }
+
+                            var storage = window.localStorage;
+
+                            return {
+                                init: function() {
+                                    // Handles the storage event
+                                    jQuery(window).on("storage.socket", function(event) {
+                                        event = event.originalEvent;
+                                        // When a deletion, newValue initialized to null
+                                        if (event.key === name && event.newValue) {
+                                            listener(event.newValue);
+                                        }
+                                    });
+                                },
+                                signal: function(type, data) {
+                                    storage.setItem(name, jQuery.stringifyJSON({target: "c", type: type, data: data}));
+                                },
+                                get: function(key) {
+                                    return jQuery.parseJSON(storage.getItem(name + "-" + key));
+                                },
+                                set: function(key, value) {
+                                    storage.setItem(name + "-" + key, jQuery.stringifyJSON(value));
+                                },
+                                close : function() {
+                                    jQuery(window).off("storage.socket");
+                                    storage.removeItem(name);
+                                    storage.removeItem(name + "-opened");
+                                    storage.removeItem(name + "-children");
+                                }
+
+                            };
+                        },
+                        // Powered by the window.open method
+                        // https://developer.mozilla.org/en/DOM/window.open
+                        windowref: function() {
+                            // Internet Explorer raises an invalid argument error
+                            // when calling the window.open method with the name containing non-word characters
+                            var neim = name.replace(/\W/g, ""), win = (jQuery('iframe[name="' + neim + '"]')[0]
+                                || jQuery('<iframe name="' + neim + '" />').hide().appendTo("body")[0]).contentWindow;
+
+                            return {
+                                init: function() {
+                                    // Callbacks from different windows
+                                    win.callbacks = [listener];
+                                    // In IE 8 and less, only string argument can be safely passed to the function in other window
+                                    win.fire = function(string) {
+                                        var i;
+
+                                        for (i = 0; i < win.callbacks.length; i++) {
+                                            win.callbacks[i](string);
+                                        }
+                                    };
+                                },
+                                signal: function(type, data) {
+                                    if (!win.closed && win.fire) {
+                                        win.fire(jQuery.stringifyJSON({target: "c", type: type, data: data}));
+                                    }
+                                },
+                                get: function(key) {
+                                    return !win.closed ? win[key] : null;
+                                },
+                                set: function(key, value) {
+                                    if (!win.closed) {
+                                        win[key] = value;
+                                    }
+                                },
+                                close : function() {
+                                }
+                            };
+                        }
+                    };
+
+
+                    // Receives send and close command from the children
+                    function listener(string) {
+                        var command = jQuery.parseJSON(string), data = command.data;
+
+                        if (command.target === "p") {
+                            switch (command.type) {
+                                case "send":
+                                    _push(data);
+                                    break;
+                                case "localSend":
+                                    _localMessage(data);
+                                    break;
+                                case "close":
+                                    _close();
+                                    break;
+                            }
+                        }
+                    }
+
+                    _localSocketF = function propagateMessageEvent(context) {
+                        storageService.signal("message", context);
+                    }
+
+                    // Leaves traces
+                    document.cookie = encodeURIComponent(name) + "=" + jQuery.now();
+
+                    // Chooses a storageService
+                    storageService = servers.storage() || servers.windowref();
+                    storageService.init();
+
+                    if (_request.logLevel == 'debug') {
+                        jQuery.atmosphere.debug("Installed StorageService " + storageService);
+                    }
+
+                    // List of children sockets
+                    storageService.set("children", []);
+
+                    if (storageService.get("opened") != null && !storageService.get("opened")) {
+                        // Flag indicating the parent socket is opened
+                        storageService.set("opened", false);
+                    }
+
+                    _storageService = storageService;
+                }
+
                 /**
                  * @private
                  */
                 function _open(state, transport, request) {
+                    if (_request.shared && transport != 'local' && !jQuery.browser.opera) {
+                        share();
+                    }
+
+                    if (_storageService != null) {
+                        _storageService.set("opened", true);
+                    }
 
                     request.close = function() {
                         _close();
@@ -1077,7 +1392,7 @@ function loadAtmosphere(jQuery) {
                         success: function(json) {
 
                             if (rq.requestCount++ < rq.maxRequest) {
-                                if (rq.executeCallbackBeforeReconnect) {
+                                if (!rq.executeCallbackBeforeReconnect) {
                                     _reconnect(_jqxhr, rq);
                                 }
 
@@ -1144,13 +1459,13 @@ function loadAtmosphere(jQuery) {
                         success: function(data, textStatus, jqXHR) {
 
                             if (rq.requestCount++ < rq.maxRequest) {
-                                if (rq.executeCallbackBeforeReconnect) {
+                                if (!rq.executeCallbackBeforeReconnect) {
                                     _reconnect(_jqxhr, rq);
                                 }
 
                                 _prepareCallback(data, "messageReceived", 200, rq.transport);
 
-                                if (!rq.executeCallbackBeforeReconnect) {
+                                if (rq.executeCallbackBeforeReconnect) {
                                     _reconnect(_jqxhr, rq);
                                 }
                             } else {
@@ -2174,7 +2489,10 @@ function loadAtmosphere(jQuery) {
                  * @private
                  */
                 function _push(message) {
-                    if (_activeRequest != null || _sse != null) {
+
+                    if (_localStorageService != null) {
+                        _pushLocal(message);
+                    } else if (_activeRequest != null || _sse != null) {
                         _pushAjaxMessage(message);
                     } else if (_ieStream != null) {
                         _pushIE(message);
@@ -2182,6 +2500,18 @@ function loadAtmosphere(jQuery) {
                         _pushJsonp(message);
                     } else if (_websocket != null) {
                         _pushWebSocket(message);
+                    }
+                }
+
+                function _pushLocal(message) {
+                    _localStorageService.send(message);
+                }
+
+                function _intraPush(message) {
+                    if (_localStorageService) {
+                        _localStorageService.localSend(message);
+                    } else {
+                        _storageService.signal("localMessage", jQuery.stringifyJSON({id: guid , event: message}));
                     }
                 }
 
@@ -2305,6 +2635,17 @@ function loadAtmosphere(jQuery) {
                     }
                 }
 
+                function _localMessage(message) {
+                    var m = jQuery.parseJSON(message);
+                    if (m.id != guid) {
+                        if (typeof(_request.onLocalMessage) != 'undefined') {
+                            _request.onLocalMessage(m.event);
+                        } else if (typeof(jQuery.atmosphere.onLocalMessage) != 'undefined') {
+                            jQuery.atmosphere.onLocalMessage(m.event);
+                        }
+                    }
+                }
+
                 function _prepareCallback(messageBody, state, errorCode, transport) {
 
                     if (state == "messageReceived") {
@@ -2362,6 +2703,10 @@ function loadAtmosphere(jQuery) {
                     var call = function (index, func) {
                         func(_response);
                     };
+
+                    if (_localStorageService == null && _localSocketF != null) {
+                        _localSocketF(_response.responseBody);
+                    }
 
                     var messages = typeof(_response.responseBody) == 'string' ? _response.responseBody.split(_request.messageDelimiter) : new Array(_response.responseBody);
                     for (var i = 0; i < messages.length; i++) {
@@ -2425,6 +2770,22 @@ function loadAtmosphere(jQuery) {
                     _invokeCallback();
 
                     _clearState();
+
+                    // Are we the parent that hold the real connection.
+                    if (_localStorageService == null && _localSocketF != null) {
+                        // The heir is the parent unless _abordingConnection
+                        _storageService.signal("close", {reason: "", heir: !_abordingConnection ? guid : _storageService.get("children")[0]});
+                        document.cookie = encodeURIComponent("atmosphere-" + _request.url) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    }
+
+                    if (_storageService != null) {
+                        _storageService.close();
+                    }
+
+
+                    if (_localStorageService != null) {
+                        _localStorageService.close();
+                    }
                 }
 
                 function _clearState() {
@@ -2473,7 +2834,11 @@ function loadAtmosphere(jQuery) {
 
                 this.push = function(message) {
                     _push(message);
-                }
+                };
+
+                this.pushLocal = function(message) {
+                    _intraPush(message);
+                };
 
                 this.response = _response;
             },
@@ -2587,6 +2952,21 @@ function loadAtmosphere(jQuery) {
             // From jQuery-Stream
             param : function(data) {
                 return jQuery.param(data, jQuery.ajaxSettings.traditional);
+            },
+
+            supportStorage : function() {
+                var storage = window.localStorage;
+                if (storage) {
+                    try {
+                        storage.setItem("t", "t");
+                        storage.removeItem("t");
+                        // Internet Explorer 9 has no StorageEvent object but supports the storage event
+                        return !!window.StorageEvent || Object.prototype.toString.call(storage) === "[object Storage]";
+                    } catch (e) {
+                    }
+                }
+
+                return false;
             },
 
             iterate : function (fn, interval) {
