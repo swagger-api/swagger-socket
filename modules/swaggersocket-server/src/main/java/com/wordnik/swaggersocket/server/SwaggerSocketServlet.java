@@ -15,6 +15,7 @@
  */
 package com.wordnik.swaggersocket.server;
 
+import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.cpr.AtmosphereServlet;
 import org.atmosphere.util.Version;
 import org.slf4j.Logger;
@@ -22,6 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+
+import static org.atmosphere.cpr.ApplicationConfig.*;
 
 /**
  * The SwaggerSocket Servlet, which enable support for the SwaggerSocket Protocol.
@@ -42,8 +45,9 @@ public class SwaggerSocketServlet extends AtmosphereServlet {
         super(isFilter, autoDetectHandlers);
         framework().setWebSocketProtocolClassName(SwaggerSocketProtocol.class.getName());
         framework().interceptor(new SwaggerSocketProtocolHttpSupport());
-        framework().addInitParameter("org.atmosphere.useNative", "true");
+        framework().addInitParameter(ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT, "true");
         framework().addInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
+        framework().addInitParameter(DISABLE_ATMOSPHEREINTERCEPTOR, "true");
 
         framework().broadcasterFilters().add(LongPollingBroadcastFilter.class.getName());
     }

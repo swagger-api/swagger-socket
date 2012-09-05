@@ -6,6 +6,7 @@ import com.wordnik.swaggersocket.server.SwaggerSocketProtocol
 import org.atmosphere.nettosphere.Nettosphere
 import java.io.{InputStreamReader, BufferedReader}
 import org.slf4j.{LoggerFactory, Logger}
+import org.atmosphere.cpr.ApplicationConfig._
 
 /**
  * A NettoSphere Server that can be used without the needs of a Servlet Container.
@@ -25,6 +26,7 @@ object NettoSphere {
       .initParam("com.wordnik.swagger.key", key)
       .initParam("com.sun.jersey.api.json.POJOMappingFeature", "true")
       .initParam("com.sun.jersey.config.property.packages", getClass.getPackage.getName)
+      .initParam(DISABLE_ATMOSPHEREINTERCEPTOR, "true")
       .webSocketProtocol(classOf[SwaggerSocketProtocol])
       .port(8080)
       .host("127.0.0.1")

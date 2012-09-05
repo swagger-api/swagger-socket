@@ -16,6 +16,7 @@
 package com.wordnik.swaggersocket.samples;
 
 import com.wordnik.swaggersocket.server.SwaggerSocketProtocol;
+import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.nettosphere.Config;
 import org.atmosphere.nettosphere.Nettosphere;
 import org.slf4j.Logger;
@@ -25,6 +26,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import static org.atmosphere.cpr.ApplicationConfig.*;
+
 public class NettoSphere {
 
     private static final Logger logger = LoggerFactory.getLogger(Nettosphere.class);
@@ -33,6 +36,7 @@ public class NettoSphere {
         Config.Builder b = new Config.Builder();
         b.resource("./app")
                 .initParam("com.sun.jersey.config.property.packages", NettoSphere.class.getPackage().getName())
+                .initParam(DISABLE_ATMOSPHEREINTERCEPTOR, "true")
                 .webSocketProtocol(SwaggerSocketProtocol.class)
                 .port(8080)
                 .host("127.0.0.1")
