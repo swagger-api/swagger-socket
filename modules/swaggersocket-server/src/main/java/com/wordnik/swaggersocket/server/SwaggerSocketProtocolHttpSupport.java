@@ -114,7 +114,7 @@ public class SwaggerSocketProtocolHttpSupport implements AtmosphereInterceptor {
                 @Override
                 public AsyncIOWriter writeError(AtmosphereResponse r, int errorCode, String message) throws IOException {
                     Request swaggerSocketRequest =
-                            Request.class.cast(r.request().getAttribute(SwaggerSocketResponseFilter.SWAGGERSOCKET_REQUEST));
+                            Request.class.cast(r.request().getAttribute(String.valueOf(r.request().hashCode())));
 
                     if (swaggerSocketRequest == null) {
                         logger.debug("Handshake mapping (could be expected) {} : {}", errorCode, message);

@@ -22,7 +22,6 @@ import static com.wordnik.swaggersocket.server.LongPollingBroadcastFilter.END_ME
 
 final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
     private static final Logger logger = LoggerFactory.getLogger(SwaggerSocketResponseFilter.class);
-    public final static String SWAGGERSOCKET_REQUEST = Request.class.getName();
     private final ObjectMapper mapper;
 
     public SwaggerSocketResponseFilter(ObjectMapper mapper) {
@@ -37,7 +36,7 @@ final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
             return message;
         }
 
-        if (invalidState((Request) r.request().getAttribute(SWAGGERSOCKET_REQUEST))) {
+        if (invalidState((Request) r.request().getAttribute(String.valueOf(r.request().hashCode())))) {
             logger.error("Response's body not allowed on handshake {}", message);
             return null;
         }
@@ -68,7 +67,7 @@ final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
         }
 
 
-        if (invalidState((Request) r.request().getAttribute(SWAGGERSOCKET_REQUEST))) {
+        if (invalidState((Request) r.request().getAttribute(String.valueOf(r.request().hashCode())))) {
             logger.error("Response's body not allowed on handshake {}", message);
             return null;
         }
@@ -143,7 +142,7 @@ final class SwaggerSocketResponseFilter implements WebSocketResponseFilter {
         }
 
         Request swaggerSocketRequest =
-                Request.class.cast(res.request().getAttribute(SWAGGERSOCKET_REQUEST));
+                Request.class.cast(res.request().getAttribute(String.valueOf(res.request().hashCode())));
 
         builder.uuid(swaggerSocketRequest.getUuid()).method(swaggerSocketRequest.getMethod())
                 .path(swaggerSocketRequest.getPath());

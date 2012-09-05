@@ -95,7 +95,7 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
         if (t.response() != null) {
 
             Request swaggerSocketRequest =
-                    Request.class.cast(t.response().request().getAttribute(SwaggerSocketResponseFilter.SWAGGERSOCKET_REQUEST));
+                    Request.class.cast(t.response().request().getAttribute(String.valueOf(t.response().request().hashCode())));
 
             if (swaggerSocketRequest == null) {
                 logger.debug("Handshake mapping (could be expected) {} : {}", t.response().getStatus(), t.response().getStatusMessage());
@@ -235,7 +235,7 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
                 .body(request.getMessageBody().toString());
 
         AtmosphereRequest ar = b.build();
-        ar.setAttribute(SwaggerSocketResponseFilter.SWAGGERSOCKET_REQUEST, request);
+        ar.setAttribute(String.valueOf(ar.hashCode()), request);
         return ar;
     }
 
