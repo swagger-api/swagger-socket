@@ -15,13 +15,13 @@ Using Maven or SBT
     <dependency>
        <groupId>com.wordnik</groupId>
        <artifactId>swaggersocket</artifactId>
-       <version>1.2</version>
+       <version>1.3.0</version>
     </dependency>
     <!-- Client side --> 
      <dependency>
        <groupId>com.wordnik</groupId>
        <artifactId>swaggersocket.js</artifactId>
-       <version>1.2</version>
+       <version>1.3.0</version>
        <type>war</type>
     </dependency>   
 ```
@@ -52,9 +52,9 @@ You can also build the sample yourself and use Jetty instead of NettoSphere.
 Take a look at [HelloWorld](https://github.com/wordnik/swaggersocket/wiki/Getting-started-with-SwaggerSocket-and-Jersey) mini tutorial. 
 You can also look at our real time samples:
 
- * Twitter's Real Time Search [client code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-twitter/src/main/webapp/index.html#L10) | [server code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-twitter/src/main/java/com/wordnik/swaggersocket/samples/TwitterFeed.java#L45) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-twitter/1.0.0/swaggersocket-twitter-1.0.0-distribution.zip)
- * Wordnik's Real Time Search [client code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-wordnik/src/main/webapp/index.html#L10) | [server code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-wordnik/src/main/scala/com/wordnik/swaggersocket/samples/WordnikResourceProxy.scala#L30) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-wordnik/1.0.0/swaggersocket-wordnik-1.0.0-distribution.zip)
- * Simple Swagger Sockets Protocol Echo [client code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-echo/src/main/webapp/index.html#L9) | [server code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-echo/src/main/scala/org/wordnik/swaggersocket/samples/SwaggerSocketResource.scala#L16) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-echo/1.0.0/swaggersocket-echo-1.0.0-distribution.zip)
+ * Twitter's Real Time Search [client code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-twitter/src/main/webapp/index.html#L10) | [server code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-twitter/src/main/java/com/wordnik/swaggersocket/samples/TwitterFeed.java#L45) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-twitter/1.3.0/swaggersocket-twitter-1.3.0-distribution.zip)
+ * Wordnik's Real Time Search [client code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-wordnik/src/main/webapp/index.html#L10) | [server code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-wordnik/src/main/scala/com/wordnik/swaggersocket/samples/WordnikResourceProxy.scala#L30) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-wordnik/1.3.0/swaggersocket-wordnik-1.3.0-distribution.zip)
+ * Simple Swagger Sockets Protocol Echo [client code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-echo/src/main/webapp/index.html#L9) | [server code](https://github.com/wordnik/swaggersocket/blob/master/samples/swaggersocket-echo/src/main/scala/org/wordnik/swaggersocket/samples/SwaggerSocketResource.scala#L16) | [download sample](http://search.maven.org/remotecontent?filepath=com/wordnik/swaggersocket-echo/1.3.0/swaggersocket-echo-1.3.0-distribution.zip)
 
 You can also download our [war files](http://search.maven.org/#search|ga|1|swaggersocket) and deploy them to any WebServer [supporting WebSockets](https://github.com/Atmosphere/atmosphere/wiki/Supported-WebServers-and-Browsers).
 
