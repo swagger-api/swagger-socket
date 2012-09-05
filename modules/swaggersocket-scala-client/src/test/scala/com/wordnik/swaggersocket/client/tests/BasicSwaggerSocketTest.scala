@@ -310,47 +310,47 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
     assert(errorCode == 404)
   }
 
-//  it should "two concurrent requests to the wrong path fail" in {
-//    val open = new Request.Builder().path(getTargetUrl + "/test").build()
-//    var cd: CountDownLatch = new CountDownLatch(2)
-//    val ss = SwaggerSocket()
-//    var bodyMatch = false;
-//    var request = new Request.Builder()
-//      .path("/baaa")
-//      .method("POST")
-//      .body("Yo!")
-//      .format("application/json")
-//      .build()
-//
-//    var request2 = new Request.Builder()
-//      .path("/abbb")
-//      .method("POST")
-//      .body("YoYo!")
-//      .format("application/json")
-//      .build()
-//
-//    var errorCode: Array[Int] = new Array[Int](2)
-//    var i: Int = 0;
-//    var listener = new SwaggerSocketListener() {
-//      override def error(e: SwaggerSocketException) {
-//      }
-//
-//      override def message(r: Request, s: Response) {
-//        errorCode(i) = s.getStatus
-//        i += 1
-//        cd.countDown()
-//      }
-//    }
-//
-//    ss.open(open)
-//      .send(Array[Request](request, request2), listener)
-//
-//    cd.await(10, TimeUnit.SECONDS)
-//    ss.close
-//
-//    errorCode.foreach(e => {
-//      assert(e == 404)
-//    })
-//  }
+  it should "two concurrent requests to the wrong path fail" in {
+    val open = new Request.Builder().path(getTargetUrl + "/test").build()
+    var cd: CountDownLatch = new CountDownLatch(2)
+    val ss = SwaggerSocket()
+    var request = new Request.Builder()
+      .path("/baaa")
+      .method("POST")
+      .body("Yo!")
+      .format("application/json")
+      .build()
+
+    var request2 = new Request.Builder()
+      .path("/abbb")
+      .method("POST")
+      .body("YoYo!")
+      .format("application/json")
+      .build()
+
+    var errorCode: Array[Int] = new Array[Int](2)
+    var i: Int = 0;
+    var listener = new SwaggerSocketListener() {
+      override def error(e: SwaggerSocketException) {
+        cd.countDown()
+      }
+
+      override def message(r: Request, s: Response) {
+        errorCode(i) = s.getStatus
+        i += 1
+        cd.countDown()
+      }
+    }
+
+    ss.open(open)
+      .send(Array[Request](request, request2), listener)
+
+    cd.await(10, TimeUnit.SECONDS)
+    ss.close
+
+    errorCode.foreach(e => {
+      assert(e == 404)
+    })
+  }
 }
 
