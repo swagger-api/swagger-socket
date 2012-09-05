@@ -3,13 +3,13 @@
     <parent>
         <groupId>com.wordnik</groupId>
         <artifactId>swaggersocket-project</artifactId>
-        <version>1.3-SNAPSHOT</version>
+        <version>1.3.0</version>
         <relativePath>../../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.wordnik</groupId>
     <artifactId>swaggersocket.js</artifactId>
     <packaging>war</packaging>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.3.0</version>
     <name>swaggersocket.js</name>
 </project>
