@@ -22,12 +22,9 @@ import com.wordnik.swaggersocket.protocol.Message;
 import com.wordnik.swaggersocket.protocol.ProtocolBase;
 import com.wordnik.swaggersocket.protocol.QueryString;
 import com.wordnik.swaggersocket.protocol.Request;
-import com.wordnik.swaggersocket.protocol.Response;
-import com.wordnik.swaggersocket.protocol.ResponseMessage;
 import com.wordnik.swaggersocket.protocol.StatusMessage;
 import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereRequest;
-import org.atmosphere.cpr.AtmosphereResponse;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.websocket.WebSocket;
 import org.atmosphere.websocket.WebSocketProcessor;
@@ -41,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -76,7 +74,6 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
      */
     @Override
     public void onOpen(WebSocket webSocket) {
-        webSocket.webSocketResponseFilter(serializer);
     }
 
     /**
@@ -112,7 +109,7 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
                     .identity(swaggerSocketRequest.getUuid()).build();
             try {
                 byte[] b = mapper.writeValueAsBytes(statusMessage);
-                webSocket.write(b, 0, b.length);
+                webSocket.write(t.response(), b, 0, b.length);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -145,7 +142,8 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
 
                 StatusMessage statusMessage = new StatusMessage.Builder().status(new StatusMessage.Status(200, "OK"))
                         .identity(identity).build();
-                webSocket.write(mapper.writeValueAsBytes(statusMessage));
+                webSocket.write(resource.getResponse(), mapper.writeValueAsBytes(statusMessage));
+                webSocket.webSocketResponseFilter(serializer);
 
                 if (!delegateHandshake) {
                     return null;
@@ -160,7 +158,7 @@ public class SwaggerSocketProtocol implements WebSocketProtocol {
                 if (!swaggerSocketMessage.getIdentity().equals(identity)) {
                     StatusMessage statusMessage = new StatusMessage.Builder().status(new StatusMessage.Status(503, "Not Allowed"))
                             .identity(identity).build();
-                    webSocket.write(mapper.writeValueAsBytes(statusMessage));
+                    webSocket.write(resource.getResponse(), mapper.writeValueAsBytes(statusMessage));
                     return null;
                 }
 
