@@ -261,6 +261,7 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
         }
 
         override def onError(t: Throwable) {
+          logger.error("", t);
           w.removeListener(this)
           l.error(new SwaggerSocketException(500, ""))
         }
