@@ -81,17 +81,17 @@
 
                 swaggerSocket.send(requests);
 
-                /**
-                 * Send a warm up request. This is just for demo purpose
-                 */
-                request = new jQuery.swaggersocket.Request()
-                        .path("/echo")
-                        .method("POST")
-                        .dataFormat("text/plain")
-                        .data("Welcome to SwaggerSocket Echo demo!")
-                        .listener(ss);
-
-                swaggerSocket.send(request);
+//                /**
+//                 * Send a warm up request. This is just for demo purpose
+//                 */
+//                request = new jQuery.swaggersocket.Request()
+//                        .path("/echo")
+//                        .method("POST")
+//                        .dataFormat("text/plain")
+//                        .data("Welcome to SwaggerSocket Echo demo!")
+//                        .listener(ss);
+//
+//                swaggerSocket.send(request);
 
                 $('ul').prepend($('<li></li>').text("Sending a warm up request using uuid " + request.getUUID()));
                 $('ul').prepend($('<li></li>').text("----------------------------"));

@@ -54,11 +54,11 @@ public class Response extends ProtocolBase {
 		this.uuid = uuid;
 	}
 
-	public int getStatus() {
+	public int getStatusCode() {
 		return status;
 	}
 
-	public void setStatus(int status) {
+	public void setStatusCode(int status) {
 		this.status = status;
 	}
 

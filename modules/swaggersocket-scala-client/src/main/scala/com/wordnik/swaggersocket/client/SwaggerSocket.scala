@@ -85,8 +85,10 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
       .body(request.getMessageBody)
       .build
 
+    val url = handshake.getPath + "?SwaggerSocket=1.0"
+
     try {
-      ws = w.open(handshake.getPath)
+      ws = w.open(url)
       ws.listener(new TextListener {
 
         override def onOpen {

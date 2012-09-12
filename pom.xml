@@ -135,14 +135,12 @@
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-library</artifactId>
                 <version>${scala-version}</version>
-                <scope>compile</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-compiler</artifactId>
                 <version>${scala-version}</version>
-                <scope>compile</scope>
             </dependency>
 
         </dependencies>
@@ -329,10 +327,10 @@
         <target.property>1.6</target.property>
         <jetty.version>7.6.0.v20120127</jetty.version>
         <scala-test-version>1.6.1</scala-test-version>
-        <atmosphere-version>1.0.0</atmosphere-version>
+        <atmosphere-version>1.1.0-SNAPSHOT</atmosphere-version>
         <junit-version>4.8.1</junit-version>
         <slf4j-version>1.6.3</slf4j-version>
-        <scala-version>2.9.1-1</scala-version>
+        <scala-version>2.9.2</scala-version>
         <jackson-version>1.8.3</jackson-version>
         <jersey-version>1.12</jersey-version>
         <nettosphere-version>1.4.2</nettosphere-version>

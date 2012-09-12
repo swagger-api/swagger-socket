@@ -295,11 +295,11 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       .build(), new SwaggerSocketListener() {
 
       override def error(e: SwaggerSocketException) {
+        errorCode = e.getStatusCode
         cd.countDown()
       }
 
       override def message(r: Request, s: Response) {
-        errorCode = s.getStatus
         cd.countDown()
       }
     })
@@ -332,12 +332,12 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
     var i: Int = 0;
     var listener = new SwaggerSocketListener() {
       override def error(e: SwaggerSocketException) {
+        errorCode(i) = e.getStatusCode
+        i += 1
         cd.countDown()
       }
 
       override def message(r: Request, s: Response) {
-        errorCode(i) = s.getStatus
-        i += 1
         cd.countDown()
       }
     }

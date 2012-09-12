@@ -37,7 +37,6 @@ public class NettoSphere {
         b.resource("./app")
                 .initParam("com.sun.jersey.config.property.packages", NettoSphere.class.getPackage().getName())
                 .initParam(DISABLE_ATMOSPHEREINTERCEPTOR, "true")
-                .webSocketProtocol(SwaggerSocketProtocol.class)
                 .port(8080)
                 .host("127.0.0.1")
                 .build();
