@@ -177,6 +177,8 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                 return Action.CONTINUE;
             }
 
+        } else {
+            request.setAttribute(SWAGGER_SOCKET_DISPATCHED, null);
         }
         return Action.CONTINUE;
     }
