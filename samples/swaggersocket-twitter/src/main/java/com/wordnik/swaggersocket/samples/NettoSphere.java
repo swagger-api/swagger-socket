@@ -15,8 +15,7 @@
  */
 package com.wordnik.swaggersocket.samples;
 
-import com.wordnik.swaggersocket.server.SwaggerSocketProtocol;
-import org.atmosphere.cpr.ApplicationConfig;
+import com.wordnik.swaggersocket.server.SwaggerSocketProtocolInterceptor;
 import org.atmosphere.nettosphere.Config;
 import org.atmosphere.nettosphere.Nettosphere;
 import org.slf4j.Logger;
@@ -26,7 +25,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import static org.atmosphere.cpr.ApplicationConfig.*;
+import static org.atmosphere.cpr.ApplicationConfig.DISABLE_ATMOSPHEREINTERCEPTOR;
 
 public class NettoSphere {
 
@@ -37,6 +36,7 @@ public class NettoSphere {
         b.resource("./app")
                 .initParam("com.sun.jersey.config.property.packages", NettoSphere.class.getPackage().getName())
                 .initParam(DISABLE_ATMOSPHEREINTERCEPTOR, "true")
+                .interceptor(new SwaggerSocketProtocolInterceptor())
                 .port(8080)
                 .host("127.0.0.1")
                 .build();

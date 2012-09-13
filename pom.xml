@@ -333,7 +333,7 @@
         <scala-version>2.9.2</scala-version>
         <jackson-version>1.8.3</jackson-version>
         <jersey-version>1.12</jersey-version>
-        <nettosphere-version>1.4.2</nettosphere-version>
+        <nettosphere-version>1.4.3-SNAPSHOT</nettosphere-version>
         <logback-version>1.0.0</logback-version>
     </properties>
 </project>

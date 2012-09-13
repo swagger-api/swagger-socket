@@ -2,7 +2,7 @@ package com.wordnik.swaggersocket.samples
 
 import org.atmosphere.nettosphere.Config
 import org.atmosphere.cpr.ApplicationConfig
-import com.wordnik.swaggersocket.server.SwaggerSocketProtocol
+import com.wordnik.swaggersocket.server.{SwaggerSocketProtocolInterceptor, SwaggerSocketProtocol}
 import org.atmosphere.nettosphere.Nettosphere
 import java.io.{InputStreamReader, BufferedReader}
 import org.slf4j.{LoggerFactory, Logger}
@@ -26,7 +26,7 @@ object NettoSphere {
       .initParam("com.wordnik.swagger.key", key)
       .initParam("com.sun.jersey.api.json.POJOMappingFeature", "true")
       .initParam("com.sun.jersey.config.property.packages", getClass.getPackage.getName)
-      .initParam(DISABLE_ATMOSPHEREINTERCEPTOR, "true")
+      .interceptor(new SwaggerSocketProtocolInterceptor())
       .port(8080)
       .host("127.0.0.1")
       .build
