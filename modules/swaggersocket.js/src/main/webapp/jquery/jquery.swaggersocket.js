@@ -260,12 +260,12 @@ jQuery.swaggersocket = function() {
                     return _path;
                 },
 
-                status : function(status) {
+                statusCode : function(status) {
                     _status = status;
                     return this;
                 },
 
-                getStatus : function() {
+                getStatusCode : function() {
                     return _status;
                 },
 
@@ -387,7 +387,7 @@ jQuery.swaggersocket = function() {
                         if (state == "messageReceived") {
                             // Invoke onOpen only when the handshake occurs.
                             if (!_handshakeDone) {
-                                if (response.getStatus() < 400) {
+                                if (response.getStatusCode() < 400) {
                                     if (typeof(listener.onOpen) != 'undefined') {
                                         if (response.transport != 'websocket') {
                                             setTimeout(function() {
@@ -457,7 +457,7 @@ jQuery.swaggersocket = function() {
                                         }
                                         return;
                                     default:
-                                        if (response.getStatus() < 400 && typeof(listener.onResponse) != 'undefined') {
+                                        if (response.getStatusCode() < 400 && typeof(listener.onResponse) != 'undefined') {
                                             try {
                                                 listener.onResponse(response);
                                             } catch (err) {
@@ -530,13 +530,13 @@ jQuery.swaggersocket = function() {
                                     _incompleteMessage = "";
                                     if (typeof(messageData.status) != 'undefined') {
                                         _identity = messageData.identity;
-                                        r.status(messageData.status.statusCode).reasonPhrase(messageData.status.reasonPhrase);
+                                        r.statusCode(messageData.status.statusCode).reasonPhrase(messageData.status.reasonPhrase);
                                         _pushResponse(r, response.state, listener);
                                     } else if (typeof(messageData.responses) != 'undefined') {
                                         var _responses = new Array();
                                         var i = 0;
                                         jQuery.each(messageData.responses, function(index, res) {
-                                            r.status(res.status).path(res.path).headers(res.headers).data(res.messageBody).uuid(res.uuid);
+                                            r.statusCode(res.statusCode).path(res.path).headers(res.headers).data(res.messageBody).uuid(res.uuid);
 
                                             /*
                                              We may run OOM here because we kept the Request object around.
@@ -555,7 +555,7 @@ jQuery.swaggersocket = function() {
                                 } else if (response.state == 're-opening') {
                                     response.request.method = 'GET';
                                 } else if (response.state == "closed" && typeof(listener.onClose) != 'undefined') {
-                                    r.reasonPhrase("close").status(503);
+                                    r.reasonPhrase("close").statusCode(503);
                                     try {
                                         listener.onClose(r);
                                     } catch (err) {
@@ -564,7 +564,7 @@ jQuery.swaggersocket = function() {
                                         }
                                     }
                                 } else if (response.state == "error" && typeof(listener.onError) != 'undefined') {
-                                    r.status(response.status).reasonPhrase("Unexpected error: " + response.responseBody);
+                                    r.statusCode(response.statusCode).reasonPhrase("Unexpected error: " + response.responseBody);
                                     try {
                                         listener.onError(r);
                                     } catch (err) {
@@ -593,7 +593,7 @@ jQuery.swaggersocket = function() {
                     if (typeof(_identity) == 'undefined') {
                         var listener = jQuery.extend(requests.getListener(), new jQuery.swaggersocket.SwaggerSocketListener());
                         var r = new jQuery.swaggersocket.Response();
-                        r.status("503").reasonPhrase("The open operation hasn't completed yet. Make sure your SwaggerSocketListener#onOpen has been invoked first.");
+                        r.statusCode("503").reasonPhrase("The open operation hasn't completed yet. Make sure your SwaggerSocketListener#onOpen has been invoked first.");
 
                         if (typeof(listener.onError) != "undefined") {
                             listener.onError(r);
