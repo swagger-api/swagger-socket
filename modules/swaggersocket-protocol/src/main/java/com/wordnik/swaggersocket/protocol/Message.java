@@ -15,17 +15,21 @@
  */
 package com.wordnik.swaggersocket.protocol;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import java.util.List;
 
 /**
  * A Java object representing the SwaggerSocket protocol implementation.
  */
+@JsonIgnoreProperties({"transactionID"})
 public class Message {
 
     private String identity;
     private List<Request> requests;
+    private String transactionID;
 
-    public Message(){
+    public Message() {
     }
 
     public List<Request> getRequests() {
@@ -42,6 +46,15 @@ public class Message {
 
     public void setIdentity(String identity) {
         this.identity = identity;
+    }
+
+    public Message transactionID(String transactionID) {
+        this.transactionID = transactionID;
+        return this;
+    }
+
+    public String transactionID() {
+        return transactionID;
     }
 
 }

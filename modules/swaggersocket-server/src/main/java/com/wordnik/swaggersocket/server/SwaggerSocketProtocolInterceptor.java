@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpSessionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -60,14 +61,16 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
 
     private final static String SWAGGER_SOCKET_DISPATCHED = "request.dispatched";
     private final static String IDENTITY = "swaggersocket.identity";
-    private final static String RESPONSE_COUNTER = "ResponseCountNumber";
-    private final static String SUSPENDED_RESPONSE = "PendingResource";
+    private final static String RESPONSE_COUNTER = "-ResponseCountNumber";
+    private final static String SUSPENDED_RESPONSE = "-PendingResource";
+
 
     private static final Logger logger = LoggerFactory.getLogger(SwaggerSocketProtocolInterceptor.class);
     private final ObjectMapper mapper;
     private boolean delegateHandshake = false;
     private final AsyncIOInterceptor interceptor = new Interceptor();
     private final ThreadLocal<Request> ssRequest = new ThreadLocal<Request>();
+    private final ThreadLocal<String> transactionIdentity = new ThreadLocal<String>();
 
     public SwaggerSocketProtocolInterceptor() {
         this.mapper = new ObjectMapper();
@@ -122,11 +125,6 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                 if (handshakeTx.replaceAll(" ", "").startsWith("{\"handshake\"")) {
                     // This will fail if the message is not well formed.
                     HandshakeMessage handshakeMessage = mapper.readValue(data, HandshakeMessage.class);
-
-                    if (getContextValue(request, IDENTITY) != null) {
-                        request.getSession().invalidate();
-                    }
-
                     String identity = UUID.randomUUID().toString();
                     addContextValue(request, IDENTITY, identity);
 
@@ -139,9 +137,9 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                     }
                 } else {
                     Message swaggerSocketMessage = mapper.readValue(data, Message.class);
+                    swaggerSocketMessage.transactionID(UUID.randomUUID().toString());
 
                     String identity = (String) getContextValue(request, IDENTITY);
-
                     if (!swaggerSocketMessage.getIdentity().equals(identity)) {
                         StatusMessage statusMessage = new StatusMessage.Builder().status(new StatusMessage.Status(503, "Not Allowed"))
                                 .identity(identity).build();
@@ -149,9 +147,12 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                         return Action.CANCELLED;
                     }
 
+                    transactionIdentity.set(swaggerSocketMessage.transactionID());
+
                     List<Request> requests = swaggerSocketMessage.getRequests();
+                    addContextValue(request, swaggerSocketMessage.transactionID() + RESPONSE_COUNTER, new AtomicInteger(requests.size()));
+
                     AtmosphereRequest ar;
-                    addContextValue(request, RESPONSE_COUNTER, new AtomicInteger(requests.size()));
                     for (Request req : requests) {
                         ar = toAtmosphereRequest(request, req);
                         try {
@@ -180,7 +181,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
         return Action.CONTINUE;
     }
 
-    private final void attachWriter(AtmosphereResource r) {
+    private final void attachWriter(final AtmosphereResource r) {
         final AtmosphereRequest request = r.getRequest();
 
         AtmosphereResponse res = r.getResponse();
@@ -189,7 +190,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
             res.asyncIOWriter(new AtmosphereInterceptorWriter() {
 
                 @Override
-                protected void writeReady(AtmosphereResponse r, byte[] data) throws IOException {
+                protected void writeReady(AtmosphereResponse response, byte[] data) throws IOException {
 
                     // We are buffering response.
                     if (data == null) return;
@@ -201,18 +202,18 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                         try {
                             resource = queue.take();
                         } catch (InterruptedException e) {
-                            throw new IOException(e);
+                            logger.trace("", e);
+                            return;
                         }
 
                         OutputStream o = resource.getResponse().getResponse().getOutputStream();
                         o.write(data);
                         o.flush();
                         resource.resume();
-                        addContextValue(request, SUSPENDED_RESPONSE, null);
                     } else {
-                        r.write(data);
+                        response.write(data);
                     }
-                    r.flushBuffer();
+                    response.flushBuffer();
                 }
             });
         }
@@ -341,10 +342,10 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                 .path(swaggerSocketRequest.getPath());
         String identity = (String) getContextValue(res.request(), IDENTITY);
 
-        AtomicInteger expectedResponseCount = (AtomicInteger) getContextValue(res.request(), RESPONSE_COUNTER);
+        AtomicInteger expectedResponseCount = (AtomicInteger) getContextValue(res.request(), transactionIdentity.get() + RESPONSE_COUNTER);
         ResponseMessage m = null;
         if (expectedResponseCount != null && res.resource().transport() != AtmosphereResource.TRANSPORT.WEBSOCKET) {
-            m = (ResponseMessage) getContextValue(res.request(), ResponseMessage.class.getName());
+            m = (ResponseMessage) getContextValue(res.request(), transactionIdentity.get() + ResponseMessage.class.getName());
             if (m != null) {
                 m.response(builder.build());
             } else {
@@ -354,7 +355,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
             if (expectedResponseCount.decrementAndGet() <= 0) {
                 return m;
             } else {
-                addContextValue(res.request(), ResponseMessage.class.getName(), m);
+                addContextValue(res.request(), transactionIdentity.get() + ResponseMessage.class.getName(), m);
                 return null;
             }
         }
