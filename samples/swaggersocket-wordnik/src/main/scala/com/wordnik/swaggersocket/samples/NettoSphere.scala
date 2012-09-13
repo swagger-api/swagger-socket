@@ -1,12 +1,10 @@
 package com.wordnik.swaggersocket.samples
 
 import org.atmosphere.nettosphere.Config
-import org.atmosphere.cpr.ApplicationConfig
-import com.wordnik.swaggersocket.server.{SwaggerSocketProtocolInterceptor, SwaggerSocketProtocol}
+import com.wordnik.swaggersocket.server.{SwaggerSocketProtocolInterceptor}
 import org.atmosphere.nettosphere.Nettosphere
 import java.io.{InputStreamReader, BufferedReader}
 import org.slf4j.{LoggerFactory, Logger}
-import org.atmosphere.cpr.ApplicationConfig._
 
 /**
  * A NettoSphere Server that can be used without the needs of a Servlet Container.

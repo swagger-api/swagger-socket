@@ -2,7 +2,7 @@ package com.wordnik.swaggersocket.samples
 
 import org.atmosphere.nettosphere.Config
 import org.atmosphere.cpr.ApplicationConfig
-import com.wordnik.swaggersocket.server.{SwaggerSocketProtocolInterceptor, SwaggerSocketProtocol}
+import com.wordnik.swaggersocket.server.{SwaggerSocketProtocolInterceptor}
 import org.atmosphere.nettosphere.Nettosphere
 import java.io.{InputStreamReader, BufferedReader}
 import org.slf4j.{LoggerFactory, Logger}
