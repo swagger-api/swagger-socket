@@ -56,7 +56,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.atmosphere.cpr.FrameworkConfig.INJECTED_ATMOSPHERE_RESOURCE;
 
 @AtmosphereInterceptorService
-public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapter {
+public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapter{
 
     private final static String SWAGGER_SOCKET_DISPATCHED = "request.dispatched";
     private final static String IDENTITY = "swaggersocket.identity";
@@ -120,18 +120,19 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                 String handshakeTx = data.substring(0, 20);
                 logger.debug(data);
                 if (handshakeTx.replaceAll(" ", "").startsWith("{\"handshake\"")) {
-                    // TODO: We only support one application.
-
-                    request.getSession().invalidate();
-
                     // This will fail if the message is not well formed.
                     HandshakeMessage handshakeMessage = mapper.readValue(data, HandshakeMessage.class);
 
+                    if (getContextValue(request, IDENTITY) != null) {
+                        request.getSession().invalidate();
+                    }
+
                     String identity = UUID.randomUUID().toString();
+                    addContextValue(request, IDENTITY, identity);
+
                     StatusMessage statusMessage = new StatusMessage.Builder().status(new StatusMessage.Status(200, "OK"))
                             .identity(identity).build();
                     response.getOutputStream().write(mapper.writeValueAsBytes(statusMessage));
-                    addContextValue(request, IDENTITY, identity);
 
                     if (!delegateHandshake) {
                         return Action.CANCELLED;
