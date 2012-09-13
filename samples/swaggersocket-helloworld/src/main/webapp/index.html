@@ -9,7 +9,7 @@
             new jQuery.swaggersocket.SwaggerSocket()
                     .open(document.location.toString() + "helloworld",
                             function(swaggerSocket, r) {
-                                if (r.getStatus() == 200) {
+                                if (r.getStatusCode() == 200) {
                                     var ss = new jQuery.swaggersocket.SwaggerSocketListener();
                                     ss.onResponse = function(r) {
                                         $('ul').prepend($('<li></li>').text(r.getData()));
