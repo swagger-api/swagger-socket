@@ -116,6 +116,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.atmosphere</groupId>
+            <artifactId>atmosphere-jersey</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

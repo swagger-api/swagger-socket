@@ -55,11 +55,11 @@ object ApiInvoker {
       latchs.clear
       if (!normalClose) {
         logger.trace("Socket closed. Re-opening")
-        try {
-          ss = SwaggerSocket().open(new Request.Builder().path(host).build()).listener(this)
-        } catch {
-          case t: Throwable => logger.trace("Re-open exception", t)
-        }
+//        try {
+//          ss = SwaggerSocket().open(new Request.Builder().path(host).build()).listener(this)
+//        } catch {
+//          case t: Throwable => logger.trace("Re-open exception", t)
+//        }
       }
     }
 
@@ -83,7 +83,8 @@ object ApiInvoker {
         cd.countDown
       }
       latchs.clear
-      logger.error("Unexpected error {} ", e.getMessage, e)
+      logger.error("Unexpected error {} {}", e.getStatusCode, e.getReasonPhrase)
+      logger.error("", e)
     }
 
     override def message(r: Request, s: Response) {
@@ -128,7 +129,8 @@ object ApiInvoker {
 //      case None => throw new ApiException(503, "no host for " + serviceName + " available")
 //      case _ =>
 //    }
-    val fq = "http://" + host + portPath
+    host = "127.0.0.1"
+    val fq = "ws://" + host + ":" + portPath
 
     ss = ss.open(new Request.Builder().path(fq).build()).listener(listener)
     val cd: CountDownLatch = new CountDownLatch(1)
@@ -146,7 +148,7 @@ object ApiInvoker {
       .method(method.toUpperCase)
       .queryString(queryParams.map(p => new QueryString(p._1, p._2)).toList)
       .headers(headerParams.map(h => new Header(h._1, h._2)).toList)
-      .format("JSON")
+      .format("application/json")
       .attach(cd)
       .body({
       body match {
