@@ -34,7 +34,7 @@ class RootResourceTest extends ApiInvokerTest with FlatSpec with ShouldMatchers 
     val queryParams = new HashMap[String, String]
     val headerParams = new HashMap[String, String]
 
-    apiInvoker.invokeApi("/b", port1.toString, "/", "POST", queryParams.toMap, "yo!", headerParams.toMap);
+    apiInvoker.invokeApi("rootresource", port1.toString, "/b", "POST", queryParams.toMap, "yo!", headerParams.toMap);
   }
 }
 

@@ -42,7 +42,7 @@ object ApiInvoker {
   val defaultHeaders: HashMap[String, String] = HashMap()
   val logger = LoggerFactory.getLogger(ApiInvoker.getClass)
   var ss = SwaggerSocket()
-  var host: String = null
+  var host: String = "127.0.0.1"
   var latchs: ConcurrentLinkedQueue[CountDownLatch] = new ConcurrentLinkedQueue[CountDownLatch]
   var normalClose = false
   var cleaner: ExecutorService = Executors.newSingleThreadExecutor()
@@ -124,12 +124,12 @@ object ApiInvoker {
   }
 
   def invokeApi(serviceName: String, portPath: String, path: String, method: String, queryParams: Map[String, String], body: AnyRef, headerParams: Map[String, String]) = {
+    // TODO: Needs to have an implementation of the SwaggerLocator
 //    val host = SwaggerLocator.endpointFor(serviceName)
 //    host match {
 //      case None => throw new ApiException(503, "no host for " + serviceName + " available")
 //      case _ =>
 //    }
-    host = "127.0.0.1"
     val fq = "ws://" + host + ":" + portPath
 
     ss = ss.open(new Request.Builder().path(fq).build()).listener(listener)
@@ -144,7 +144,7 @@ object ApiInvoker {
     })
 
     val request = new Request.Builder()
-      .path(serviceName)
+      .path(path)
       .method(method.toUpperCase)
       .queryString(queryParams.map(p => new QueryString(p._1, p._2)).toList)
       .headers(headerParams.map(h => new Header(h._1, h._2)).toList)
