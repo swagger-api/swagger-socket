@@ -18,7 +18,7 @@ package com.wordnik.swaggersocket.client
 /**
  * When a SwaggerSocket protocol exception occurs.
  */
-class SwaggerSocketException(status : Int, reasonPhrase : String) extends RuntimeException {
+class SwaggerSocketException(status : Int, reasonPhrase : String) extends RuntimeException("SwaggerSocket unexpected protocol response") {
 
   /**
    * Return the status code of the exception
