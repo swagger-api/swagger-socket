@@ -1,9 +1,13 @@
 jQuery.swaggersocket = function() {
 
     loadAtmosphere(jQuery);
+
+    // Disable unload
+    jQuery(window).unbind("unload.atmosphere");
+
     return {
 
-        version : 1.0,
+        version : 1.1,
 
         Options : {
             timeout : 300000,
@@ -21,7 +25,8 @@ jQuery.swaggersocket = function() {
             messageDelimiter : '|',
             connectTimeout : -1,
             reconnectInterval : 0,
-            dropAtmosphereHeaders : true
+            dropAtmosphereHeaders : true,
+            readResponsesHeaders: false
         },
 
         _identity : 0,
@@ -220,6 +225,30 @@ jQuery.swaggersocket = function() {
                     } else {
                         s += ",\"messageBody\" : " + _data + "}";
                     }
+                    return s;
+                }
+            };
+            return _self;
+        },
+
+        CloseMessage : function() {
+            var _reason, _identity, _self = {
+
+                reason:function (reason) {
+                    _reason = reason;
+                    return this;
+                },
+
+                identity:function (identity) {
+                    _identity = identity;
+                    return this;
+                },
+
+                toJSON : function() {
+                    var s = "{ \"closeMessage\" : { \"reason\" : \""
+                        + _reason
+                        + "\",\"identity\" : \"" + _identity
+                        + "\" }"
                     return s;
                 }
             };
@@ -478,9 +507,7 @@ jQuery.swaggersocket = function() {
                                 }
                             }
                         }
-                    }
-
-                    ;
+                    };
 
                     // TODO : check request and options' type.
                     // TODO: Support debug level
@@ -616,9 +643,7 @@ jQuery.swaggersocket = function() {
                             fallbackTransport : 'long-polling',
                             data: data
                         });
-                    }
-
-                    ;
+                    };
 
                     switch (Object.prototype.toString.call(requests)) {
                         case "[object Array]":
@@ -636,11 +661,24 @@ jQuery.swaggersocket = function() {
                  */
                 close : function() {
                     if (typeof(_socket) != 'undefined') {
+                        var r = new jQuery.swaggersocket.CloseMessage();
+                        r.reason("unload").identity(_identity);
+                        _socket.push(jQuery.atmosphere.request = {
+                            logLevel : 'debug',
+                            transport : 'long-polling',
+                            headers : { "SwaggerSocket": "1.0"},
+                            method : "POST",
+                            fallbackTransport : 'long-polling',
+                            data: r.toJSON()
+                        });
                         _socket.unsubscribe();
                     }
                     return this;
                 }
             };
+            jQuery(window).bind("unload.swaggersocket", function() {
+                _self.close();
+            });
             return _self;
         }
     }

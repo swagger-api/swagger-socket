@@ -15,6 +15,8 @@
  */
 package com.wordnik.swaggersocket.server;
 
+import com.wordnik.swaggersocket.protocol.Close;
+import com.wordnik.swaggersocket.protocol.CloseMessage;
 import com.wordnik.swaggersocket.protocol.HandshakeMessage;
 import com.wordnik.swaggersocket.protocol.Header;
 import com.wordnik.swaggersocket.protocol.Message;
@@ -35,6 +37,8 @@ import org.atmosphere.cpr.AtmosphereInterceptorAdapter;
 import org.atmosphere.cpr.AtmosphereInterceptorWriter;
 import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.AtmosphereResourceEvent;
+import org.atmosphere.cpr.AtmosphereResourceEventListenerAdapter;
 import org.atmosphere.cpr.AtmosphereResponse;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -90,6 +94,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
             AtmosphereResponse response = r.getResponse();
             response.setContentType("application/json");
 
+            logger.debug("Method {} Transport {}", request.getMethod(), r.transport());
             // Suspend to keep the connection OPEN.
             if (request.getMethod() == "GET" && r.transport().equals(AtmosphereResource.TRANSPORT.LONG_POLLING)) {
                 BlockingQueue<AtmosphereResource> queue = (BlockingQueue<AtmosphereResource>)
@@ -120,9 +125,9 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                     return Action.CANCELLED;
                 }
 
-                String handshakeTx = data.substring(0, 20);
+                String message = data.substring(0, 20).replaceAll(" ", "");
                 logger.debug(data);
-                if (handshakeTx.replaceAll(" ", "").startsWith("{\"handshake\"")) {
+                if (message.startsWith("{\"handshake\"")) {
                     // This will fail if the message is not well formed.
                     HandshakeMessage handshakeMessage = mapper.readValue(data, HandshakeMessage.class);
                     String identity = UUID.randomUUID().toString();
@@ -134,6 +139,15 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
 
                     if (!delegateHandshake) {
                         return Action.CANCELLED;
+                    }
+                } else if (message.startsWith("{\"closeMessage\"")) {
+                    Close c = mapper.readValue(data, Close.class);
+
+                    logger.info("Client disconnected {} with reason {}", c.getCloseMessage().getIdentity(), c.getCloseMessage().getReason());
+                    try {
+                        request.getSession().invalidate();
+                    } catch (Exception ex) {
+                        logger.warn("", ex);
                     }
                 } else {
                     Message swaggerSocketMessage = mapper.readValue(data, Message.class);
@@ -208,10 +222,16 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                             return;
                         }
 
-                        OutputStream o = resource.getResponse().getResponse().getOutputStream();
-                        o.write(data);
-                        o.flush();
-                        resource.resume();
+                        logger.trace("Resuming {}", resource.uuid());
+
+                        try {
+                            OutputStream o = resource.getResponse().getResponse().getOutputStream();
+                            o.write(data);
+                            o.flush();
+                            resource.resume();
+                        } catch (IOException ex) {
+                            logger.warn("", ex);
+                        }
                     } else {
                         response.write(data);
                     }
