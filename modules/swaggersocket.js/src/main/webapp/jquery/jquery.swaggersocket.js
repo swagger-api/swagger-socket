@@ -545,6 +545,7 @@ jQuery.swaggersocket = function() {
                         connectTimeout : options.connectTimeout,
                         reconnectInterval : options.reconnectInterval,
                         dropAtmosphereHeaders : options.dropAtmosphereHeaders,
+                        data: _handshake.toJSON(),
 
                         callback : function(response) {
                             try {
@@ -581,6 +582,7 @@ jQuery.swaggersocket = function() {
                                     }
                                 } else if (response.state == 're-opening') {
                                     response.request.method = 'GET';
+                                    response.request.data = '';
                                 } else if (response.state == "closed" && typeof(listener.onClose) != 'undefined') {
                                     r.reasonPhrase("close").statusCode(503);
                                     try {
@@ -606,8 +608,7 @@ jQuery.swaggersocket = function() {
                                 }
                                 _incompleteMessage = _incompleteMessage + response.responseBody;
                             }
-                        },
-                        data: _handshake.toJSON()
+                        }
                     });
                     return this;
                 },
