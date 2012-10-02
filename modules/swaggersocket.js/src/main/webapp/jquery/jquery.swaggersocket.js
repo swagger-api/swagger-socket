@@ -671,7 +671,7 @@ jQuery.swaggersocket = function() {
                             fallbackTransport : 'long-polling',
                             data: r.toJSON()
                         });
-                        _socket.unsubscribe();
+                        _socket.close();
                     }
                     return this;
                 }
