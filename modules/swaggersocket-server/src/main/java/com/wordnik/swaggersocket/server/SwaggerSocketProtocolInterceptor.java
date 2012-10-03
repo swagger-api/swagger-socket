@@ -137,7 +137,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                     if (identity == null) {
                         identity = UUID.randomUUID().toString();
                     } else {
-                        logger.info("Client disconnected {}, cleaning session {}", identity);
+                        logger.debug("Client disconnected {}, cleaning session {}", identity);
                         try {
                             Enumeration<String> e = request.getSession().getAttributeNames();
                             while (e.hasMoreElements()) {
@@ -159,7 +159,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                 } else if (message.startsWith("{\"closeMessage\"")) {
                     Close c = mapper.readValue(data, Close.class);
 
-                    logger.info("Client disconnected {} with reason {}", c.getCloseMessage().getIdentity(), c.getCloseMessage().getReason());
+                    logger.debug("Client disconnected {} with reason {}", c.getCloseMessage().getIdentity(), c.getCloseMessage().getReason());
                     try {
                         request.getSession().invalidate();
                     } catch (Exception ex) {
