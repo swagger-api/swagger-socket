@@ -50,6 +50,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,7 +131,22 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                 if (message.startsWith("{\"handshake\"")) {
                     // This will fail if the message is not well formed.
                     HandshakeMessage handshakeMessage = mapper.readValue(data, HandshakeMessage.class);
-                    String identity = UUID.randomUUID().toString();
+
+                    // If we missed the CloseReason for whatever reason (IE is a good candidate), make sure we swap the previous session anyway.
+                    String identity = (String) getContextValue(request, IDENTITY);
+                    if (identity == null) {
+                        identity = UUID.randomUUID().toString();
+                    } else {
+                        logger.info("Client disconnected {}, cleaning session {}", identity);
+                        try {
+                            Enumeration<String> e = request.getSession().getAttributeNames();
+                            while (e.hasMoreElements()) {
+                                request.getSession().removeAttribute(e.nextElement());
+                            }
+                        } catch (Exception ex) {
+                            logger.warn("", ex);
+                        }
+                    }
                     addContextValue(request, IDENTITY, identity);
 
                     StatusMessage statusMessage = new StatusMessage.Builder().status(new StatusMessage.Status(200, "OK"))
