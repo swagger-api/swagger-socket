@@ -783,8 +783,8 @@ function loadAtmosphere(jQuery) {
         });
 
         // Prevent ESC to kill the connection from Firefox.
-        jQuery(window).keypress(function(e) {
-            if (e.keyCode == 27) {
+        jQuery(window).keypress(function(e){
+            if(e.keyCode == 27){
                 e.preventDefault();
             }
         });
@@ -798,7 +798,7 @@ function loadAtmosphere(jQuery) {
         };
 
         return {
-            version : "1.0.1",
+            version : "1.1",
             requests : [],
             callbacks : [],
 
@@ -1101,11 +1101,13 @@ function loadAtmosphere(jQuery) {
                                 return;
                             }
 
-                            var storage = window.localStorage, get = function(key) {
-                                return jQuery.parseJSON(storage.getItem(name + "-" + key));
-                            }, set = function(key, value) {
-                                storage.setItem(name + "-" + key, jQuery.stringifyJSON(value));
-                            };
+                            var storage = window.localStorage,
+                                get = function(key) {
+                                    return jQuery.parseJSON(storage.getItem(name + "-" + key));
+                                },
+                                set = function(key, value) {
+                                    storage.setItem(name + "-" + key, jQuery.stringifyJSON(value));
+                                };
 
                             return {
                                 init: function() {
@@ -1266,9 +1268,7 @@ function loadAtmosphere(jQuery) {
                             }
                         }
                     };
-                }
-
-                ;
+                };
 
                 function share() {
                     var storageService, name = "atmosphere-" + _request.url, servers = {
@@ -1344,8 +1344,7 @@ function loadAtmosphere(jQuery) {
                                         win[key] = value;
                                     }
                                 },
-                                close : function() {
-                                }
+                                close : function() {}
                             };
                         }
                     };
@@ -1445,7 +1444,7 @@ function loadAtmosphere(jQuery) {
                  */
                 function _jsonp(request) {
                     // When CORS is enabled, make sure we force the proper transport.
-                    request.transport = "jsonp";
+                    request.transport="jsonp";
 
                     var rq = _request;
                     if ((request != null) && (typeof(request) != 'undefined')) {
@@ -1900,8 +1899,8 @@ function loadAtmosphere(jQuery) {
                             messages.push(message.substring(0, messageLength));
                         }
 
-                        if (messages.length == 0 || (messageStart != -1 && message.length != 0 && messageLength != message.length)) {
-                            response.partialMessage = messageLength + request.messageDelimiter + message;
+                        if (messages.length == 0 || (messageStart != -1 && message.length != 0 && messageLength != message.length)){
+                            response.partialMessage = messageLength + request.messageDelimiter + message ;
                         } else {
                             response.partialMessage = "";
                         }
@@ -2407,6 +2406,7 @@ function loadAtmosphere(jQuery) {
                         // XDomain loop forever on itself without this.
                         // TODO: Clearly I need to come with something better than that solution
                         if (rq.lastMessage == xdr.responseText) return;
+                        rq.lastMessage = xdr.responseText;
 
                         if (rq.executeCallbackBeforeReconnect) {
                             xdrCallback(xdr);
@@ -2424,20 +2424,18 @@ function loadAtmosphere(jQuery) {
                         if (!rq.executeCallbackBeforeReconnect) {
                             xdrCallback(xdr);
                         }
-                        rq.lastMessage = xdr.responseText;
                     };
 
                     return {
                         open: function() {
-                            if (rq.method == 'POST') {
-                                rq.attachHeadersAsQueryString = true;
-                            }
                             var url = _attachHeaders(rq);
-                            if (rq.method == 'POST') {
-                                url += "&X-Atmosphere-Post-Body=" + encodeURIComponent(rq.data);
-                            }
                             xdr.open(rq.method, rewriteURL(url));
-                            xdr.send();
+                            if (rq.method == 'GET') {
+                                xdr.send();
+                            } else {
+                                xdr.send(rq.data);
+                            }
+
                             if (rq.connectTimeout > -1) {
                                 rq.id = setTimeout(function() {
                                     if (rq.requestCount == 0) {
@@ -2630,7 +2628,7 @@ function loadAtmosphere(jQuery) {
                         if (_localStorageService) {
                             _localStorageService.localSend(message);
                         } else {
-                            _storageService.signal("localMessage", jQuery.stringifyJSON({id: guid , event: message}));
+                            _storageService.signal("localMessage",  jQuery.stringifyJSON({id: guid , event: message}));
                         }
                     } catch (err) {
                         jQuery.atmosphere.error(err);
@@ -3164,7 +3162,7 @@ function loadAtmosphere(jQuery) {
      * Licensed under the Apache License, Version 2.0
      * http://www.apache.org/licenses/LICENSE-2.0
      */
-// This plugin is heavily based on Douglas Crockford's reference implementation
+    // This plugin is heavily based on Douglas Crockford's reference implementation
     (function(jQuery) {
 
         var escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g, meta = {
