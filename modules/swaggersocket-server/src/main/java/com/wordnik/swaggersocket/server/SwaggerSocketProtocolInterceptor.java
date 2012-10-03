@@ -57,6 +57,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.atmosphere.cpr.FrameworkConfig.INJECTED_ATMOSPHERE_RESOURCE;
@@ -232,26 +233,33 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                     if (queue != null) {
                         AtmosphereResource resource;
                         try {
-                            resource = queue.take();
+                            // TODO: Should this be configurable
+                            // We stay suspended for 60 seconds
+                            resource = queue.poll(60, TimeUnit.SECONDS);
                         } catch (InterruptedException e) {
                             logger.trace("", e);
                             return;
                         }
 
-                        logger.trace("Resuming {}", resource.uuid());
+                        if (resource == null) {
+                            logger.debug("No resource was suspended, resuming the second connection.");
+                        } else {
 
-                        try {
-                            OutputStream o = resource.getResponse().getResponse().getOutputStream();
-                            o.write(data);
-                            o.flush();
-                            resource.resume();
-                        } catch (IOException ex) {
-                            logger.warn("", ex);
+                            logger.trace("Resuming {}", resource.uuid());
+
+                            try {
+                                OutputStream o = resource.getResponse().getResponse().getOutputStream();
+                                o.write(data);
+                                o.flush();
+                                resource.resume();
+                            } catch (IOException ex) {
+                                logger.warn("", ex);
+                            }
                         }
                     } else {
                         response.write(data);
+                        response.flushBuffer();
                     }
-                    response.flushBuffer();
                 }
             });
         }
