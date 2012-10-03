@@ -677,9 +677,15 @@ jQuery.swaggersocket = function() {
                     return this;
                 }
             };
-            jQuery(window).bind("unload.swaggersocket", function() {
-                _self.close();
-            });
+            if (jQuery.browser.msie) {
+                jQuery(window).bind("beforeunload", function(){
+                    _self.close();
+                });
+            } else {
+                jQuery(window).bind("unload.swaggersocket", function() {
+                   _self.close();
+               });
+            }
             return _self;
         }
     }
@@ -2427,18 +2433,18 @@ function loadAtmosphere(jQuery) {
                     };
 
                     return {
-                        open: function() {
-                            var url = _attachHeaders(rq);
+                        open:function () {
                             // IE may not POST the body when the xdr.send(data) for an unknown reason
                             // when the page reload.
                             // So the code below MUST not be changed.
+                            var url = _attachHeaders(rq);
                             if (rq.method == 'POST') {
                                 url += "&X-Atmosphere-Post-Body=" + encodeURIComponent(rq.data);
                             }
                             xdr.open(rq.method, rewriteURL(url));
                             xdr.send();
                             if (rq.connectTimeout > -1) {
-                                rq.id = setTimeout(function() {
+                                rq.id = setTimeout(function () {
                                     if (rq.requestCount == 0) {
                                         xdr.abort();
                                         _prepareCallback("Connect timeout", "closed", 200, rq.transport);
@@ -2446,7 +2452,7 @@ function loadAtmosphere(jQuery) {
                                 }, rq.connectTimeout);
                             }
                         },
-                        close: function() {
+                        close:function () {
                             xdr.abort();
                             _prepareCallback(xdr.responseText, "closed", 200, transport);
                         }
