@@ -248,7 +248,7 @@ jQuery.swaggersocket = function() {
                     var s = "{ \"closeMessage\" : { \"reason\" : \""
                         + _reason
                         + "\",\"identity\" : \"" + _identity
-                        + "\" }"
+                        + "\" }}"
                     return s;
                 }
             };
