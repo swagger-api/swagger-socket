@@ -49,13 +49,6 @@
 
         <dependency>
             <groupId>com.wordnik</groupId>
-            <artifactId>utils_2.9.1</artifactId>
-            <version>1.5-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wordnik</groupId>
             <artifactId>common-utils_2.9.1</artifactId>
             <version>1.0.1</version>
             <scope>compile</scope>
