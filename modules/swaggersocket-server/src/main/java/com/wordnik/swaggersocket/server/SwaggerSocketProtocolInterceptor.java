@@ -75,7 +75,6 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
     private final ObjectMapper mapper;
     private boolean delegateHandshake = false;
     private final AsyncIOInterceptor interceptor = new Interceptor();
-    private final ThreadLocal<Request> ssRequest = new ThreadLocal<Request>();
     private final ThreadLocal<String> transactionIdentity = new ThreadLocal<String>();
 
     public SwaggerSocketProtocolInterceptor() {
@@ -193,7 +192,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                             request.removeAttribute(INJECTED_ATMOSPHERE_RESOURCE);
                             response.request(ar);
                             attachWriter(r);
-                            ssRequest.set(req);
+                            request.setAttribute("swaggerSocketRequest", req);
 
                             framework.doCometSupport(ar, response);
                         } catch (ServletException e) {
@@ -351,7 +350,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
 
         @Override
         public byte[] error(AtmosphereResponse response, int statusCode, String reasonPhrase) {
-            Request swaggerSocketRequest = ssRequest.get();
+            Request swaggerSocketRequest = (Request) response.request().getAttribute("swaggerSocketRequest");
 
             if (swaggerSocketRequest == null) {
                 logger.debug("Handshake mapping (could be expected) {} : {}", response.getStatus(), response.getStatusMessage());
@@ -382,7 +381,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
             builder.header(new Header(s, headers.get(s)));
         }
 
-        Request swaggerSocketRequest = ssRequest.get();
+        Request swaggerSocketRequest = (Request) res.request().getAttribute("swaggerSocketRequest");
 
         builder.uuid(swaggerSocketRequest.getUuid()).method(swaggerSocketRequest.getMethod())
                 .path(swaggerSocketRequest.getPath());
