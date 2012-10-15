@@ -72,8 +72,6 @@ public class TwitterFeed {
                         query = "?q=" + tagid;
                     }
 
-                    // Wait for the connection to be suspended.
-                    suspendLatch.await();
                     asyncClient.prepareGet("http://search.twitter.com/search.json" + query).execute(
                             new AsyncCompletionHandler<Object>() {
 
@@ -91,6 +89,8 @@ public class TwitterFeed {
                                     JSONObject json = new JSONObject(s);
                                     refreshUrl.set(json.getString("refresh_url"));
                                     if (json.getJSONArray("results").length() > 1) {
+                                        // Wait for the connection to be suspended.
+                                        suspendLatch.await();
                                         feed.broadcast(s).get();
                                     }
                                     return null;
@@ -100,7 +100,7 @@ public class TwitterFeed {
                     return null;
                 }
 
-            }, 60, TimeUnit.MINUTES);
+            }, 1, TimeUnit.MINUTES);
 
             futures.put(tagid, future);
         }
