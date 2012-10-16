@@ -42,7 +42,6 @@ public class SwaggerSocketServlet extends AtmosphereServlet {
 
     public SwaggerSocketServlet(boolean isFilter, boolean autoDetectHandlers) {
         super(isFilter, autoDetectHandlers);
-        framework().interceptor(new SwaggerSocketProtocolInterceptor());
         framework().addInitParameter(ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT, "true");
         framework().addInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
         framework().addInitParameter(ApplicationConfig.PROPERTY_SESSION_SUPPORT, "true");
@@ -52,6 +51,7 @@ public class SwaggerSocketServlet extends AtmosphereServlet {
     @Override
     public void init(ServletConfig sc) throws ServletException {
         super.init(sc);
+        framework().interceptor(new SwaggerSocketProtocolInterceptor());
         logger.info("Swagger Socket installed {}", Version.getRawVersion());
     }
 }

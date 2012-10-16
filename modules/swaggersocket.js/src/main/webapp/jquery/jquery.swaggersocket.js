@@ -245,7 +245,7 @@ jQuery.swaggersocket = function() {
                 },
 
                 toJSON : function() {
-                    var s = "{ \"closeMessage\" : { \"reason\" : \""
+                    var s = "{ \"close\" : { \"reason\" : \""
                         + _reason
                         + "\",\"identity\" : \"" + _identity
                         + "\" }}"
@@ -556,11 +556,15 @@ jQuery.swaggersocket = function() {
 
                                 if (response.state == "messageReceived" || response.state == "opening") {
                                     _incompleteMessage = "";
-                                    if (typeof(messageData.status) != 'undefined') {
+                                    if (messageData.status) {
                                         _identity = messageData.identity;
                                         r.statusCode(messageData.status.statusCode).reasonPhrase(messageData.status.reasonPhrase);
                                         _pushResponse(r, response.state, listener);
-                                    } else if (typeof(messageData.responses) != 'undefined') {
+                                    } else if (messageData.heartbeat) {
+                                        if (jQuery.swaggersocket._logLevel == 'debug') {
+                                            jQuery.atmosphere.debug("heartbeat" + messageData.heartbeat);
+                                        }
+                                    } else if (messageData.responses) {
                                         var _responses = new Array();
                                         var i = 0;
                                         jQuery.each(messageData.responses, function(index, res) {
