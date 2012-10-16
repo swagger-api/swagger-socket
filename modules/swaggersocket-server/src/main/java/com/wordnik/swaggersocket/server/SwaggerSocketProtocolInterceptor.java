@@ -87,8 +87,24 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
     }
 
     @Override
-    public Action inspect(AtmosphereResource r) {
+    public Action inspect(final AtmosphereResource r) {
+
         final AtmosphereRequest request = r.getRequest();
+        r.addEventListener(new AtmosphereResourceEventListenerAdapter() {
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public void onSuspend(AtmosphereResourceEvent event) {
+                if (event.getResource().getResponse().getAsyncIOWriter() == null) {
+                    AsyncIOWriter writer = new AtmosphereInterceptorWriter();
+                    r.getResponse().asyncIOWriter(writer);
+                    if (AtmosphereInterceptorWriter.class.isAssignableFrom(writer.getClass())) {
+ AtmosphereInterceptorWriter.class.cast(writer).interceptor(interceptor);
+                    }
+                }
+            }
+        });
 
         if (request.getHeader("SwaggerSocket") != null
                 && request.getAttribute(SWAGGER_SOCKET_DISPATCHED) == null) {
