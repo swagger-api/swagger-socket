@@ -16,15 +16,32 @@
 package com.wordnik.swaggersocket.protocol;
 
 public class Close {
-    private CloseMessage closeMessage;
 
-    public Close() {}
+    private String reason;
+    private String identity;
 
-    public CloseMessage getCloseMessage() {
-        return closeMessage;
+    public Close() {
     }
 
-    public void setCloseMessage(CloseMessage closeMessage) {
-        this.closeMessage = closeMessage;
+    public Close(String reason, String identity) {
+        this.reason = reason;
+        this.identity = identity;
     }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public String getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(String identity) {
+        this.identity = identity;
+    }
+
 }

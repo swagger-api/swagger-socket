@@ -15,7 +15,6 @@
  */
 package com.wordnik.swaggersocket.server;
 
-import com.wordnik.swaggersocket.protocol.Close;
 import com.wordnik.swaggersocket.protocol.CloseMessage;
 import com.wordnik.swaggersocket.protocol.HandshakeMessage;
 import com.wordnik.swaggersocket.protocol.Header;
@@ -45,7 +44,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpSessionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -63,7 +61,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.atmosphere.cpr.FrameworkConfig.INJECTED_ATMOSPHERE_RESOURCE;
 
 @AtmosphereInterceptorService
-public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapter{
+public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapter {
 
     private final static String SWAGGER_SOCKET_DISPATCHED = "request.dispatched";
     private final static String IDENTITY = "swaggersocket.identity";
@@ -100,7 +98,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                     AsyncIOWriter writer = new AtmosphereInterceptorWriter();
                     r.getResponse().asyncIOWriter(writer);
                     if (AtmosphereInterceptorWriter.class.isAssignableFrom(writer.getClass())) {
- AtmosphereInterceptorWriter.class.cast(writer).interceptor(interceptor);
+                        AtmosphereInterceptorWriter.class.cast(writer).interceptor(interceptor);
                     }
                 }
             }
@@ -173,15 +171,16 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                     if (!delegateHandshake) {
                         return Action.CANCELLED;
                     }
-                } else if (message.startsWith("{\"closeMessage\"")) {
-                    Close c = mapper.readValue(data, Close.class);
+                } else if (message.startsWith("{\"close\"")) {
+                    CloseMessage c = mapper.readValue(data, CloseMessage.class);
 
-                    logger.debug("Client disconnected {} with reason {}", c.getCloseMessage().getIdentity(), c.getCloseMessage().getReason());
+                    logger.debug("Client disconnected {} with reason {}", c.getClose().getIdentity(), c.getClose().getReason());
                     try {
                         request.getSession().invalidate();
                     } catch (Exception ex) {
                         logger.warn("", ex);
                     }
+                    return Action.CANCELLED;
                 } else {
                     Message swaggerSocketMessage = mapper.readValue(data, Message.class);
                     swaggerSocketMessage.transactionID(UUID.randomUUID().toString());
@@ -189,7 +188,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                     String identity = (String) getContextValue(request, IDENTITY);
                     if (!swaggerSocketMessage.getIdentity().equals(identity)) {
                         StatusMessage statusMessage = new StatusMessage.Builder().status(new StatusMessage.Status(503, "Not Allowed"))
-                                .identity(identity).build();
+                                .identity(swaggerSocketMessage.getIdentity()).build();
                         response.getOutputStream().write(mapper.writeValueAsBytes(statusMessage));
                         return Action.CANCELLED;
                     }

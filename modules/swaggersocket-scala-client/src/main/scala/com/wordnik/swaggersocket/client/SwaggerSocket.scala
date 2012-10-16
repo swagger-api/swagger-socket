@@ -18,11 +18,11 @@ package com.wordnik.swaggersocket.client
 import scala.collection.JavaConversions._
 import org.slf4j.{Logger, LoggerFactory}
 import org.jfarcand.wcs.{TextListener, WebSocket}
-import com.wordnik.swaggersocket.protocol.{StatusMessage, Handshake, Request}
 import com.wordnik.swaggersocket.protocol.RequestMessage.Builder
 import com.wordnik.swaggersocket.protocol.StatusMessage.Status
 import java.util.concurrent.{ConcurrentHashMap, TimeoutException, TimeUnit, CountDownLatch}
 import java.util.concurrent.atomic.AtomicInteger
+import com.wordnik.swaggersocket.protocol.{Close, StatusMessage, Handshake, Request}
 
 /**
  * A WebSocket connection supporting the SwaggerSocket protocol. As simple as:
@@ -47,13 +47,14 @@ object SwaggerSocket {
   }
 }
 
-case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: Boolean, activeRequests: ConcurrentHashMap[String, Request], w: WebSocket) {
+case class SwaggerSocket(uniqueId : String, timeoutInSeconds: Int, isConnected: Boolean, activeRequests: ConcurrentHashMap[String, Request], w: WebSocket) {
 
   val logger: Logger = LoggerFactory.getLogger(classOf[SwaggerSocket])
   val deserializer = new SwaggerSocketDeserializer
   val serializer = new SwaggerSocketSerializer
   var path: String = "ws://localhost"
-
+  var ws: WebSocket = null
+  var identity : String = uniqueId
 
     /**
    * Open a WebSocket connection to a remote server.
@@ -74,8 +75,6 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
 
     val l = new CountDownLatch(1)
     var e: Option[Throwable] = None
-    var serverIdentity = "0"
-    var ws: WebSocket = null
     val handshake: Handshake = new Handshake.Builder()
       .queryString(request.getQueryString)
       .headers(request.getHeaders)
@@ -84,7 +83,6 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
       .path(request.getPath)
       .body(request.getMessageBody)
       .build
-
     val url = handshake.getPath + "?SwaggerSocket=1.0"
 
     try {
@@ -110,7 +108,7 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
           try {
             deserializer.deserializeStatus(message) match {
               case s: StatusMessage if (s.getStatus.getStatusCode < 400) =>
-                serverIdentity = s.getIdentity
+                identity = s.getIdentity
               case s: StatusMessage =>
                 e = Some(new SwaggerSocketException(
                   s.getStatus.getStatusCode, s.getStatus.getReasonPhrase
@@ -133,8 +131,6 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
       case t: Exception => {
         logger.error("open", t)
 
-        // TODO: Remove
-        t.printStackTrace()
         e = Some(new SwaggerSocketException(0, t.getMessage))
         l.countDown()
       }
@@ -147,15 +143,17 @@ case class SwaggerSocket(identity: String, timeoutInSeconds: Int, isConnected: B
     e.foreach(throw _)
 
     // Return a new instance with a unique identity
-    new SwaggerSocket(serverIdentity, timeoutInSeconds, true, new ConcurrentHashMap[String, Request](), ws)
+    new SwaggerSocket(identity, timeoutInSeconds, true, new ConcurrentHashMap[String, Request](), ws)
 
   }
 
   /**
-   * Close the underlying WebSocket connection.
+   * CloseMessage the underlying WebSocket connection.
    */
   def close: SwaggerSocket = {
-    w.close
+    val close: Close = new Close("Closed", identity);
+    ws.send(serializer.serializeClose(close))
+    ws.close
     this
   }
 

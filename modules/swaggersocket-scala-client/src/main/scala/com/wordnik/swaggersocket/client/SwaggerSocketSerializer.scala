@@ -16,7 +16,7 @@
 package com.wordnik.swaggersocket.client
 
 import org.codehaus.jackson.map.ObjectMapper
-import com.wordnik.swaggersocket.protocol.{Handshake, HandshakeMessage, RequestMessage}
+import com.wordnik.swaggersocket.protocol._
 
 class SwaggerSocketSerializer {
 
@@ -30,5 +30,11 @@ class SwaggerSocketSerializer {
     val hm = new HandshakeMessage()
     hm.setHandshake(h)
     mapper.writeValueAsString(hm)
+  }
+
+  def serializeClose(c : Close) : String = {
+    val cm = new CloseMessage()
+    cm.setClose(c)
+    mapper.writeValueAsString(cm)
   }
 }
