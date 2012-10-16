@@ -212,7 +212,11 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                             ssRequest.set(req);
                             request.setAttribute("swaggerSocketRequest", req);
 
-                            framework.doCometSupport(ar, response);
+                            Action action = framework.doCometSupport(ar, response);
+                            if (action.type() == Action.TYPE.SUSPEND) {
+                                ar.destroyable(false);
+                                response.destroyable(false);
+                            }
                         } catch (ServletException e) {
                             logger.warn("", e);
                             return Action.CANCELLED;
