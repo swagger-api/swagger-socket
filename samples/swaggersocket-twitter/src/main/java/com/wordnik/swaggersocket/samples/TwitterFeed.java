@@ -100,7 +100,7 @@ public class TwitterFeed {
                     return null;
                 }
 
-            }, 1, TimeUnit.MINUTES);
+            }, 1, TimeUnit.SECONDS);
 
             futures.put(tagid, future);
         }
