@@ -13,6 +13,10 @@
             <param-name>com.sun.jersey.config.property.packages</param-name>
             <param-value>com.wordnik.swaggersocket.samples</param-value>
         </init-param>
+        <init-param>
+            <param-name>org.atmosphere.cpr.broadcasterClass</param-name>
+            <param-value>org.atmosphere.jersey.util.JerseySimpleBroadcaster</param-value>
+        </init-param>
         <load-on-startup>0</load-on-startup>
     </servlet>
     <servlet-mapping>
