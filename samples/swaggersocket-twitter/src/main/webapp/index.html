@@ -12,8 +12,8 @@
             var incompleteMessage = "";
             var lastHashtag = new Array();
 
-            ss.onError = function(errorMsg, r) {
-                $('#result').prepend($('<li>').append(errorMsg + ":" + r.getStatus() + " " + r.getReasonPhrase()));
+            ss.onError = function(r) {
+                $('#result').prepend($('<li>').append(r.getStatusCode() + " " + r.getReasonPhrase()));
             };
 
             ss.onResponse = function(r) {

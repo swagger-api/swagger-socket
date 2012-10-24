@@ -91,7 +91,7 @@ public class TwitterFeed {
                                     if (json.getJSONArray("results").length() > 1) {
                                         // Wait for the connection to be suspended.
                                         suspendLatch.await();
-                                        feed.broadcast(s).get();
+                                        feed.broadcast(s);
                                     }
                                     return null;
                                 }
@@ -100,7 +100,7 @@ public class TwitterFeed {
                     return null;
                 }
 
-            }, 1, TimeUnit.SECONDS);
+            }, 1, TimeUnit.MINUTES);
 
             futures.put(tagid, future);
         }
