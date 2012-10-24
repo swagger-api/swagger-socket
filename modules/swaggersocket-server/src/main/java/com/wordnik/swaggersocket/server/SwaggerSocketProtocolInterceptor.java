@@ -28,7 +28,6 @@ import com.wordnik.swaggersocket.protocol.ResponseMessage;
 import com.wordnik.swaggersocket.protocol.StatusMessage;
 import org.atmosphere.config.service.AtmosphereInterceptorService;
 import org.atmosphere.cpr.Action;
-import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.cpr.AsyncIOInterceptor;
 import org.atmosphere.cpr.AsyncIOInterceptorAdapter;
 import org.atmosphere.cpr.AsyncIOWriter;
@@ -40,7 +39,6 @@ import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.atmosphere.cpr.AtmosphereResourceEventListenerAdapter;
-import org.atmosphere.cpr.AtmosphereResourceFactory;
 import org.atmosphere.cpr.AtmosphereResponse;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
@@ -64,7 +62,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.atmosphere.cpr.ApplicationConfig.SUSPENDED_ATMOSPHERE_RESOURCE_UUID;
 import static org.atmosphere.cpr.FrameworkConfig.INJECTED_ATMOSPHERE_RESOURCE;
 
 @AtmosphereInterceptorService
@@ -103,14 +100,16 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
              */
             @Override
             public void onSuspend(AtmosphereResourceEvent event) {
-                logger.trace("Broadcaster {}", event.getResource().getBroadcaster().getID());
-                if (event.getResource().getResponse().getAsyncIOWriter() == null) {
-                    AsyncIOWriter writer = new AtmosphereInterceptorWriter();
+                AsyncIOWriter writer = event.getResource().getResponse().getAsyncIOWriter();
+                if (writer == null) {
+                    writer = new AtmosphereInterceptorWriter();
                     r.getResponse().asyncIOWriter(writer);
-                    if (AtmosphereInterceptorWriter.class.isAssignableFrom(writer.getClass())) {
-                        AtmosphereInterceptorWriter.class.cast(writer).interceptor(interceptor);
-                    }
                 }
+
+                if (AtmosphereInterceptorWriter.class.isAssignableFrom(writer.getClass())) {
+                    AtmosphereInterceptorWriter.class.cast(writer).interceptor(interceptor);
+                }
+
                 String identity = (String) getContextValue(request, IDENTITY);
                 schedule(event.getResource(), identity);
             }
@@ -179,6 +178,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
 
                     StatusMessage statusMessage = new StatusMessage.Builder().status(new StatusMessage.Status(200, "OK"))
                             .identity(identity).build();
+                    response.setContentType("application/json");
                     response.getOutputStream().write(mapper.writeValueAsBytes(statusMessage));
 
                     if (r.transport() == AtmosphereResource.TRANSPORT.WEBSOCKET) {
@@ -255,60 +255,61 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
         final AtmosphereRequest request = r.getRequest();
 
         AtmosphereResponse res = r.getResponse();
-        // WebSocket already had one.
-        if (res.getAsyncIOWriter() == null) {
-            res.asyncIOWriter(new AtmosphereInterceptorWriter() {
-
-                @Override
-                protected void writeReady(AtmosphereResponse response, byte[] data) throws IOException {
-
-                    // We are buffering response.
-                    if (data == null) return;
-
-                    BlockingQueue<AtmosphereResource> queue =
-                            (BlockingQueue<AtmosphereResource>) getContextValue(request, SUSPENDED_RESPONSE);
-                    if (queue != null) {
-                        AtmosphereResource resource;
-                        try {
-                            // TODO: Should this be configurable
-                            // We stay suspended for 60 seconds
-                            resource = queue.poll(60, TimeUnit.SECONDS);
-                        } catch (InterruptedException e) {
-                            logger.trace("", e);
-                            return;
-                        }
-
-                        if (resource == null) {
-                            logger.debug("No resource was suspended, resuming the second connection.");
-                        } else {
-
-                            logger.trace("Resuming {}", resource.uuid());
-
-                            try {
-                                OutputStream o = resource.getResponse().getResponse().getOutputStream();
-                                o.write(data);
-                                o.flush();
-                                resource.resume();
-                            } catch (IOException ex) {
-                                logger.warn("", ex);
-                            }
-                        }
-                    } else {
-                        response.write(data);
-                        response.flushBuffer();
-                    }
-                }
-            });
-        }
-
         AsyncIOWriter writer = res.getAsyncIOWriter();
+
         if (AtmosphereInterceptorWriter.class.isAssignableFrom(writer.getClass())) {
-            AtmosphereInterceptorWriter.class.cast(writer).interceptor(interceptor);
+            // WebSocket already had one.
+            if (r.transport() != AtmosphereResource.TRANSPORT.WEBSOCKET) {
+                AtmosphereInterceptorWriter.class.cast(writer).interceptor(interceptor);
+                res.asyncIOWriter(new AtmosphereInterceptorWriter() {
+
+                    @Override
+                    protected void writeReady(AtmosphereResponse response, byte[] data) throws IOException {
+
+                        // We are buffering response.
+                        if (data == null) return;
+
+                        BlockingQueue<AtmosphereResource> queue =
+                                (BlockingQueue<AtmosphereResource>) getContextValue(request, SUSPENDED_RESPONSE);
+                        if (queue != null) {
+                            AtmosphereResource resource;
+                            try {
+                                // TODO: Should this be configurable
+                                // We stay suspended for 60 seconds
+                                resource = queue.poll(60, TimeUnit.SECONDS);
+                            } catch (InterruptedException e) {
+                                logger.trace("", e);
+                                return;
+                            }
+
+                            if (resource == null) {
+                                logger.debug("No resource was suspended, resuming the second connection.");
+                            } else {
+
+                                logger.trace("Resuming {}", resource.uuid());
+
+                                try {
+                                    OutputStream o = resource.getResponse().getResponse().getOutputStream();
+                                    o.write(data);
+                                    o.flush();
+
+                                    resource.resume();
+                                } catch (IOException ex) {
+                                    logger.warn("", ex);
+                                }
+                            }
+                        } else {
+                            response.write(data);
+                            response.flushBuffer();
+                        }
+                    }
+                });
+            }
         }
     }
 
     protected void schedule(AtmosphereResource r, String uuid) {
-        heartbeat.addAtmosphereResource(r).scheduleFixedBroadcast("heartbeat-" + uuid, 60, 60, TimeUnit.SECONDS);
+        //heartbeat.addAtmosphereResource(r).scheduleFixedBroadcast("heartbeat-" + uuid, 60, 60, TimeUnit.SECONDS);
     }
 
     protected final static AtmosphereRequest toAtmosphereRequest(AtmosphereRequest r, ProtocolBase request) {
