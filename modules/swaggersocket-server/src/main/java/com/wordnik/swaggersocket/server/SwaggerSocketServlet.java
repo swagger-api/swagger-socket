@@ -15,6 +15,7 @@
  */
 package com.wordnik.swaggersocket.server;
 
+import org.atmosphere.client.TrackMessageSizeInterceptor;
 import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.cpr.AtmosphereServlet;
 import org.atmosphere.cpr.FrameworkConfig;
@@ -45,12 +46,15 @@ public class SwaggerSocketServlet extends AtmosphereServlet {
         framework().addInitParameter(ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT, "true");
         framework().addInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
         framework().addInitParameter(ApplicationConfig.PROPERTY_SESSION_SUPPORT, "true");
-
     }
 
     @Override
     public void init(ServletConfig sc) throws ServletException {
         super.init(sc);
+        TrackMessageSizeInterceptor t = new TrackMessageSizeInterceptor();
+        t.excludedContentType("application/javascript").excludedContentType("text/html").messageDelimiter("<->");
+        t.configure(framework().getAtmosphereConfig());
+        framework().interceptor(t);
         framework().interceptor(new SwaggerSocketProtocolInterceptor());
         logger.info("Swagger Socket installed {}", Version.getRawVersion());
     }

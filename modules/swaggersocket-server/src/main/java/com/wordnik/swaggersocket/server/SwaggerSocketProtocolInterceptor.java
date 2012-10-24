@@ -103,6 +103,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
              */
             @Override
             public void onSuspend(AtmosphereResourceEvent event) {
+                logger.trace("Broadcaster {}", event.getResource().getBroadcaster().getID());
                 if (event.getResource().getResponse().getAsyncIOWriter() == null) {
                     AsyncIOWriter writer = new AtmosphereInterceptorWriter();
                     r.getResponse().asyncIOWriter(writer);
