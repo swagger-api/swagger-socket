@@ -91,7 +91,7 @@ public class TwitterFeed {
                                     if (json.getJSONArray("results").length() > 1) {
                                         // Wait for the connection to be suspended.
                                         suspendLatch.await();
-                                        feed.broadcast(s);
+                                        feed.broadcast(s).get();
                                     }
                                     return null;
                                 }
@@ -100,7 +100,7 @@ public class TwitterFeed {
                     return null;
                 }
 
-            }, 1, TimeUnit.MINUTES);
+            }, 1, TimeUnit.SECONDS);
 
             futures.put(tagid, future);
         }
@@ -128,6 +128,6 @@ public class TwitterFeed {
             futures.get(tagid).cancel(true);
         }
         logger.info("Stopping real time update for {}", tagid);
-        return "DONE";
+        return "";
     }
 }
