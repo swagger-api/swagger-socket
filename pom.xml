@@ -150,6 +150,7 @@
         <module>modules/swaggersocket-protocol</module>
         <module>modules/swaggersocket-server</module>
         <module>modules/swaggersocket-scala-client</module>
+        <module>modules/swaggersocket-async-scala-client</module>
         <module>modules/swagger-integration</module>
         <module>modules/swaggersocket.js</module>
         <module>samples/swaggersocket-echo</module>
