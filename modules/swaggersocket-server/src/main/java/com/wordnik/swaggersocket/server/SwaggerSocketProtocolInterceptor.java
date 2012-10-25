@@ -309,7 +309,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
     }
 
     protected void schedule(AtmosphereResource r, String uuid) {
-        //heartbeat.addAtmosphereResource(r).scheduleFixedBroadcast("heartbeat-" + uuid, 60, 60, TimeUnit.SECONDS);
+        heartbeat.addAtmosphereResource(r).scheduleFixedBroadcast("heartbeat-" + uuid, 60, 60, TimeUnit.SECONDS);
     }
 
     protected final static AtmosphereRequest toAtmosphereRequest(AtmosphereRequest r, ProtocolBase request) {
