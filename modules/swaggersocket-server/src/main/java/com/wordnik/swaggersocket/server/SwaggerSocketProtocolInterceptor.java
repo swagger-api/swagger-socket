@@ -428,11 +428,12 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
     }
 
     protected final Object wrapMessage(AtmosphereResponse res, String message) {
-        Request swaggerSocketRequest = lookupRequest(res.request());
 
         if (message != null && message.startsWith("heartbeat-")) {
-            return new Heartbeat(String.valueOf(System.nanoTime()), swaggerSocketRequest.getUuid());
+            String identity = (String) getContextValue(res.request(), IDENTITY);
+            return new Heartbeat(String.valueOf(System.nanoTime()), identity);
         } else {
+            Request swaggerSocketRequest = lookupRequest(res.request());
             Response.Builder builder = new Response.Builder();
 
             builder.body(message)
