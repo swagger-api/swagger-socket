@@ -257,6 +257,13 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
         AtmosphereResponse res = r.getResponse();
         AsyncIOWriter writer = res.getAsyncIOWriter();
 
+        BlockingQueue<AtmosphereResource> queue = (BlockingQueue<AtmosphereResource>)
+                getContextValue(request, SUSPENDED_RESPONSE);
+        if (queue == null) {
+            queue = new LinkedBlockingQueue<AtmosphereResource>();
+            request.getSession().setAttribute(SUSPENDED_RESPONSE, queue);
+        }
+
         if (AtmosphereInterceptorWriter.class.isAssignableFrom(writer.getClass())) {
             // WebSocket already had one.
             if (r.transport() != AtmosphereResource.TRANSPORT.WEBSOCKET) {
@@ -299,8 +306,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                                 }
                             }
                         } else {
-                            response.write(data);
-                            response.flushBuffer();
+                            logger.error("Queue was null");
                         }
                     }
                 });
