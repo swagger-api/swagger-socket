@@ -60,6 +60,7 @@ import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.atmosphere.cpr.FrameworkConfig.INJECTED_ATMOSPHERE_RESOURCE;
@@ -109,9 +110,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                 if (AtmosphereInterceptorWriter.class.isAssignableFrom(writer.getClass())) {
                     AtmosphereInterceptorWriter.class.cast(writer).interceptor(interceptor);
                 }
-
-                String identity = (String) getContextValue(request, IDENTITY);
-                schedule(event.getResource(), identity);
+                event.getResource().getRequest().getSession().setAttribute("broadcaster", event.getResource().getBroadcaster());
             }
         });
 
@@ -124,6 +123,13 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
             logger.debug("Method {} Transport {}", request.getMethod(), r.transport());
             // Suspend to keep the connection OPEN.
             if (request.getMethod() == "GET" && r.transport().equals(AtmosphereResource.TRANSPORT.LONG_POLLING)) {
+                Broadcaster b = (Broadcaster) request.getSession().getAttribute("broadcaster");
+                if (b != null) {
+                    r.setBroadcaster(b);
+                }
+
+                r.resumeOnBroadcast(true).suspend();
+
                 BlockingQueue<AtmosphereResource> queue = (BlockingQueue<AtmosphereResource>)
                         getContextValue(request, SUSPENDED_RESPONSE);
                 if (queue == null) {
@@ -132,7 +138,9 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                 }
                 queue.offer(r);
 
-                r.suspend();
+                String identity = (String) getContextValue(request, IDENTITY);
+                schedule(r, identity);
+
                 return Action.SUSPEND;
             }
 
