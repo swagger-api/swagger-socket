@@ -26,6 +26,8 @@ import com.wordnik.swaggersocket.protocol.Request;
 import com.wordnik.swaggersocket.protocol.Response;
 import com.wordnik.swaggersocket.protocol.ResponseMessage;
 import com.wordnik.swaggersocket.protocol.StatusMessage;
+import org.atmosphere.client.TrackMessageSizeFilter;
+import org.atmosphere.client.TrackMessageSizeInterceptor;
 import org.atmosphere.config.service.AtmosphereInterceptorService;
 import org.atmosphere.cpr.Action;
 import org.atmosphere.cpr.AsyncIOInterceptor;
@@ -110,12 +112,15 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                 if (AtmosphereInterceptorWriter.class.isAssignableFrom(writer.getClass())) {
                     AtmosphereInterceptorWriter.class.cast(writer).interceptor(interceptor);
                 }
-                event.getResource().getRequest().getSession().setAttribute("broadcaster", event.getResource().getBroadcaster());
             }
         });
 
-        if (request.getHeader("SwaggerSocket") != null
-                && request.getAttribute(SWAGGER_SOCKET_DISPATCHED) == null) {
+        boolean ok = false;
+        if (request.getHeader("SwaggerSocket") != null) {
+            ok = true;
+        }
+
+        if (ok && request.getAttribute(SWAGGER_SOCKET_DISPATCHED) == null) {
 
             AtmosphereResponse response = r.getResponse();
             response.setContentType("application/json");
@@ -123,11 +128,6 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
             logger.debug("Method {} Transport {}", request.getMethod(), r.transport());
             // Suspend to keep the connection OPEN.
             if (request.getMethod() == "GET" && r.transport().equals(AtmosphereResource.TRANSPORT.LONG_POLLING)) {
-                Broadcaster b = (Broadcaster) request.getSession().getAttribute("broadcaster");
-                if (b != null) {
-                    r.setBroadcaster(b);
-                }
-
                 r.resumeOnBroadcast(true).suspend();
 
                 BlockingQueue<AtmosphereResource> queue = (BlockingQueue<AtmosphereResource>)
@@ -255,6 +255,9 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
 
         } else {
             request.setAttribute(SWAGGER_SOCKET_DISPATCHED, null);
+            if (!ok) {
+                request.setAttribute(TrackMessageSizeInterceptor.SKIP_INTERCEPTOR, "true");
+            }
         }
         return Action.CONTINUE;
     }
@@ -274,9 +277,8 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
 
         if (AtmosphereInterceptorWriter.class.isAssignableFrom(writer.getClass())) {
             // WebSocket already had one.
-            AtmosphereInterceptorWriter.class.cast(writer).interceptor(interceptor);
             if (r.transport() != AtmosphereResource.TRANSPORT.WEBSOCKET) {
-                res.asyncIOWriter(new AtmosphereInterceptorWriter() {
+                writer = new AtmosphereInterceptorWriter() {
 
                     @Override
                     protected void writeReady(AtmosphereResponse response, byte[] data) throws IOException {
@@ -317,8 +319,23 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                             logger.error("Queue was null");
                         }
                     }
-                });
+
+                    /**
+                     * Add an {@link AsyncIOInterceptor} that will be invoked in the order it was added.
+                     *
+                     * @param filter {@link AsyncIOInterceptor
+                     * @return this
+                     */
+                    public AtmosphereInterceptorWriter interceptor(AsyncIOInterceptor filter) {
+                        if (!filters.contains(filter)) {
+                            filters.addLast(filter);
+                        }
+                        return this;
+                    }
+                };
+                res.asyncIOWriter(writer);
             }
+            AtmosphereInterceptorWriter.class.cast(writer).interceptor(interceptor);
         }
     }
 
