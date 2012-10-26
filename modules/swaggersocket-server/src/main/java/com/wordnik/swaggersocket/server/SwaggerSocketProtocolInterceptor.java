@@ -274,8 +274,8 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
 
         if (AtmosphereInterceptorWriter.class.isAssignableFrom(writer.getClass())) {
             // WebSocket already had one.
+            AtmosphereInterceptorWriter.class.cast(writer).interceptor(interceptor);
             if (r.transport() != AtmosphereResource.TRANSPORT.WEBSOCKET) {
-                AtmosphereInterceptorWriter.class.cast(writer).interceptor(interceptor);
                 res.asyncIOWriter(new AtmosphereInterceptorWriter() {
 
                     @Override
