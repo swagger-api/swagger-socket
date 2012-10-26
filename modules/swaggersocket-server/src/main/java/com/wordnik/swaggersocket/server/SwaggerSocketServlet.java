@@ -52,7 +52,7 @@ public class SwaggerSocketServlet extends AtmosphereServlet {
     public void init(ServletConfig sc) throws ServletException {
         super.init(sc);
         TrackMessageSizeInterceptor t = new TrackMessageSizeInterceptor();
-        t.excludedContentType("application/javascript").excludedContentType("text/html").messageDelimiter("<->");
+        t.excludedContentType("application/javascript").excludedContentType("text/html").excludedContentType("text/plain").messageDelimiter("<->");
         t.configure(framework().getAtmosphereConfig());
         framework().interceptor(t);
         framework().interceptor(new SwaggerSocketProtocolInterceptor());
