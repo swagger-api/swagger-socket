@@ -106,7 +106,8 @@ case class SwaggerSocket(uniqueId : String, timeoutInSeconds: Int, isConnected: 
 
         override def onMessage(message: String) {
           try {
-            deserializer.deserializeStatus(message) match {
+            val m = checkDelimiter(message)
+            deserializer.deserializeStatus(m) match {
               case s: StatusMessage if (s.getStatus.getStatusCode < 400) =>
                 identity = s.getIdentity
               case s: StatusMessage =>
@@ -199,11 +200,12 @@ case class SwaggerSocket(uniqueId : String, timeoutInSeconds: Int, isConnected: 
 
       /* will we get partial responses?  I think large messages can definitely be chunked */
       override def onMessage(message: String) {
+        val m = checkDelimiter(message)
         if (message.startsWith("{\"status\"")) {
-          val s: StatusMessage = deserializer.deserializeStatus(message)
+          val s: StatusMessage = deserializer.deserializeStatus(m)
           l.error(new SwaggerSocketException(s.getStatus.getStatusCode, s.getStatus.getReasonPhrase))
         } else {
-          val responses = deserializer.deserializeResponse(message)
+          val responses = deserializer.deserializeResponse(m)
           responses.foreach(response => {
             try {
               val rq: Request = activeRequests(response.getUuid);
@@ -268,11 +270,12 @@ case class SwaggerSocket(uniqueId : String, timeoutInSeconds: Int, isConnected: 
 
         /* will we get partial responses?  I think large messages can definitely be chunked */
         override def onMessage(message: String) {
-          if (message.startsWith("{\"status\"")) {
-            val s: StatusMessage = deserializer.deserializeStatus(message)
+          val m = checkDelimiter(message)
+          if (m.startsWith("{\"status\"")) {
+            val s: StatusMessage = deserializer.deserializeStatus(m)
             l.error(new SwaggerSocketException(s.getStatus.getStatusCode, s.getStatus.getReasonPhrase))
           } else {
-            val responses = deserializer.deserializeResponse(message)
+            val responses = deserializer.deserializeResponse(m)
             responses.foreach(response => {
               // Is this response for us
               val rq: Request = activeRequests(response.getUuid);
@@ -294,6 +297,15 @@ case class SwaggerSocket(uniqueId : String, timeoutInSeconds: Int, isConnected: 
     }
     w.send(serializer.serializeRequests(requestMessage))
     this
+  }
+
+  def checkDelimiter(message: String) : String = {
+    var m : Array[String] = message.split("<->")
+    if (m.length == 1) {
+      return m(0);
+    } else {
+      return m(1);
+    }
   }
 
   override def toString: String = {

@@ -211,6 +211,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                     swaggerSocketMessage.transactionID(UUID.randomUUID().toString());
 
                     String identity = (String) getContextValue(request, IDENTITY);
+
                     if (!swaggerSocketMessage.getIdentity().equals(identity)) {
                         StatusMessage statusMessage = new StatusMessage.Builder().status(new StatusMessage.Status(503, "Not Allowed"))
                                 .identity(swaggerSocketMessage.getIdentity()).build();
