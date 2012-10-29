@@ -337,6 +337,7 @@ jQuery.swaggersocket = function() {
             }, onClose = function(response) {
             }, onOpen = function(response) {
             }, onResponses = function(response) {
+            }, onTransportFailure = function(response) {
             }
         },
 
@@ -598,6 +599,14 @@ jQuery.swaggersocket = function() {
                                     } catch (err) {
                                         if (jQuery.swaggersocket._logLevel == 'debug') {
                                             jQuery.atmosphere.debug(err.type);
+                                        }
+                                    }
+                                } else if (response.state == "transportFailure") {
+                                    if (typeof(listener.onTransportFailure) != 'undefined') {
+                                        try{
+                                            listener.onTransportFailure(response);
+                                        } catch (err) {
+                                            jQuery.atmosphere.error(err.type);
                                         }
                                     }
                                 } else if (response.state == "error" && typeof(listener.onError) != 'undefined') {
@@ -1945,6 +1954,9 @@ function loadAtmosphere(jQuery) {
                     } else if (typeof(jQuery.atmosphere.onTransportFailure) != 'undefined') {
                         jQuery.atmosphere.onTransportFailure(errorMessage, _request);
                     }
+
+                    _response.state = "transportFailure";
+                    _invokeCallback();
 
                     _request.transport = _request.fallbackTransport;
                     if (_request.reconnect && _request.transport != 'none' || _request.transport == null) {
