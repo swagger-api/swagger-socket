@@ -1,14 +1,15 @@
 package com.wordnik.swaggersocket.client
 
-import java.util.EnumSet
-import javax.servlet.{Filter, DispatcherType}
+import java.{ util => jutil }
+import javax.servlet.{Filter}
 import org.eclipse.jetty.servlet.{DefaultServlet, FilterHolder, ServletHolder, ServletContextHandler}
 import javax.servlet.http.HttpServlet
-import org.eclipse.jetty.server.Server
-
+import org.eclipse.jetty.server.{DispatcherType, Server}
+import java.net.ServerSocket
+import util.control.Exception._
 object JettyContainer {
-  private val DefaultDispatcherTypes: EnumSet[DispatcherType] =
-    EnumSet.of(DispatcherType.REQUEST, DispatcherType.ASYNC)
+  private val DefaultDispatcherTypes: jutil.EnumSet[DispatcherType] =
+    jutil.EnumSet.of(DispatcherType.REQUEST, DispatcherType.ASYNC)
 }
 
 trait JettyContainer {
@@ -27,18 +28,19 @@ trait JettyContainer {
 
   def mount(servlet: HttpServlet, path: String) = addServlet(servlet, path)
 
-  def mount(app: Filter, path: String, dispatches: EnumSet[DispatcherType] = DefaultDispatcherTypes) =
+  def mount(app: Filter, path: String, dispatches: jutil.EnumSet[DispatcherType] = DefaultDispatcherTypes) =
     addFilter(app, path, dispatches)
 
   def addServlet(servlet: HttpServlet, path: String) = {
     val holder = new ServletHolder(servlet)
     servletContextHandler.addServlet(holder, path)
+    holder
   }
 
   def addServlet(servlet: Class[_ <: HttpServlet], path: String) =
     servletContextHandler.addServlet(servlet, path)
 
-  def addFilter(filter: Filter, path: String, dispatches: util.EnumSet[DispatcherType] = DefaultDispatcherTypes): FilterHolder = {
+  def addFilter(filter: Filter, path: String, dispatches: jutil.EnumSet[DispatcherType] = DefaultDispatcherTypes): FilterHolder = {
     val holder = new FilterHolder(filter)
     servletContextHandler.addFilter(holder, path, dispatches)
     holder
@@ -47,18 +49,28 @@ trait JettyContainer {
   def addFilter(filter: Class[_ <: Filter], path: String): FilterHolder =
     addFilter(filter, path, DefaultDispatcherTypes)
 
-  def addFilter(filter: Class[_ <: Filter], path: String, dispatches: util.EnumSet[DispatcherType]): FilterHolder =
+  def addFilter(filter: Class[_ <: Filter], path: String, dispatches: jutil.EnumSet[DispatcherType]): FilterHolder =
     servletContextHandler.addFilter(filter, path, dispatches)
 
   // Add a default servlet.  If there is no underlying servlet, then
   // filters just return 404.
   addServlet(new DefaultServlet, "/")
 
-
+  private[this] def findFreePort: Int = {
+    var socket: ServerSocket = null
+    try {
+      socket = new ServerSocket(0)
+      socket.getLocalPort
+    } finally {
+      if (socket != null) {
+        socket.close
+      }
+    }
+  }
   /**
    * Sets the port to listen on.  0 means listen on any available port.
    */
-  def port: Int = 0
+  val port: Int = findFreePort
 
   /**
    * The port of the currently running Jetty.  May differ from port if port is 0.

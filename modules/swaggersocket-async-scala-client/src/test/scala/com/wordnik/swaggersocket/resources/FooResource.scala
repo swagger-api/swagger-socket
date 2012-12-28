@@ -18,11 +18,11 @@ package com.wordnik.swaggersocket.resources
 import org.slf4j.LoggerFactory
 import javax.ws.rs.{GET, POST, Produces, Path}
 
-@Path("/")
+@Path("/foo")
 @Produces(Array("application/json"))
-class RootResource /* extend SwaggerSocket */ {
+class FooResource /* extend SwaggerSocket */ {
 
-  val logger = LoggerFactory.getLogger(classOf[RootResource])
+  val logger = LoggerFactory.getLogger(classOf[FooResource])
 
   @Path("/a")
   @POST

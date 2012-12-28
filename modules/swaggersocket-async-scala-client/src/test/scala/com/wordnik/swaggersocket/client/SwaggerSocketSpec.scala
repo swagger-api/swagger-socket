@@ -33,7 +33,8 @@ object SwaggerSocketSpecification {
 
   def mapToConfig(cfg: Map[String, Any]): Config = {
     import scala.collection.JavaConverters._
-    ConfigFactory.parseMap(cfg.asJava)
+    val mp = cfg.map(kv => kv._1 -> kv._2.asInstanceOf[AnyRef]).asJava
+    ConfigFactory.parseMap(mp)
   }
 
   def getCallerName: String = getNonBaseCallerName("SwaggerSocketSpecification")
@@ -54,11 +55,22 @@ abstract class SwaggerSocketSpecification(_system: ActorSystem) extends TestKit(
 
   def this() = this(ActorSystem(SwaggerSocketSpecification.getCallerName, SwaggerSocketSpecification.testConf))
 
-  val a = new SwaggerSocketServlet()
-  a.framework.addInitParameter("com.sun.jersey.config.property.packages", this.getClass.getPackage.getName)
-  addServlet(a, "/*")
+  lazy val initParams = Map(
+    "com.sun.jersey.config.property.packages" -> "com.wordnik.swagger.sample.resource;com.wordnik.swagger.sample.util;com.wordnik.swagger.jaxrs.listing",
+    "com.sun.jersey.spi.container.ContainerRequestFilters" -> "com.sun.jersey.api.container.filter.PostReplaceFilter",
+    "com.sun.jersey.api.json.POJOMappingFeature" -> "true",
+    "api.model.packages" -> "com.wordnik.swagger.sample",
+    "api.version" -> "0.1",
+    "swagger.version" -> "1.1",
+    "swagger.api.basepath" -> ("http://127.0.0.1:" + port),
+    "swagger.security.filter" -> "com.wordnik.swagger.sample.util.ApiAuthorizationFilterImpl"
+  )
 
-  override def map(fs: Fragments) = Step(start()) ^ super.map(fs) ^ Step(stop()) ^ Step(stopActors)
+  val a = new SwaggerSocketServlet()
+  initParams foreach { p => a.framework().addInitParameter(p._1, p._2) }
+  addServlet(a, "/*").setInitOrder(0)
+
+  override def map(fs: => Fragments): Fragments = Step(start()) ^ super.map(fs) ^ Step(stop()) ^ Step(stopActors)
 
   private def stopActors = {
     import scala.util.control.Exception.ignoring

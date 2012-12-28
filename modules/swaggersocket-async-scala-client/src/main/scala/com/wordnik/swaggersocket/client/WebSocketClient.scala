@@ -98,7 +98,7 @@ object WebSocketClient {
         val cookie = HttpCookie.parse(hp.value)
         val cks = mutable.Map.empty[String, RestClient.Cookie]
         cookie.asScala foreach { c =>
-          cks += c.getName -> RestClient.Cookie(c.getName, c.getValue)(CookieOptions(c.getDomain, c.getPath, c.getMaxAge.toInt, c.getSecure, c.getComment, c.isHttpOnly, "utf-8"))
+          cks += c.getName -> RestClient.Cookie(c.getName, c.getValue)(CookieOptions(c.getDomain, c.getPath, c.getMaxAge.toInt, c.getSecure, c.getComment, c.isHttpOnly, c.getVersion, "utf-8"))
         }
         allCks ++= cks
       }
@@ -209,7 +209,7 @@ class WebSocketClient(config: SwaggerConfig) extends TransportClient {
       headers map ((HeaderParam.apply _).tupled) toList,
       params map (kv => QueryParam(kv._1, kv._2.toString)) toList,
       messageBody = JsonMethods.parse(body))
-    val promise = Promise[Response]
+    val promise = Promise[Response]()
     activeRequests(req.uuid) = ActiveRequest(req.uuid, req, promise)
     webSocket addWebSocketListener new WebSocketTextListener {
       def onClose(websocket: WebSocket) {

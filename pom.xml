@@ -38,6 +38,11 @@
             <name>Tony Tam</name>
             <email>fehguy@gmail.com</email>
         </developer>
+        <developer>
+            <id>casualjim</id>
+            <name>Ivan Porto Carrero</name>
+            <email>ivan@flanders.co.nz</email>
+        </developer>
     </developers>
     <licenses>
         <license>
@@ -331,7 +336,7 @@
         <scala-test-version>1.6.1</scala-test-version>
         <atmosphere-version>1.1.0.beta2</atmosphere-version>
         <junit-version>4.8.1</junit-version>
-        <slf4j-version>1.6.3</slf4j-version>
+        <slf4j-version>1.7.2</slf4j-version>
         <scala-version>2.9.2</scala-version>
         <jackson-version>1.8.3</jackson-version>
         <jersey-version>1.12</jersey-version>
