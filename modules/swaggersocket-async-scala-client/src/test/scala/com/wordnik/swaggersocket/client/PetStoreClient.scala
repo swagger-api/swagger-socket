@@ -27,12 +27,16 @@ case class Order(
   shipDate: Date,
   status: String)
 
+
+
 class SwaggerApiClient(config: SwaggerConfig) extends Closeable {
 
   val baseUrl = config.baseUrl
   val dataFormat = config.dataFormat
 
-  private[this] val client = new RestClient(config)
+  private[this] val client = transportClient
+
+  protected def transportClient = new RestClient(config)
 
   val pets = new PetsApiClient(client, config)
 
@@ -66,7 +70,7 @@ abstract class ApiClient(client: TransportClient, config: SwaggerConfig) extends
   }
 }
 
-class PetsApiClient(client: RestClient, config: SwaggerConfig) extends ApiClient(client, config) {
+class PetsApiClient(client: TransportClient, config: SwaggerConfig) extends ApiClient(client, config) {
 
   def getPetById(id: Long): Future[Pet] = {
     client.submit("GET", addFmt("/pet.{format}/") +id.toString, Map.empty, Map.empty, "") flatMap  { res =>
@@ -103,7 +107,7 @@ class PetsApiClient(client: RestClient, config: SwaggerConfig) extends ApiClient
   }
 }
 
-class StoreApiClient(client: RestClient, config: SwaggerConfig) extends ApiClient(client, config) {
+class StoreApiClient(client: TransportClient, config: SwaggerConfig) extends ApiClient(client, config) {
 
   def getOrderById(id: Long): Future[Order] = {
     client.submit("GET", addFmt("/store.{format}/order/") + id.toString, Map.empty, Map.empty, null) flatMap { res =>
@@ -120,7 +124,7 @@ class StoreApiClient(client: RestClient, config: SwaggerConfig) extends ApiClien
   }
 }
 
-class UserApiClient(client: RestClient, config: SwaggerConfig) extends ApiClient(client, config) {
+class UserApiClient(client: TransportClient, config: SwaggerConfig) extends ApiClient(client, config) {
 
   def createUsersWithArrayInput(users: Array[User]): Future[Array[User]] = {
     client.submit("POST", addFmt("/user.{format}/createWithList"), Map.empty, Map.empty, ser.serialize(users.toList)) flatMap { res =>

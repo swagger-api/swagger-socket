@@ -27,6 +27,6 @@ trait TransportClient {
   protected def baseUrl: String
   protected def clientConfig: AsyncHttpClientConfig
   implicit def execContext: ExecutionContext
-  def submit(method: String, uri: String, params: Iterable[(String, Any)], headers: Iterable[(String, String)], body: String, timeout: Duration): Future[ClientResponse]
+  def submit(method: String, uri: String, params: Iterable[(String, Any)], headers: Iterable[(String, String)], body: String, timeout: Duration = 90.seconds): Future[ClientResponse]
   def close()
 }

@@ -10,10 +10,13 @@ import akka.dispatch.Await
 import java.util.concurrent.TimeoutException
 import akka.util.duration._
 import com.wordnik.swaggersocket.server.SwaggerSocketServlet
+import org.scalatest.{BeforeAndAfterAll, WordSpec}
+import org.scalatest.matchers.MustMatchers
 
 object SwaggerSocketSpecification {
     private[this] val defaultConf = ConfigFactory.load()
-  val testConf: Config = ConfigFactory.parseString("""
+  val testConf: Config = {
+    val c = ConfigFactory.parseString("""
       akka {
         event-handlers = ["akka.testkit.TestEventListener"]
         loglevel = WARNING
@@ -28,8 +31,10 @@ object SwaggerSocketSpecification {
             max-pool-size-max = 8
           }
         }
-      }
-      """).withFallback(defaultConf.getConfig("test")).withFallback(defaultConf)
+      }""")
+      val d = if (defaultConf.hasPath("test")) c.withFallback(defaultConf.getConfig("test")) else c
+      d.withFallback(defaultConf)
+  }
 
   def mapToConfig(cfg: Map[String, Any]): Config = {
     import scala.collection.JavaConverters._
@@ -46,7 +51,7 @@ object SwaggerSocketSpecification {
 
 }
 
-abstract class SwaggerSocketSpecification(_system: ActorSystem) extends TestKit(_system) with Specification with NoTimeConversions with JettyContainer {
+abstract class SwaggerSocketSpecification(_system: ActorSystem) extends TestKit(_system) with WordSpec with BeforeAndAfterAll with MustMatchers with JettyContainer {
   def this(config: Config) = this(ActorSystem(SwaggerSocketSpecification.getCallerName, config.withFallback(SwaggerSocketSpecification.testConf)))
 
   def this(s: String) = this(ConfigFactory.parseString(s))
@@ -66,11 +71,22 @@ abstract class SwaggerSocketSpecification(_system: ActorSystem) extends TestKit(
     "swagger.security.filter" -> "com.wordnik.swagger.sample.util.ApiAuthorizationFilterImpl"
   )
 
-  val a = new SwaggerSocketServlet()
-  initParams foreach { p => a.framework().addInitParameter(p._1, p._2) }
-  addServlet(a, "/*").setInitOrder(0)
 
-  override def map(fs: => Fragments): Fragments = Step(start()) ^ super.map(fs) ^ Step(stop()) ^ Step(stopActors)
+
+  override def beforeAll(configMap: Map[String, Any]) = {
+    val a = new SwaggerSocketServlet()
+    initParams foreach { p => a.framework().addInitParameter(p._1, p._2) }
+    addServlet(a, "/*").setInitOrder(0)
+    start()
+  }
+
+  override def afterAll(configMap: Map[String, Any]) = {
+    stop()
+    stopActors
+  }
+
+
+//  override def map(fs: => Fragments): Fragments = Step(start()) ^ super.map(fs) ^ Step(stop()) ^ Step(stopActors)
 
   private def stopActors = {
     import scala.util.control.Exception.ignoring

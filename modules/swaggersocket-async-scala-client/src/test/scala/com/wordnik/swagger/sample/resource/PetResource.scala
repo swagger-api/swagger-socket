@@ -5,12 +5,16 @@ import com.wordnik.swagger.core._
 import com.wordnik.swagger.core.util.RestResourceUtil
 import com.wordnik.swagger.jaxrs._
 import com.wordnik.swagger.sample.data.{ PetData }
-import com.wordnik.swagger.sample.model.{ Pet }
+import com.wordnik.swagger.sample.model.{User, Pet}
 import com.wordnik.swagger.sample.exception.NotFoundException
 
 import javax.ws.rs.core.Response
 import javax.ws.rs._
 
+object ClassNames {
+  val USER_CLASS = classOf[User].getName
+  val PET_CLASS = classOf[Pet].getName
+}
 trait PetResource extends RestResourceUtil {
   @GET
   @Path("/{petId}")
@@ -27,13 +31,13 @@ trait PetResource extends RestResourceUtil {
   }
 
   @POST
-  @ApiOperation(value = "Add a new pet to the store")
+  @ApiOperation(value = "Add a new pet to the store", responseClass = "com.wordnik.swagger.sample.model.Pet")
   @ApiErrors(Array(
     new ApiError(code = 405, reason = "Invalid input")))
   def addPet(
     @ApiParam(value = "Pet object that needs to be added to the store", required = true) pet: Pet) = {
-    PetData.addPet(pet)
-    Response.ok.entity("SUCCESS").build
+    val added = PetData.addPet(pet)
+    Response.ok.entity(added).build
   }
 
   @PUT
@@ -45,7 +49,7 @@ trait PetResource extends RestResourceUtil {
   def updatePet(
     @ApiParam(value = "Pet object that needs to be updated in the store", required = true) pet: Pet) = {
     PetData.addPet(pet)
-    Response.ok.entity("SUCCESS").build
+    Response.ok.entity(Map("result" -> "SUCCESS")).build
   }
 
   @GET

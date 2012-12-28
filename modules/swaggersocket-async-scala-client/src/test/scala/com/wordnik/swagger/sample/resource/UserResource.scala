@@ -14,44 +14,40 @@ import scala.collection.JavaConverters._
 
 trait UserResource extends RestResourceUtil {
   @POST
-  @ApiOperation(value = "Create user", notes = "This can only be done by the logged in user.")
+  @ApiOperation(value = "Create user", responseClass = "com.wordnik.swagger.sample.model.User", notes = "This can only be done by the logged in user.")
   def createUser(
     @ApiParam(value = "Created user object", required = true) user: User) = {
-    UserData.addUser(user)
-    Response.ok.entity("").build
+    val newUser = UserData.addUser(user)
+    Response.ok.entity(newUser).build
   }
 
   @POST
   @Path("/createWithArray")
-  @ApiOperation(value = "Creates list of users with given input array")
+  @ApiOperation(value = "Creates list of users with given input array", responseClass = "com.wordnik.swagger.sample.model.User", multiValueResponse = true)
   def createUsersWithArrayInput(@ApiParam(value = "List of user object", required = true) users: Array[User]): Response = {
-    for (user <- users) {
-      UserData.addUser(user)
-    }
-    Response.ok.entity("").build
+    val newUsers = for (user <- users) yield UserData.addUser(user)
+    Response.ok.entity(newUsers.toList).build
   }
 
   @POST
   @Path("/createWithList")
-  @ApiOperation(value = "Creates list of users with given list input")
+  @ApiOperation(value = "Creates list of users with given list input", responseClass = "com.wordnik.swagger.sample.model.User", multiValueResponse = true)
   def createUsersWithListInput(@ApiParam(value = "List of user object", required = true) users: java.util.List[User]): Response = {
-    for (user <- users.asScala) {
-      UserData.addUser(user)
-    }
-    Response.ok.entity("").build
+    val newUsers = for (user <- users.asScala) yield UserData.addUser(user)
+    Response.ok.entity(newUsers).build
   }
 
   @PUT
   @Path("/{username}")
-  @ApiOperation(value = "Updated user", notes = "This can only be done by the logged in user.")
+  @ApiOperation(value = "Updated user", notes = "This can only be done by the logged in user.", responseClass = "com.wordnik.swagger.sample.model.User")
   @ApiErrors(Array(
     new ApiError(code = 400, reason = "Invalid username supplied"),
     new ApiError(code = 404, reason = "User not found")))
   def updateUser(
     @ApiParam(value = "name that need to be deleted", required = true)@PathParam("username") username: String,
     @ApiParam(value = "Updated user object", required = true) user: User) = {
-    UserData.addUser(user)
-    Response.ok.entity("").build
+    val updated = UserData.addUser(user)
+    Response.ok.entity(updated).build
   }
 
   @DELETE
@@ -63,7 +59,7 @@ trait UserResource extends RestResourceUtil {
   def deleteUser(
     @ApiParam(value = "The name that needs to be deleted", required = true)@PathParam("username") username: String) = {
     UserData.removeUser(username)
-    Response.ok.entity("").build
+    Response.ok.entity(Map.empty).build
   }
 
   @GET

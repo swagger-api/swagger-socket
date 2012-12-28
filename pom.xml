@@ -327,6 +327,14 @@
             <url>${distMgmtSnapshotsUrl}</url>
         </snapshotRepository>
     </distributionManagement>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>sonatype-nexus-snapshots</name>
+            <url>${distMgmtSnapshotsUrl}</url>
+            <snapshots />
+        </pluginRepository>
+    </pluginRepositories>
     <properties>
         <distMgmtSnapshotsUrl>http://oss.sonatype.org/content/repositories/snapshots</distMgmtSnapshotsUrl>
         <surefire.redirectTestOutputToFile>true</surefire.redirectTestOutputToFile>

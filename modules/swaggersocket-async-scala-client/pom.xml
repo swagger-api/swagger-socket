@@ -242,25 +242,34 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>com.mmakowski</groupId>
-        <artifactId>maven-specs2-plugin</artifactId>
-        <version>0.3.0</version>
-        <executions>
-          <execution>
-            <id>verify</id>
-            <phase>test</phase>
-            <goals>
-              <goal>run-specs</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <systemPropertyVariables>
-            <akka.mode>test</akka.mode>
-          </systemPropertyVariables>
-        </configuration>
-      </plugin>
+        <!-- disable surefire -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.7</version>
+          <configuration>
+            <skipTests>true</skipTests>
+          </configuration>
+        </plugin>
+        <!-- enable scalatest -->
+        <plugin>
+          <groupId>org.scalatest</groupId>
+          <artifactId>maven-scalatest-plugin</artifactId>
+          <version>1.0-SNAPSHOT</version>
+          <configuration>
+            <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+            <junitxml>.</junitxml>
+            <filereports>SwaggerSocketTestSuite.txt</filereports>
+          </configuration>
+          <executions>
+            <execution>
+              <id>test</id>
+              <goals>
+                <goal>test</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
     </plugins>
   </build>
 </project>

@@ -70,6 +70,7 @@ object PetData {
     // remove any pets with same id
     pets --= pets.filter(p => p.getId == pet.getId)
     pets += pet
+    pet
   }
 
   private def createPet(id: Long, cat: Category, name: String, urls: List[String], tags: List[String], status: String): Pet = {

@@ -206,7 +206,7 @@ class RestClient(config: SwaggerConfig) extends TransportClient {
     def prepareTrace(uri: String): AsyncHttpClient#BoundRequestBuilder = requestBuilder(TRACE, uri)
   }
 
-  private[this] def requestFactory(method: String): String ⇒ AsyncHttpClient#BoundRequestBuilder = {
+  private[this] def createRequest(method: String): String ⇒ AsyncHttpClient#BoundRequestBuilder = {
     method.toUpperCase(Locale.ENGLISH) match {
       case `GET`     ⇒ underlying.prepareGet _
       case `POST`    ⇒ underlying.preparePost _
@@ -275,7 +275,10 @@ class RestClient(config: SwaggerConfig) extends TransportClient {
 
   private[this] def addQuery(u: URI)(req: AsyncHttpClient#BoundRequestBuilder) = {
     u.getQuery.blankOption foreach { uu =>
-      MapQueryString.parseString(uu) foreach { case (k, v) => v foreach { req.addQueryParameter(k, _) } }
+      rl.QueryString(uu) match {
+        case m: MapQueryString => m.value foreach { case (k, v) => v foreach { req.addQueryParameter(k, _) } }
+        case _ =>
+      }
     }
     req
   }
@@ -284,7 +287,10 @@ class RestClient(config: SwaggerConfig) extends TransportClient {
 
 
   private[this] def addBody(method: String, body: String)(req: AsyncHttpClient#BoundRequestBuilder) = {
-    if (allowsBody.contains(method.toUpperCase(Locale.ENGLISH)) && body.nonBlank) req.setBody(body)
+    if (allowsBody.contains(method.toUpperCase(Locale.ENGLISH)) && body.nonBlank) {
+      req.setHeader("Content-Type", "application/json;charset=utf-8")
+      req.setBody(body)
+    }
     req
   }
 
@@ -312,12 +318,12 @@ class RestClient(config: SwaggerConfig) extends TransportClient {
     URI.create(b+p+q+f)
   }
 
-  def submit(method: String, uri: String, params: Iterable[(String, Any)], headers: Iterable[(String, String)], body: String, timeout: Duration = 5.seconds): Future[RestClientResponse] = {
+  def submit(method: String, uri: String, params: Iterable[(String, Any)], headers: Iterable[(String, String)], body: String, timeout: Duration = 90.seconds): Future[RestClientResponse] = {
     val u = URI.create(uri).normalize()
     val files = requestFiles(params)
     val isMultipart = isMultipartRequest(method, headers, files)
 
-    (requestFactory(method)
+    (createRequest(method)
       andThen addTimeout(timeout)
       andThen addHeaders(headers)
       andThen addCookies

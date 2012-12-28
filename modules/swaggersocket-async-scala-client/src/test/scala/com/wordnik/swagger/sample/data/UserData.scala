@@ -28,9 +28,10 @@ object UserData {
     null
   }
 
-  def addUser(user: User): Unit = {
+  def addUser(user: User) = {
     users --= users.filter(u => u.getId == user.getId)
     users += user
+    user
   }
 
   def removeUser(username: String): Unit = {

@@ -118,7 +118,7 @@ object WebSocketClient {
       else headers.get("Content-Type").flatMap(_.headOption).getOrElse(config.dataFormat.contentType)
     }
 
-    private[this] def nioCharset = charset map Charset.forName getOrElse Codec.UTF8
+//    private[this] def nioCharset = charset map Charset.forName getOrElse Codec.UTF8
     def mediaType: Option[String] = {
       val df = resp.dataFormat
       if (df != null && df.trim.nonEmpty)
