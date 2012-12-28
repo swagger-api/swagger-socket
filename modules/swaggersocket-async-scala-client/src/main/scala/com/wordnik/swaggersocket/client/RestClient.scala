@@ -286,9 +286,9 @@ class RestClient(config: SwaggerConfig) extends TransportClient {
   private[this] val allowsBody = Vector(PUT, POST, PATCH)
 
 
-  private[this] def addBody(method: String, body: String)(req: AsyncHttpClient#BoundRequestBuilder) = {
+  private[this] def addBody(method: String, body: String, files: Iterable[(String, File)])(req: AsyncHttpClient#BoundRequestBuilder) = {
     if (allowsBody.contains(method.toUpperCase(Locale.ENGLISH)) && body.nonBlank) {
-      req.setHeader("Content-Type", "application/json;charset=utf-8")
+      req.setHeader("Content-Type", defaultWriteContentType(files)("Content-Type"))
       req.setBody(body)
     }
     req
@@ -329,7 +329,7 @@ class RestClient(config: SwaggerConfig) extends TransportClient {
       andThen addCookies
       andThen addParameters(method, paramsFrom(params), isMultipart)
       andThen addQuery(u)
-      andThen addBody(method, body)
+      andThen addBody(method, body, files)
       andThen addFiles(files, isMultipart)
       andThen executeRequest)(requestUri(URI.create(baseUrl).normalize(), u).toASCIIString)
   }

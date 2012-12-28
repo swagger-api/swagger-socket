@@ -66,7 +66,7 @@ object PetData {
     result
   }
 
-  def addPet(pet: Pet): Unit = {
+  def addPet(pet: Pet) = {
     // remove any pets with same id
     pets --= pets.filter(p => p.getId == pet.getId)
     pets += pet

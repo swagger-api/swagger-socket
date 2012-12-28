@@ -25,6 +25,7 @@ class JacksonJsonProvider extends JacksonJaxbJsonProvider {
   mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
   mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT)
   mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+  mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
   mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
   super.setMapper(mapper)
 }

@@ -11,10 +11,6 @@ import com.wordnik.swagger.sample.exception.NotFoundException
 import javax.ws.rs.core.Response
 import javax.ws.rs._
 
-object ClassNames {
-  val USER_CLASS = classOf[User].getName
-  val PET_CLASS = classOf[Pet].getName
-}
 trait PetResource extends RestResourceUtil {
   @GET
   @Path("/{petId}")
