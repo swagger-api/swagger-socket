@@ -109,8 +109,11 @@ object WebSocketClient {
 
 
     val headers: Map[String, Seq[String]] =  {
-      val mp = Map.empty[String, List[String]].withDefaultValue(List.empty[String])
-      resp.headers.foldLeft(mp) { (acc, hp) => acc.updated(hp.name, hp.value :: acc(hp.name)) }
+      val mp = mutable.Map.empty[String, List[String]].withDefaultValue(List.empty[String])
+      resp.headers foreach { hp =>
+        mp += hp.name -> (hp.value :: mp(hp.name))
+      }
+      mp.toMap
     }
     val contentType: String = {
       val df = resp.dataFormat
