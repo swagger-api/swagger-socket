@@ -333,7 +333,7 @@
         <slf4j-version>1.6.3</slf4j-version>
         <scala-version>2.9.2</scala-version>
         <jackson-version>1.8.3</jackson-version>
-        <jersey-version>1.12</jersey-version>
+        <jersey-version>1.14</jersey-version>
         <nettosphere-version>2.0.0.beta1</nettosphere-version>
         <logback-version>1.0.0</logback-version>
     </properties>
