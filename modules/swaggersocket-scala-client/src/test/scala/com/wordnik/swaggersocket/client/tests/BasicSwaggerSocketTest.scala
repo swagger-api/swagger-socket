@@ -26,6 +26,7 @@ import com.wordnik.swaggersocket.client.{SwaggerSocketException, SwaggerSocketLi
 
 @RunWith(classOf[JUnitRunner])
 class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers {
+  def DELIMITER_PATTERN = "^\\d+<->".r;
 
   it should "simple open/request/response cycle in" in {
     var cd: CountDownLatch = new CountDownLatch(1)
@@ -163,7 +164,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = createLengthAnnotatedMessage("Yo!") == s.getMessageBody
+        bodyMatch = "Yo!" == checkDelimiter(s.getMessageBody.toString);
         responseCount += 1
 
         cd.countDown()
@@ -207,7 +208,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = (createLengthAnnotatedMessage(r.getMessageBody.toString) == s.getMessageBody) && bodyMatch
+        bodyMatch = (r.getMessageBody == checkDelimiter(s.getMessageBody.toString)) && bodyMatch
         responseCount += 1
 
         cd.countDown()
@@ -251,7 +252,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = createLengthAnnotatedMessage(r.getMessageBody.toString) == s.getMessageBody
+        bodyMatch = r.getMessageBody == checkDelimiter(s.getMessageBody.toString);
         responseCount += 1
 
         cd.countDown()
@@ -355,8 +356,8 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
     })
   }
 
-  def createLengthAnnotatedMessage(message: String) : String = {
-    return message.length + "<->" + message;
+  def checkDelimiter(message: String) : String = {
+    return (DELIMITER_PATTERN.findPrefixMatchOf(message) map(_.after) match {case Some(v) => v case None => message}).toString();
   }
 }
 
