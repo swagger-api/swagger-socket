@@ -58,7 +58,7 @@ class MultiResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = ("root::" + r.getMessageBody) == checkDelimiter(s.getMessageBody.toString);
+        bodyMatch = ("root::" + r.getMessageBody) == checkDelimiter(s.getMessageBody.toString)
 
         responseCount += 1
 
@@ -78,7 +78,7 @@ class MultiResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
   }
 
   def checkDelimiter(message: String) : String = {
-    return (DELIMITER_PATTERN.findPrefixMatchOf(message) map(_.after) match {case Some(v) => v case None => message}).toString();
+    return DELIMITER_PATTERN.replaceFirstIn(message, "")
   }
 }
 

@@ -164,7 +164,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = "Yo!" == checkDelimiter(s.getMessageBody.toString);
+        bodyMatch = "Yo!" == checkDelimiter(s.getMessageBody.toString)
         responseCount += 1
 
         cd.countDown()
@@ -252,7 +252,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = r.getMessageBody == checkDelimiter(s.getMessageBody.toString);
+        bodyMatch = r.getMessageBody == checkDelimiter(s.getMessageBody.toString)
         responseCount += 1
 
         cd.countDown()
@@ -357,7 +357,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
   }
 
   def checkDelimiter(message: String) : String = {
-    return (DELIMITER_PATTERN.findPrefixMatchOf(message) map(_.after) match {case Some(v) => v case None => message}).toString();
+    return DELIMITER_PATTERN.replaceFirstIn(message, "")
   }
 }
 

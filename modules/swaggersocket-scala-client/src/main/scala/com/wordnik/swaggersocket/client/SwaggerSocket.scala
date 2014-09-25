@@ -301,8 +301,7 @@ case class SwaggerSocket(uniqueId : String, timeoutInSeconds: Int, isConnected: 
   }
 
   def checkDelimiter(message: String) : String = {
-    return (DELIMITER_PATTERN.findPrefixMatchOf(message) map(_.after) 
-      match {case Some(v) => v case None => message}).toString;
+    return DELIMITER_PATTERN.replaceFirstIn(message, "")
   }
 
   override def toString: String = {
