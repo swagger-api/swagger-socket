@@ -104,9 +104,9 @@
 
   function onMessage(evt) {
     writeToLog('<span style="color:blue; font-size:75%; font-style:italic">RECEIVED</span><span style="color: blue"><pre>' + createLogMessage(evt.data) + '</pre></span>');
-    var parts = evt.data.split("<->");
-    if (parts[1].charAt(0) == '{') {
-      var msg = JSON.parse(parts[1]);
+    var part = evt.data.replace(/^\d+<->/, '');
+    if (part.charAt(0) == '{') {
+      var msg = JSON.parse(part);
       if (msg.status) {
         writeToLog('<span style="color:navy; font-size:75%; font-style:italic">STATUS_CODE:  ' + msg.status.statusCode  + '</span>');
         if (swaggerid == null && msg.status.statusCode == "200") {
