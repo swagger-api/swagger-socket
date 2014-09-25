@@ -88,7 +88,7 @@ class RootResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = (r.attachment.toString == s.getMessageBody) && bodyMatch
+        bodyMatch = (createLengthAnnotatedMessage(r.attachment.toString) == s.getMessageBody) && bodyMatch
         responseCount += 1
 
         cd.countDown()
@@ -135,6 +135,10 @@ class RootResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
 
     assert(req != null)
     assert(res != null)
+  }
+
+  def createLengthAnnotatedMessage(message: String) : String = {
+    return message.length + "<->" + message;
   }
 }
 

@@ -43,4 +43,11 @@ public class FileResource {
     public InputStream getIndex() {
         return sc.getResourceAsStream("/index.html");
     }
+
+    @Path("/fallback")
+    @GET
+    @Produces("text/html")
+    public InputStream getIndexFallback() {
+        return sc.getResourceAsStream("/index_fallback.html");
+    }
 }

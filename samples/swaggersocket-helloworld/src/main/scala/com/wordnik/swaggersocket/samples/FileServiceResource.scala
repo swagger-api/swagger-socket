@@ -1,5 +1,3 @@
-package com.wordnik.swaggersocket.samples
-
 /**
  *  Copyright 2012 Wordnik, Inc.
  *
@@ -15,6 +13,8 @@ package com.wordnik.swaggersocket.samples
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.wordnik.swaggersocket.samples
+
 import java.io.InputStream
 import javax.servlet.ServletContext
 import javax.ws.rs.{PathParam, GET, Produces, Path}
@@ -37,6 +37,13 @@ class FileServiceResource {
   @Produces(Array("text/html"))
   def getIndex: InputStream = {
     return sc.getResourceAsStream("/index.html")
+  }
+
+  @Path("/fallback")
+  @GET
+  @Produces(Array("text/html"))
+  def getIndexFallback: InputStream = {
+    return sc.getResourceAsStream("/index_fallback.html")
   }
 
 }

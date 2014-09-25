@@ -26,7 +26,7 @@ import com.wordnik.swaggersocket.protocol.Request;
 import com.wordnik.swaggersocket.protocol.Response;
 import com.wordnik.swaggersocket.protocol.ResponseMessage;
 import com.wordnik.swaggersocket.protocol.StatusMessage;
-import org.atmosphere.client.TrackMessageSizeFilter;
+
 import org.atmosphere.client.TrackMessageSizeInterceptor;
 import org.atmosphere.config.service.AtmosphereInterceptorService;
 import org.atmosphere.cpr.Action;
@@ -50,6 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -62,7 +63,6 @@ import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.atmosphere.cpr.FrameworkConfig.INJECTED_ATMOSPHERE_RESOURCE;
@@ -82,15 +82,18 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
     private final AsyncIOInterceptor interceptor = new Interceptor();
     private final ThreadLocal<Request> ssRequest = new ThreadLocal<Request>();
     private final ThreadLocal<String> transactionIdentity = new ThreadLocal<String>();
-    private final Broadcaster heartbeat;
+    private Broadcaster heartbeat;
 
     public SwaggerSocketProtocolInterceptor() {
         this.mapper = new ObjectMapper();
-        this.heartbeat = BroadcasterFactory.getDefault().get(DefaultBroadcaster.class, "/swaggersocket.heatbeat");
     }
 
     @Override
     public void configure(AtmosphereConfig config) {
+    	heartbeat = config.getBroadcasterFactory().lookup(DefaultBroadcaster.class, "/swaggersocket.heartbeat");
+    	if (heartbeat == null) {
+    		heartbeat = config.getBroadcasterFactory().get(DefaultBroadcaster.class, "/swaggersocket.heartbeat");
+    	}
     }
 
     @Override
@@ -382,15 +385,18 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
         if (!p.startsWith("/")) {
             p = "/" + p;
         }
-
+        
         b.pathInfo(p)
                 .contentType(request.getDataFormat())
                 .method(request.getMethod())
                 .queryStrings(queryStrings)
                 .requestURI(requestURI)
                 .requestURL(requestURL)
-                .request(r)
-                .body(request.getMessageBody().toString());
+                .request(r);
+        // add the body only if it is present
+        if (request.getMessageBody() != null) {
+        	b.body(request.getMessageBody().toString());
+        }
 
         return b.build();
     }

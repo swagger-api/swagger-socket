@@ -30,8 +30,17 @@ class FileServiceResource {
     return sc.getResourceAsStream("/jquery/" + ps.getPath)
   }
 
-  @GET def getIndex: InputStream = {
+  @GET
+  @Produces(Array("text/html"))
+  def getIndex: InputStream = {
     return sc.getResourceAsStream("/index.html")
+  }
+
+  @Path("/fallback")
+  @GET
+  @Produces(Array("text/html"))
+  def getIndexFallback: InputStream = {
+    return sc.getResourceAsStream("/index_fallback.html")
   }
 
   @Path("w.png")

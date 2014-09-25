@@ -1,0 +1,187 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>Swagger Socket Wordnik Sample without swaggersocket.js</title>  
+</head>
+<body>
+<h1>Swagger Socket Wordnik Sample without swaggersocket.js</h1>
+<h2>The sample demonstrates how the Swagger Socket protocol works without using swaggersocket.js. The purpose of this page is to verify the service's Swagger Socket support and to show how other clients (e.g., non-js) may interact with the service using the Swagger Socket protocol.</h2>
+<h1>Searching <a href="http://wordnik.com"/>Wordnik.com</a> ... in REAL TIME!</h1>
+<h2>You need to configure the Swagger key in web.xml: com.wordnik.swagger.key. Get a key <a href="http://developer.wordnik.com">here</a></h2>
+
+<br/>
+
+<div id="output">
+  <div id="config" style="float: left; width: 600px">
+    <button id="connect">Connect</button>
+    <button id="disconnect">Disconnect</button>
+    <br />
+    <br />
+    <strong>Enter any word or phrase to look up</strong><br />
+    <input id="phrase" style="width: 80%;"/> <button id="send">Look up</button>
+  </div>
+<br/>
+  <div id="log" style="float: left; width: 90%; height: 500px;">
+    <strong>Log:</strong><br />
+    <button id="clearLogBut" style="position: relative; top: 3px;">Clear log</button>
+    <div id="consoleLog" style="margin-top: 5px; border: solid 1px #aaaaaa; overflow-y: scroll; height:100%"></div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+<script language="javascript" type="text/javascript">
+  var output;
+
+  var connectBut = document.getElementById("connect");
+  connectBut.onclick = doConnect;
+
+  var disconnectBut = document.getElementById("disconnect");
+  disconnectBut.onclick = doDisconnect;
+
+  var swaggerid = null;
+    
+  var phrase = document.getElementById("phrase");
+
+  var sendBut = document.getElementById("send");
+  sendBut.onclick = doSend;
+
+  var consoleLog = document.getElementById("consoleLog");
+
+  var clearLogBut = document.getElementById("clearLogBut");
+  clearLogBut.onclick = clearLog;
+
+  var servicebase = document.location.toString(); //'ws://localhost:8080/';
+  servicebase = servicebase.replace(/^http/, 'ws');
+  servicebase = servicebase.replace(/fallback$/, '');
+  var swaggerpath = 'admin/api/word.json';
+  var oppath = "/";
+
+  function init() {
+    output = document.getElementById("output");
+    setGuiConnected(false);
+  }
+
+  function doConnect() {
+    websocket = new WebSocket(servicebase + swaggerpath + '?SwaggerSocket=1.0');
+
+    websocket.onopen = function(evt) {
+      onOpen(evt)
+    };
+
+    websocket.onclose = function(evt) {
+       onClose(evt)
+    };
+
+    websocket.onmessage = function(evt) {
+      onMessage(evt)
+    };
+
+    websocket.onerror = function(evt) {
+      onError(evt)
+    };
+  }
+
+  function doDisconnect() {
+    websocket.close()
+  }
+
+  function clearLog() {
+    while (consoleLog.childNodes.length > 0) {
+      consoleLog.removeChild(consoleLog.lastChild);
+    }
+  }
+
+  function onOpen(evt) {
+    writeToLog('<span style="color:black; font-size:75%; font-style:italic">CONNECTED: ' + servicebase + swaggerpath + '</span>');
+    setGuiConnected(true);
+    
+    var msg = createHandshakeMessage(servicebase + swaggerpath);
+    writeToLog('<span style="color:green; font-size:75%; font-style:italic">HANDSHAKE SENT</span><span style="color: green;"><pre>' + createLogMessage(msg) + '</pre></span>');
+    websocket.send(msg);
+  }
+
+  function onClose(evt) {
+    writeToLog('<span style="color:black; font-size:75%; font-style:italic">DISCONNECTED</span>');
+    swaggerid = null;
+    setGuiConnected(false);
+  }
+
+  function onMessage(evt) {
+    writeToLog('<span style="color:blue; font-size:75%; font-style:italic">RECEIVED</span><span style="color: blue"><pre>' + createLogMessage(evt.data) + '</pre></span>');
+    var parts = evt.data.split("<->");
+    if (parts[1].charAt(0) == '{') {
+      var msg = JSON.parse(parts[1]);
+      if (msg.status) {
+        writeToLog('<span style="color:navy; font-size:75%; font-style:italic">STATUS_CODE:  ' + msg.status.statusCode  + '</span>');
+        if (swaggerid == null && msg.status.statusCode == "200") {
+          swaggerid = msg.identity;
+          writeToLog('<span style="color:navy; font-size:75%; font-style:italic">IDENTITY:  ' + swaggerid  + '</span>');
+        }
+      } else if (msg.responses) {
+        for (i = 0; i < msg.responses.length; i++) {
+          writeToLog('<span style="color:navy; font-size:75%; font-style:italic">RESPONSE[' + i + ']:  ' + createLogMessage(msg.responses[i])  + '</span>');
+        }
+      }
+    }
+  }
+
+  function onError(evt) {
+    writeToLog('<span style="color:red; font-size:75%; font-style:italic">ERROR</span><span style="color: red;"><pre>' + evt.data + '</pre></span>');
+  }
+
+  function doSend(message) {
+    var phrase = document.getElementById("phrase");
+    var msg = createGETMessage(0, oppath + phrase.value + "/examples");
+    writeToLog('<span style="color:green; font-size:75%; font-style:italic">SENT</span><span style="color: green;"><pre>' + createLogMessage(msg) + '</pre></span>');
+    websocket.send(msg);
+  }
+
+  function setGuiConnected(isConnected) {
+    connectBut.disabled = isConnected;
+    disconnectBut.disabled = !isConnected;
+    phrase.disabled = !isConnected;
+    sendBut.disabled = !isConnected;
+  }
+
+  function createLogMessage(data) {
+    if (typeof data != 'string') {
+      data = JSON.stringify(data);
+    }
+    return data.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  }
+
+  function createHandshakeMessage(path) {
+    var msg = { "handshake" : { "protocolVersion" : "1.0", "protocolName" : "SwaggerSocket", "uuid" : "0", "path" : path, "dataFormat" : "text/plain"}};
+    return JSON.stringify(msg);
+  }
+
+  function createGETMessage(id, path) {
+    var msg = { "identity" : swaggerid, "requests" : [ { "uuid" : id, "method" : "GET", "path" : path } ] };
+    return JSON.stringify(msg);
+  }
+
+  function arrayBufferToString(buf) {
+    var ba = new Uint8Array(buf);
+    var aa = new Array(ba.length);
+    for (i = 0; i < ba.length; i++) {
+      aa[i] = String.fromCharCode(ba[i]);
+    }
+    return Array.prototype.slice.call(aa).join("");
+  }
+
+  function writeToLog(message) {
+    var pre = document.createElement("p");
+    pre.wordWrap = "break-word";
+    pre.innerHTML = message;
+    consoleLog.appendChild(pre);
+
+    while (consoleLog.childNodes.length > 50) {
+      consoleLog.removeChild(consoleLog.firstChild);
+    }
+    
+    consoleLog.scrollTop = consoleLog.scrollHeight;
+  }
+
+  window.addEventListener("load", init, false);
+
+  </script>  
+</body>
+</html>

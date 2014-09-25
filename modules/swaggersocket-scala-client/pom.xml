@@ -19,7 +19,11 @@
             <artifactId>scala-library</artifactId>
             <scope>compile</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.ning</groupId>
+            <artifactId>async-http-client</artifactId>
+            <version>${ahc-version}</version>
+        </dependency>
         <dependency>
             <groupId>org.jfarcand</groupId>
             <artifactId>wcs</artifactId>

@@ -39,4 +39,11 @@ class FileServiceResource {
     return sc.getResourceAsStream("/index.html")
   }
 
+  @Path("/fallback")
+  @GET
+  @Produces(Array("text/html"))
+  def getIndexFallback: InputStream = {
+    return sc.getResourceAsStream("/index_fallback.html")
+  }
+
 }

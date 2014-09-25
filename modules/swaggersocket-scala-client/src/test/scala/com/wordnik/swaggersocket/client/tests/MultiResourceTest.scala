@@ -58,7 +58,7 @@ class MultiResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = ("root::" + r.getMessageBody) == s.getMessageBody
+        bodyMatch = createLengthAnnotatedMessage("root::" + r.getMessageBody) == s.getMessageBody
 
         responseCount += 1
 
@@ -75,6 +75,10 @@ class MultiResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
     assert(bodyMatch)
     assert(responseCount == 2)
 
+  }
+
+  def createLengthAnnotatedMessage(message: String) : String = {
+    return message.length + "<->" + message;
   }
 }
 
