@@ -26,6 +26,7 @@ import com.wordnik.swaggersocket.client.{SwaggerSocketException, SwaggerSocketLi
 
 @RunWith(classOf[JUnitRunner])
 class RootResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
+  def DELIMITER_PATTERN = "^\\d+<->".r;
 
   it should "simple open/request/response cycle in" in {
     var cd: CountDownLatch = new CountDownLatch(1)
@@ -88,7 +89,7 @@ class RootResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = (r.attachment.toString == s.getMessageBody) && bodyMatch
+        bodyMatch = (r.attachment == checkDelimiter(s.getMessageBody.toString)) && bodyMatch
         responseCount += 1
 
         cd.countDown()
@@ -135,6 +136,10 @@ class RootResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
 
     assert(req != null)
     assert(res != null)
+  }
+
+  def checkDelimiter(message: String) : String = {
+    return DELIMITER_PATTERN.replaceFirstIn(message, "")
   }
 }
 

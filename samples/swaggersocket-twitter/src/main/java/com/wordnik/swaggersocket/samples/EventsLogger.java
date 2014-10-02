@@ -54,4 +54,10 @@ public class EventsLogger implements AtmosphereResourceEventListener {
     public void onThrowable(AtmosphereResourceEvent event) {
         logger.warn("onThrowable(): {}", event);
     }
+    public void onClose(AtmosphereResourceEvent event) {
+        logger.info("onClose(): {}", event);
+    }
+    public void onHeartbeat(AtmosphereResourceEvent event) {
+        logger.info("onHeartbeat(): {}", event);
+    }
 }

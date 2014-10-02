@@ -42,8 +42,8 @@ and then point your browser to http://127.0.0.1:8080
 You can also build the sample yourself and use Jetty instead of NettoSphere.
 
 ```bash
-  % git clone git@github.com:wordnik/swagger-sockets.git
-  % cd swagger-sockets
+  % git clone git@github.com:wordnik/swaggersockets.git
+  % cd swaggersockets
   % mvn 
   % cd samples/swaggersocket-echo OR samples/swaggersocket-twitter
   % mvn jetty:run

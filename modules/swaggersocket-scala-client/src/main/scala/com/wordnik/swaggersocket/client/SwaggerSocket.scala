@@ -55,6 +55,7 @@ case class SwaggerSocket(uniqueId : String, timeoutInSeconds: Int, isConnected: 
   var path: String = "ws://localhost"
   var ws: WebSocket = null
   var identity : String = uniqueId
+  def DELIMITER_PATTERN = "^\\d+<->".r;
 
     /**
    * Open a WebSocket connection to a remote server.
@@ -300,12 +301,7 @@ case class SwaggerSocket(uniqueId : String, timeoutInSeconds: Int, isConnected: 
   }
 
   def checkDelimiter(message: String) : String = {
-    var m : Array[String] = message.split("<->")
-    if (m.length == 1) {
-      return m(0);
-    } else {
-      return m(1);
-    }
+    return DELIMITER_PATTERN.replaceFirstIn(message, "")
   }
 
   override def toString: String = {

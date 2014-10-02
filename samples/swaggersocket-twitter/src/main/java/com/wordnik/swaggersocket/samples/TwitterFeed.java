@@ -71,8 +71,9 @@ public class TwitterFeed {
                     } else {
                         query = "?q=" + tagid;
                     }
-
-                    asyncClient.prepareGet("http://search.twitter.com/search.json" + query).execute(
+                    
+                    //FIXME need oauth as v1.1 api needs authentication
+                    asyncClient.prepareGet("https://api.twitter.com/1.1/search/tweets.json?q=" + query).execute(
                             new AsyncCompletionHandler<Object>() {
 
                                 @Override
