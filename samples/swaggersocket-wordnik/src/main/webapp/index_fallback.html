@@ -90,7 +90,7 @@
   }
 
   function onOpen(evt) {
-    writeToLog('<span style="color:black; font-size:75%; font-style:italic">CONNECTED: ' + servicebase + swaggerpath + '</span>');
+    writeToLog('<span style="color:black; font-size:75%; font-style:italic">CONNECTED: ' + evt.target.url + '</span>');
     setGuiConnected(true);
     
     var msg = createHandshakeMessage(servicebase + swaggerpath);
