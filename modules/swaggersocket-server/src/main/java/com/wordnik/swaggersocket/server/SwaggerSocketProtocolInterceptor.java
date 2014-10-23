@@ -43,7 +43,6 @@ import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.atmosphere.cpr.AtmosphereResourceEventListenerAdapter;
 import org.atmosphere.cpr.AtmosphereResponse;
 import org.atmosphere.cpr.Broadcaster;
-import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.cpr.DefaultBroadcaster;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -57,6 +56,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -339,7 +339,12 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                 };
                 res.asyncIOWriter(writer);
             }
-            AtmosphereInterceptorWriter.class.cast(writer).interceptor(interceptor);
+            //REVIST need a better way to add a custom filter at the first entry and not at the last as
+            // e.g. interceptor(AsyncIOInterceptor interceptor, int position)
+            LinkedList<AsyncIOInterceptor> filters = AtmosphereInterceptorWriter.class.cast(writer).filters();
+            if (!filters.contains(interceptor)) {
+            	filters.addFirst(interceptor);
+            }
         }
     }
 
@@ -504,5 +509,4 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
             return m;
         }
     }
-
 }

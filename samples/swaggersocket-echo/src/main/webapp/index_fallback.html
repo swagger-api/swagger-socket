@@ -88,7 +88,7 @@
   }
 
   function onOpen(evt) {
-    writeToLog('<span style="color:black; font-size:75%; font-style:italic">CONNECTED: ' + servicebase + swaggerpath + '</span>');
+    writeToLog('<span style="color:black; font-size:75%; font-style:italic">CONNECTED: ' + evt.target.url + '</span>');
     setGuiConnected(true);
     
     var msg = createHandshakeMessage(servicebase + swaggerpath);
@@ -96,7 +96,7 @@
     websocket.send(msg);
   }
 
-  function onClose(evt) {
+ function onClose(evt) {
     writeToLog('<span style="color:black; font-size:75%; font-style:italic">DISCONNECTED</span>');
     swaggerid = null;
     setGuiConnected(false);
