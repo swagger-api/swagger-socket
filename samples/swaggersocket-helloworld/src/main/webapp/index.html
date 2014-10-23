@@ -6,38 +6,77 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
-            new jQuery.swaggersocket.SwaggerSocket()
-                    .open(document.location.toString() + "helloworld",
-                            function(swaggerSocket, r) {
-                                if (r.getStatusCode() == 200) {
-                                    var ss = new jQuery.swaggersocket.SwaggerSocketListener();
-                                    ss.onResponse = function(r) {
-                                        $('ul').prepend($('<li></li>').text(r.getData()));
-                                    };
+            var identity = 0;
+            var ss = new jQuery.swaggersocket.SwaggerSocketListener();
+            var swaggerSocket = new jQuery.swaggersocket.SwaggerSocket();
 
-                                    var request = new jQuery.swaggersocket.Request()
-                                            .method("GET")
-                                            .path('/sayHello')
-                                            .listener(ss);
+            ss.onOpen = function(r) {
+                $('ul').prepend($('<li></li>').text("----------------------------"));
+                $('ul').prepend($('<li></li>').text("STATUS: " + r.getReasonPhrase()));
+                $('ul').prepend($('<li></li>').text("----------------------------"));
+            };
+            ss.onClose = function(r) {
+                $('ul').prepend($('<li></li>').text("----------------------------"));
+                $('ul').prepend($('<li></li>').text("STATUS: " + r.getReasonPhrase()));
+                $('ul').prepend($('<li></li>').text("Retrying "));
+                $('ul').prepend($('<li></li>').text("----------------------------"));
+            };
 
-                                    swaggerSocket.send(request);
-                                } else {
-                                    alert("Hansdshake failed");
-                                }
-                            }
-            );
+            ss.onError = function(r) {
+                $('ul').prepend($('<li></li>').text("ERROR for REQUEST " + r.getUUID() + " : " + r.getStatus() + " " + r.getReasonPhrase()));
+            };
+
+            ss.onResponse = function(r) {
+                $('ul').prepend($('<li></li>').text("Response for Request: " + r.getRequest().getUUID() + " is '" + r.getData() + "'"));
+            };
+
+            open();
+
+            function getKeyCode(ev) {
+                if (window.event) return window.event.keyCode;
+                return ev.keyCode;
+            }
+
+            function getElementById() {
+                return document.getElementById(arguments[0]);
+            }
+
+            function getElementByIdValue() {
+                return document.getElementById(arguments[0]).value;
+            }
+
+            function open() {
+                var request = new jQuery.swaggersocket.Request()
+                        .path(document.location.toString() + 'helloworld')
+                        .dataFormat("text/plain")
+                        .listener(ss);
+
+                swaggerSocket.open(request);
+            }
+
+            getElementById('send_message').onclick = function(event) {
+                $('ul').prepend($('<li></li>').text("----------------------------"));
+
+                /**
+                 * Send the hello message.
+                 */
+                var request = new jQuery.swaggersocket.Request()
+                        .path("/sayHello")
+                        .method("GET")
+                        .listener(ss);
+
+                $('ul').prepend($('<li></li>').text("Sending a hello request using uuid " + request.getUUID()));
+                $('ul').prepend($('<li></li>').text(""));
+
+                swaggerSocket.send(request);
+
+                return false;
+            };
         });
     </script>
     <style type='text/css'>
         div {
             border: 0px solid black;
-        }
-
-        input#phrase {
-            width: 20em;
-            height: 3em;
-            font-size: 100%;
-            background-color: #e0f0f0;
         }
 
         ul {
@@ -59,6 +98,17 @@
     </style>
 </head>
 <body>
+<h1>Swagger Socket HelloWorld Sample.</h1>
+<h2>The sample demonstrates how the swaggersocket.js works and output some information about the protocol itself. Take a look at <a href="https://github.com/wordnik/swagger-sockets/blob/master/samples/swaggersocket-helloworld/src/main/webapp/index.html#L8">the details</a>. Under the hood swaggersocket will execute many requests using a single websocket connection. </h2>
+<br/>
+<h2 id="s_h" class='hidden'>Say Hello to SwaggerSocket</h2>
+
+<div id='sendMessage'>
+    <input id='send_message' class='button' type='submit' name='Publish' value='Hello'/>
+</div>
+<br/>
+
+<h2>Messages delivered asynchronously</h2>
 <ul></ul>
 </body>
 </html>
