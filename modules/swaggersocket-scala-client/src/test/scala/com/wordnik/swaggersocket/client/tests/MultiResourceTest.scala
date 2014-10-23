@@ -26,7 +26,6 @@ import com.wordnik.swaggersocket.client.{SwaggerSocketException, SwaggerSocketLi
 
 @RunWith(classOf[JUnitRunner])
 class MultiResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
-  def DELIMITER_PATTERN = "^\\d+<->".r;
 
   it should "See if multiple request response body match from different resource" in {
     val open = new Request.Builder().path(getTargetUrl + "/").build()
@@ -58,7 +57,7 @@ class MultiResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = ("root::" + r.getMessageBody) == checkDelimiter(s.getMessageBody.toString)
+        bodyMatch = ("root::" + r.getMessageBody) == s.getMessageBody.toString
 
         responseCount += 1
 
@@ -75,10 +74,6 @@ class MultiResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
     assert(bodyMatch)
     assert(responseCount == 2)
 
-  }
-
-  def checkDelimiter(message: String) : String = {
-    return DELIMITER_PATTERN.replaceFirstIn(message, "")
   }
 }
 

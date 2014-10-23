@@ -26,7 +26,6 @@ import com.wordnik.swaggersocket.client.{SwaggerSocketException, SwaggerSocketLi
 
 @RunWith(classOf[JUnitRunner])
 class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers {
-  def DELIMITER_PATTERN = "^\\d+<->".r;
 
   it should "simple open/request/response cycle in" in {
     var cd: CountDownLatch = new CountDownLatch(1)
@@ -164,7 +163,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = "Yo!" == checkDelimiter(s.getMessageBody.toString)
+        bodyMatch = "Yo!" == s.getMessageBody.toString
         responseCount += 1
 
         cd.countDown()
@@ -208,7 +207,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = (r.getMessageBody == checkDelimiter(s.getMessageBody.toString)) && bodyMatch
+        bodyMatch = (r.getMessageBody == s.getMessageBody.toString) && bodyMatch
         responseCount += 1
 
         cd.countDown()
@@ -252,7 +251,7 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
       }
 
       override def message(r: Request, s: Response) {
-        bodyMatch = r.getMessageBody == checkDelimiter(s.getMessageBody.toString)
+        bodyMatch = r.getMessageBody == s.getMessageBody.toString
         responseCount += 1
 
         cd.countDown()
@@ -354,10 +353,6 @@ class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers 
     errorCode.foreach(e => {
       assert(e == 404)
     })
-  }
-
-  def checkDelimiter(message: String) : String = {
-    return DELIMITER_PATTERN.replaceFirstIn(message, "")
   }
 }
 
