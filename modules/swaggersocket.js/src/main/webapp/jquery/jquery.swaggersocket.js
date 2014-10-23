@@ -352,12 +352,6 @@ jQuery.swaggersocket = function() {
             var _socket;
 
             /**
-             * Is the hanshake complete
-             * @private
-             */
-            var _handshakeDone = false;
-
-            /**
              * HashMap of current live request.
              * @private
              */
@@ -411,99 +405,40 @@ jQuery.swaggersocket = function() {
                     if (typeof(cFunction) == 'function') {
                         _openFunction = cFunction;
                     }
-
                     function _pushResponse(response, state, listener) {
-
+                        // handshake has been done
                         if (state == "messageReceived") {
-                            // Invoke onOpen only when the handshake occurs.
-                            if (!_handshakeDone) {
-                                if (response.getStatusCode() < 400) {
-                                    if (typeof(listener.onOpen) != 'undefined') {
-                                        if (response.transport != 'websocket') {
-                                            setTimeout(function() {
-                                                try {
-                                                    listener.onOpen(response);
-                                                } catch (err) {
-                                                    if (jQuery.swaggersocket._logLevel == 'debug') {
-                                                        jQuery.atmosphere.debug(err.type);
-                                                    }
-                                                }
-                                            }, 100);
-                                        } else {
-                                            try {
-                                                listener.onOpen(response);
-                                            } catch (err) {
-                                                if (jQuery.swaggersocket._logLevel == 'debug') {
-                                                    jQuery.atmosphere.debug(err.type);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    _handshakeDone = true;
-                                } else {
-                                    if (typeof(listener.onError) != 'undefined') {
-                                        try{
-                                            listener.onError(response);
-                                        } catch (err) {
-                                            jQuery.atmosphere.error(err.type);
+                            switch (Object.prototype.toString.call(response)) {
+                            case "[object Array]":
+                                if (typeof(listener.onResponses) != 'undefined') {
+                                    try {
+                                        listener.onResponses(response);
+                                    } catch (err) {
+                                        if (jQuery.swaggersocket._logLevel == 'debug') {
+                                            jQuery.atmosphere.debug(err.type);
                                         }
                                     }
                                 }
-
-                                if (typeof(_openFunction) != 'undefined') {
-                                    if (response.transport != 'websocket') {
-                                        setTimeout(function() {
-                                            try {
-                                                _openFunction(_self, response);
-                                            } catch (err) {
-                                                if (jQuery.swaggersocket._logLevel == 'debug') {
-                                                    jQuery.atmosphere.debug(err.type);
-                                                }
-                                            }
-                                        }, 100);
-                                    } else {
-                                        try {
-                                            _openFunction(_self, response);
-                                        } catch (err) {
-                                            if (jQuery.swaggersocket._logLevel == 'debug') {
-                                                jQuery.atmosphere.debug(err.type);
-                                            }
+                                return;
+                            default:
+                                if (response.getStatusCode() < 400 && typeof(listener.onResponse) != 'undefined') {
+                                    try {
+                                        listener.onResponse(response);
+                                    } catch (err) {
+                                        if (jQuery.swaggersocket._logLevel == 'debug') {
+                                            jQuery.atmosphere.debug(err.type);
+                                        }
+                                    }
+                                } else if (typeof(listener.onError) != 'undefined') {
+                                    try {
+                                        listener.onError(response);
+                                    } catch (err) {
+                                        if (jQuery.swaggersocket._logLevel == 'debug') {
+                                            jQuery.atmosphere.debug(err.type);
                                         }
                                     }
                                 }
-                            } else {
-                                switch (Object.prototype.toString.call(response)) {
-                                    case "[object Array]":
-                                        if (typeof(listener.onResponses) != 'undefined') {
-                                            try {
-                                                listener.onResponses(response);
-                                            } catch (err) {
-                                                if (jQuery.swaggersocket._logLevel == 'debug') {
-                                                    jQuery.atmosphere.debug(err.type);
-                                                }
-                                            }
-                                        }
-                                        return;
-                                    default:
-                                        if (response.getStatusCode() < 400 && typeof(listener.onResponse) != 'undefined') {
-                                            try {
-                                                listener.onResponse(response);
-                                            } catch (err) {
-                                                if (jQuery.swaggersocket._logLevel == 'debug') {
-                                                    jQuery.atmosphere.debug(err.type);
-                                                }
-                                            }
-                                        } else if (typeof(listener.onError) != 'undefined') {
-                                            try {
-                                                listener.onError(response);
-                                            } catch (err) {
-                                                if (jQuery.swaggersocket._logLevel == 'debug') {
-                                                    jQuery.atmosphere.debug(err.type);
-                                                }
-                                            }
-                                        }
-                                        break;
-                                }
+                                break;
                             }
                         }
                     };
@@ -553,11 +488,10 @@ jQuery.swaggersocket = function() {
                                 if (_incompleteMessage != "" ) {
                                     response.state = "messageReceived";
                                 }
-
-                                var messageData = response.state != "messageReceived" ? "" : eval("(" + data + ")");
+                                var messageData = response.state != "messageReceived" 
+                                    ? "" : JSON.parse(data.replace(/^\d+<->/, ''));
                                 var listener = jQuery.extend(request.getListener(), new jQuery.swaggersocket.SwaggerSocketListener());
                                 var r = new jQuery.swaggersocket.Response();
-
                                 // _incompleteMessage != "" means the server sent a maxed out buffer but still invalid JSON
                                 if (response.state == "messageReceived" || response.state == "opening") {
                                     _incompleteMessage = "";
@@ -636,7 +570,11 @@ jQuery.swaggersocket = function() {
                  */
                 send : function(requests) {
                     if (typeof(_identity) == 'undefined') {
-                        var listener = jQuery.extend(requests.getListener(), new jQuery.swaggersocket.SwaggerSocketListener());
+			// requests may be a single request or an array
+                        var listener = 
+                            jQuery.extend((requests.constructor.toString().indexOf("Array") < 0 
+                                           ? requests : requests[0]).getListener, 
+                                          new jQuery.swaggersocket.SwaggerSocketListener());
                         var r = new jQuery.swaggersocket.Response();
                         r.statusCode("503").reasonPhrase("The open operation hasn't completed yet. Make sure your SwaggerSocketListener#onOpen has been invoked first.");
 
@@ -826,7 +764,8 @@ function loadAtmosphere(jQuery) {
         };
 
         return {
-            version: "2.0.0-jquery",
+            // use version >= 2.2.1 so that atmosphere 2.2.x not reject the requests
+            version: "2.2.1-jquery",
             requests: [],
             callbacks: [],
 
@@ -1881,14 +1820,13 @@ function loadAtmosphere(jQuery) {
                         var isString = typeof(message) == 'string';
                         if (isString) {
                             var skipCallbackInvocation = _trackMessageSize(message, _request, _response);
-                            if (!skipCallbackInvocation) {
-                                _invokeCallback();
+                            if (skipCallbackInvocation) {
                                 _response.responseBody = '';
                                 _response.messages = [];
                             }
+                            _invokeCallback();
                         } else {
-                            if (!_handleProtocol(_request, message)) return;
-
+                            _handleProtocol(_request, message);
                             _response.responseBody = message;
                             _invokeCallback();
                             _response.responseBody = null;
@@ -1965,22 +1903,11 @@ function loadAtmosphere(jQuery) {
                 }
 
                 function _handleProtocol(request, message) {
-                    // The first messages is always the uuid.
-                    var b = true;
                     if (jQuery.trim(message) != 0 && request.enableProtocol && request.firstMessage) {
                         request.firstMessage  = false;
-                        var messages =  message.split(request.messageDelimiter);
-                        var pos = messages.length == 2 ? 0 : 1;
-                        request.uuid = jQuery.trim(messages[pos]);
-                        request.stime = jQuery.trim(messages[pos + 1]);
-                        b = false;
-                        if (request.transport != 'long-polling') {
-                            _triggerOpen(request);
-                        }
                     } else {
                         _triggerOpen(request);
                     }
-                    return b;
                 }
 
                 function _timeout(_request) {
@@ -2014,7 +1941,7 @@ function loadAtmosphere(jQuery) {
                  * @param response
                  */
                 function _trackMessageSize(message, request, response) {
-                    if (!_handleProtocol(_request, message)) return true;
+                    _handleProtocol(_request, message);
                     if (message.length == 0) return true;
 
                     if (request.trackMessageLength) {
@@ -2022,40 +1949,44 @@ function loadAtmosphere(jQuery) {
                         message = response.partialMessage + message;
 
                         var messages = [];
+                        //FIXME this way of iterating the message won't work as the delimiter may appear unescaped in the message content itself
+
                         var messageStart = message.indexOf(request.messageDelimiter);
-                        while (messageStart != -1) {
-                            var str = jQuery.trim(message.substring(0, messageStart));
-                            var messageLength = parseInt(str);
-                            if (isNaN(messageLength))
-                                throw 'message length "'+str+'" is not a number';
-                            messageStart += request.messageDelimiter.length;
-                            if (messageStart + messageLength > message.length) {
-                                // message not complete, so there is no trailing messageDelimiter
-                                messageStart = -1;
+                        if (messageStart != -1) {
+                            while (messageStart != -1) {
+                                var str = jQuery.trim(message.substring(0, messageStart));
+                                var messageLength = parseInt(str);
+                                if (isNaN(messageLength))
+                                    throw 'message length "'+str+'" is not a number';
+                                messageStart += request.messageDelimiter.length;
+                                if (messageStart + messageLength > message.length) {
+                                    // message not complete, so there is no trailing messageDelimiter
+                                    messageStart = -1;
+                                } else {
+                                    // message complete, so add it
+                                    messages.push(message.substring(messageStart, messageStart + messageLength));
+                                    // remove consumed characters
+                                    message = message.substring(messageStart + messageLength, message.length);
+                                    messageStart = message.indexOf(request.messageDelimiter);
+                                }
+                            }
+                            
+                            /* keep any remaining data */
+                            response.partialMessage = message;
+
+                            if (messages.length != 0) {
+                                response.responseBody = messages.join(request.messageDelimiter);
+                                response.messages = messages;
+                                return false;
                             } else {
-                                // message complete, so add it
-                                messages.push(message.substring(messageStart, messageStart + messageLength));
-                                // remove consumed characters
-                                message = message.substring(messageStart + messageLength, message.length);
-                                messageStart = message.indexOf(request.messageDelimiter);
+                                response.responseBody = "";
+                                response.messages = [];
+                                return true;
                             }
                         }
-
-                        /* keep any remaining data */
-                        response.partialMessage = message;
-
-                        if (messages.length != 0) {
-                            response.responseBody = messages.join(request.messageDelimiter);
-                            response.messages = messages;
-                            return false;
-                        } else {
-                            response.responseBody = "";
-                            response.messages = [];
-                            return true;
-                        }
-                    } else {
-                        response.responseBody = message;
                     }
+                    response.responseBody = message;
+                    response.messages = [message];
                     return false;
                 }
 
@@ -3609,6 +3540,3 @@ function loadAtmosphere(jQuery) {
 
     }(jQuery));
 }
-
-
-
