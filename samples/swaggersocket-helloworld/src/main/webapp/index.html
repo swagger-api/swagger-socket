@@ -1,7 +1,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <script type="text/javascript" src="jquery/jquery-1.6.4.js"></script>
+    <script type="text/javascript" src="jquery/jquery-2.0.3.js"></script>
     <script type="text/javascript" src="jquery/jquery.form.js"></script>
+    <script type="text/javascript" src="jquery/jquery.atmosphere.js"></script>
     <script type="text/javascript" src="jquery/jquery.swaggersocket.js"></script>
 
     <script type="text/javascript">
@@ -13,17 +14,20 @@
             ss.onOpen = function(r) {
                 $('ul').prepend($('<li></li>').text("----------------------------"));
                 $('ul').prepend($('<li></li>').text("STATUS: " + r.getReasonPhrase()));
+                $('ul').prepend($('<li></li>').text("SwaggerSocket connected"));
                 $('ul').prepend($('<li></li>').text("----------------------------"));
             };
             ss.onClose = function(r) {
                 $('ul').prepend($('<li></li>').text("----------------------------"));
                 $('ul').prepend($('<li></li>').text("STATUS: " + r.getReasonPhrase()));
-                $('ul').prepend($('<li></li>').text("Retrying "));
+                $('ul').prepend($('<li></li>').text("SwaggerSocket closed; reconnecting ..."));
                 $('ul').prepend($('<li></li>').text("----------------------------"));
             };
 
             ss.onError = function(r) {
-                $('ul').prepend($('<li></li>').text("ERROR for REQUEST " + r.getUUID() + " : " + r.getStatus() + " " + r.getReasonPhrase()));
+                $('ul').prepend($('<li></li>').text("----------------------------"));
+                $('ul').prepend($('<li></li>').text("ERROR: " + r.getReasonPhrase()));
+                $('ul').prepend($('<li></li>').text("----------------------------"));
             };
 
             ss.onResponse = function(r) {
