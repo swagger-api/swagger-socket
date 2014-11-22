@@ -24,6 +24,7 @@ import com.wordnik.swaggersocket.protocol.ProtocolBase;
 import com.wordnik.swaggersocket.protocol.QueryString;
 import com.wordnik.swaggersocket.protocol.Request;
 import com.wordnik.swaggersocket.protocol.Response;
+import com.wordnik.swaggersocket.protocol.Response.Builder;
 import com.wordnik.swaggersocket.protocol.ResponseMessage;
 import com.wordnik.swaggersocket.protocol.StatusMessage;
 
@@ -47,8 +48,6 @@ import org.atmosphere.cpr.DefaultBroadcaster;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -245,9 +244,12 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                                 ar.destroyable(false);
                                 response.destroyable(false);
                             }
-                        } catch (ServletException e) {
+                        } catch (Exception e) {
                             logger.warn("", e);
-                            return Action.CANCELLED;
+                            //REVISIT might want to optionally return the body entity?
+                            response.setStatus(500, "Server Error");
+                            ResponseMessage responseMessage = new ResponseMessage(identity, createResponseBuilder(response, null).build());
+                            response.getOutputStream().write(mapper.writeValueAsBytes(responseMessage));
                         }
                     }
                 }
@@ -465,24 +467,11 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
     }
 
     protected final Object wrapMessage(AtmosphereResponse res, String message) {
-
         if (message != null && message.startsWith("heartbeat-")) {
             String identity = (String) getContextValue(res.request(), IDENTITY);
             return new Heartbeat(String.valueOf(System.nanoTime()), identity);
         } else {
-            Request swaggerSocketRequest = lookupRequest(res.request());
-            Response.Builder builder = new Response.Builder();
-
-            builder.body(message)
-                    .status(res.getStatus(), res.getStatusMessage());
-
-            Map<String, String> headers = res.headers();
-            for (String s : headers.keySet()) {
-                builder.header(new Header(s, headers.get(s)));
-            }
-
-            builder.uuid(swaggerSocketRequest.getUuid()).method(swaggerSocketRequest.getMethod())
-                    .path(swaggerSocketRequest.getPath());
+            Response.Builder builder = createResponseBuilder(res, message);
             String identity = (String) getContextValue(res.request(), IDENTITY);
 
             AtomicInteger expectedResponseCount = (AtomicInteger) getContextValue(res.request(), transactionIdentity.get() + RESPONSE_COUNTER);
@@ -509,4 +498,18 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
             return m;
         }
     }
+
+	private Builder createResponseBuilder(AtmosphereResponse res, String message) {
+		Request swaggerSocketRequest = lookupRequest(res.request());
+		Response.Builder builder = new Response.Builder();
+        builder.body(message).status(res.getStatus(), res.getStatusMessage());
+
+        Map<String, String> headers = res.headers();
+        for (String s : headers.keySet()) {
+            builder.header(new Header(s, headers.get(s)));
+        }
+
+        builder.uuid(swaggerSocketRequest.getUuid()).method(swaggerSocketRequest.getMethod()).path(swaggerSocketRequest.getPath());
+        return builder;
+	}
 }

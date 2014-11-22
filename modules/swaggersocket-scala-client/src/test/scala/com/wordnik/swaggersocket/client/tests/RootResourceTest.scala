@@ -136,5 +136,53 @@ class RootResourceTest extends BaseTest with FlatSpec with ShouldMatchers {
     assert(req != null)
     assert(res != null)
   }
+
+  it should "See if exceptions are reported back to the client" in {
+    val open = new Request.Builder().path(getTargetUrl + "/").build()
+    var cd: CountDownLatch = new CountDownLatch(2)
+    val ss = SwaggerSocket()
+    var bodyMatch = true;
+    var errorCodeMatch = true;
+    var request = new Request.Builder()
+      .path("/e")
+      .method("POST")
+      .body("peace")
+      .build()
+
+    var request2 = new Request.Builder()
+      .path("/e")
+      .method("POST")
+      .body("secret")
+      .build()
+
+    var responseCount = 0
+    var errorCount = 0
+
+    var listener = new SwaggerSocketListener() {
+      override def error(e: SwaggerSocketException) {
+        errorCodeMatch = 500 == e.getStatusCode && errorCodeMatch 
+        errorCount += 1
+        cd.countDown()
+      }
+
+      override def message(r: Request, s: Response) {
+        bodyMatch = ("peace" == s.getMessageBody.toString) && bodyMatch
+        responseCount += 1
+
+        cd.countDown()
+      }
+    }
+
+    ss.open(open)
+      .send(Array[Request](request, request2), listener)
+
+    cd.await(10, TimeUnit.SECONDS)
+    ss.close
+
+    assert(bodyMatch)
+    assert(responseCount == 1)
+    assert(errorCodeMatch)
+    assert(errorCount == 1)
+  }
 }
 

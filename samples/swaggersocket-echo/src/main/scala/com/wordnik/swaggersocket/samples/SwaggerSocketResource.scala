@@ -24,6 +24,10 @@ class SwaggerSocketResource {
   @Path("/echo")
   @POST
   def echo(m: String): String = {
+    // for testing a runtime exception handling
+    if (m == "secret") {
+        throw new RuntimeException("no secret")
+    }
     m
   }
 

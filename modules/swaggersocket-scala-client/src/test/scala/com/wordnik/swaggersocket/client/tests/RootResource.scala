@@ -46,4 +46,13 @@ class RootResource /* extend SwaggerSocket */ {
   def yod(): String = {
     "root::zzzzzz!"
   }
+
+  @Path("/e")
+  @POST
+  def yoe(m: String): String = {
+    if (m == "secret") {
+      throw new RuntimeException("no secret");
+    }
+    m
+  }
 }

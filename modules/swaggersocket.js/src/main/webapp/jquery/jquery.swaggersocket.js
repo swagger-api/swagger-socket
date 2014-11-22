@@ -514,7 +514,7 @@ jQuery.swaggersocket = function() {
                                         var _responses = new Array();
                                         var i = 0;
                                         jQuery.each(messageData.responses, function(index, res) {
-                                            r.statusCode(res.statusCode).path(res.path).headers(res.headers).data(res.messageBody).uuid(res.uuid);
+                                            r.statusCode(res.statusCode).reasonPhrase(res.reasonPhrase).path(res.path).headers(res.headers).data(res.messageBody).uuid(res.uuid);
 
                                             /*
                                              We may run OOM here because we kept the Request object around.
