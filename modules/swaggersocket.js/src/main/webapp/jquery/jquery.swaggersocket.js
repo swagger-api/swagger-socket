@@ -498,9 +498,13 @@ jQuery.swaggersocket = function() {
                                         r.statusCode(messageData.status.statusCode).reasonPhrase(messageData.status.reasonPhrase);
                                         if (r.getStatusCode() == 200) {
                                             _identity = messageData.identity;
-                                            listener.onOpen(r);
+                                            if (typeof(listener.onOpen) != 'undefined') {
+                                                listener.onOpen(r);
+                                            }
                                         } else {
-                                            listener.onError(r);
+                                            if (typeof(listener.onError) != 'undefined') {
+                                                listener.onError(r);
+                                            }
                                         }
                                     } else if (messageData.heartbeat) {
                                         if (jQuery.swaggersocket._logLevel == 'debug') {

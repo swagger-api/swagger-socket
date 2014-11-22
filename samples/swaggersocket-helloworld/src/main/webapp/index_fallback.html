@@ -123,7 +123,7 @@
     writeToLog('<span style="color:red; font-size:75%; font-style:italic">ERROR</span><span style="color: red;"><pre>' + evt.data + '</pre></span>');
   }
 
-  function doSend(message) {
+  function doSend(evt) {
     var msg = createGETMessage(0, oppath);
     writeToLog('<span style="color:green; font-size:75%; font-style:italic">SENT</span><span style="color: green;"><pre>' + createLogMessage(msg) + '</pre></span>');
     websocket.send(msg);

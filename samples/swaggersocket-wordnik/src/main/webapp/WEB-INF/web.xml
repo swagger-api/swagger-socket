@@ -13,6 +13,12 @@
             <param-name>com.sun.jersey.config.property.packages</param-name>
             <param-value>com.wordnik.swaggersocket.samples</param-value>
         </init-param>
+        <init-param>
+ <!--  Configure the wordnik api key. Get a key from http://developer.wordnik.com
+            <param-name>com.wordnik.swagger.key</param-name>
+            <param-value>0000000000000000000000000000000000000000000000000</param-value>
+ -->
+        </init-param>
         <load-on-startup>0</load-on-startup>
     </servlet>
     <servlet-mapping>
