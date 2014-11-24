@@ -326,17 +326,19 @@
         <surefire.redirectTestOutputToFile>true</surefire.redirectTestOutputToFile>
         <source.property>1.6</source.property>
         <target.property>1.6</target.property>
-        <jetty.version>8.1.4.v20120524</jetty.version>
-        <scala-test-version>1.6.1</scala-test-version>
-        <ahc-version>1.8.5</ahc-version>
-        <atmosphere-version>2.2.1</atmosphere-version>
-        <junit-version>4.8.1</junit-version>
-        <slf4j-version>1.6.3</slf4j-version>
-        <scala-version>2.9.2</scala-version>
+        <!-- dependency versions in alphabetical order -->
+        <ahc-version>1.8.14</ahc-version>
+        <atmosphere-version>2.2.3</atmosphere-version>
         <jackson-version>1.9.13</jackson-version>
         <jersey-version>1.14</jersey-version>
+        <jetty-version>${jetty8-version}</jetty-version>
+        <jetty8-version>8.1.16.v20140903</jetty8-version>
+        <junit-version>4.8.1</junit-version>
+        <logback-version>1.0.13</logback-version>
         <nettosphere-version>2.2.0</nettosphere-version>
-        <logback-version>1.0.0</logback-version>
+        <scala-test-version>1.6.1</scala-test-version>
+        <scala-version>2.9.2</scala-version>
+        <slf4j-version>1.6.3</slf4j-version>
     </properties>
 </project>
 
