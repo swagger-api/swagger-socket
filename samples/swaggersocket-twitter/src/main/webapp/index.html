@@ -96,10 +96,10 @@
 
             getElementById('phrase').setAttribute('autocomplete', 'OFF');
             getElementById('phrase').onkeyup = function(event) {
-                var kc = getKeyCode(event);
-                if (kc != 13) {
-                    return;
-                }
+                  // REVISIT need an option for not triggering the search at each keyup event?
+//                if (kc != 13) {
+//                    return;
+//                }
 
                 stop();
                 lastHashtag = $.trim(getElementById('phrase').value).split(" ");
@@ -169,7 +169,7 @@
 <body>
 <h1>Twitter Search using SwaggerSocket</h1>
 
-<h2>Enter hashtag (for multiple, separate using a space) and hit Return; Clear the field and hit Return to stop</h2>
+<h2>Enter hashtag (for multiple, separate using a space); Clear the field to stop</h2>
 <h3>You need to configure the Twitter ConsumerKey and ConsumerSecret in web.xml: com.twitter.consumer.key and com.twitter.consumer.secret</h3>
 
 <div id='sendMessage'>
