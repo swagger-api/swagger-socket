@@ -10,7 +10,24 @@
         $(document).ready(function() {
             var ss = new jQuery.swaggersocket.SwaggerSocketListener();
             var swaggerSocket = new jQuery.swaggersocket.SwaggerSocket();
-            var incompleteMessage = "";
+            //REVISIT move this to somewhere else or find a better way to read incomplete messages
+            var incompleteMessage = {
+                depth: 0,
+                message: "",
+                push: function(fragment) {
+                    var p = '0';
+                    for (i = 0; i < fragment.length; i++) {
+                        var c = fragment.charAt(i);
+                        if (c == '{' && p != '\\') {
+                            this.depth++;
+                        } else if (c == '}' && p != '\\') {
+                            this.depth--;
+                        }
+                        p = c;
+                    }
+                    this.message += fragment;
+                }
+            };
 
             ss.onError = function(errorMsg, r) {
                 $('#result').prepend($('<li>').append(errorMsg + ":" + r.getStatus() + " " + r.getReasonPhrase()));
@@ -26,24 +43,27 @@
                 });
 
                 try {
-                    var swaggerResponse = $.parseJSON(incompleteMessage + r.getData());
-                    incompleteMessage = "";
-                    if (swaggerResponse != null) {
-                        swaggerResponse.examples.forEach(function(example) {
-                            try {
-                                if (example.url != null)
-                                    $('#result').prepend($('<li>').append($('<a>').attr('href', example.url).append(example.text))).highlight(getElementById('phrase').value);
-                                else
-                                    $('#result').prepend($('<li>').append($('<a>').attr('href', "").append(example.text)));
-                            } catch (e) {
-                            }
-                        });
+                    incompleteMessage.push(r.getData());
+                    if (incompleteMessage.depth == 0) {
+                        var completeMessage = incompleteMessage.message;
+                        incompleteMessage.message = "";
+                        var swaggerResponse = $.parseJSON(completeMessage);
+                        if (swaggerResponse != null) {
+                            swaggerResponse.examples.forEach(function(example) {
+                                try {
+                                    if (example.url != null)
+                                        $('#result').prepend($('<li>').append($('<a>').attr('href', example.url).append(example.text))).highlight(getElementById('phrase').value);
+                                    else
+                                        $('#result').prepend($('<li>').append($('<a>').attr('href', "").append(example.text)));
+                                } catch (e) {
+                                }
+                            });
+                        }
                     }
                 } catch (err) {
-                    incompleteMessage = r.getData();
+                    incompleteMessage.message = "";
                 }
             };
-            var incompleteMessage = "";
 
             open();
 
