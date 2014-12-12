@@ -13,6 +13,20 @@
             <param-name>com.sun.jersey.config.property.packages</param-name>
             <param-value>com.wordnik.swaggersocket.samples</param-value>
         </init-param>
+        <init-param>
+            <param-name>com.twitter.consumer.key</param-name>
+            <param-value>Jr4w93dIlK9yrqIt4sVy2BFKc</param-value>
+        </init-param>
+ <!--  Configure the twitter consumer key and secret. Obtain your consumer key from http://apps.twitter.com
+        <init-param>
+            <param-name>com.twitter.consumer.key</param-name>
+            <param-value>0000000000000000000000000</param-value>
+        </init-param>
+        <init-param>
+            <param-name>com.twitter.consumer.secret</param-name>
+            <param-value>00000000000000000000000000000000000000000000000000</param-value>
+        </init-param>
+ -->
         <load-on-startup>0</load-on-startup>
     </servlet>
     <servlet-mapping>

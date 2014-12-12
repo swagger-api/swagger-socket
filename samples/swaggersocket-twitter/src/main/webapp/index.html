@@ -10,7 +10,24 @@
         $(document).ready(function() {
             var ss = new jQuery.swaggersocket.SwaggerSocketListener();
             var swaggerSocket = new jQuery.swaggersocket.SwaggerSocket();
-            var incompleteMessage = "";
+            //REVISIT move this to somewhere else or find a better way to read incomplete messages
+            var incompleteMessage = {
+                depth: 0,
+                message: "",
+                push: function(fragment) {
+                    var p = '0';
+                    for (i = 0; i < fragment.length; i++) {
+                        var c = fragment.charAt(i);
+                        if (c == '{' && p != '\\') {
+                            this.depth++;
+                        } else if (c == '}' && p != '\\') {
+                            this.depth--;
+                        }
+                        p = c;
+                    }
+                    this.message += fragment;
+                }
+            };
             var lastHashtag = new Array();
 
             ss.onError = function(r) {
@@ -25,21 +42,23 @@
                 });
 
                 try {
-                    var swaggerResponse = $.parseJSON(incompleteMessage + r.getData());
-                    incompleteMessage = "";
-                    if (swaggerResponse != null) {
-                        var hash = r.getRequest().getPath();
-                        swaggerResponse.results.forEach(function(result) {
-                            $('#result').prepend($('<li>').append($('<a>').append(result.text))).highlight(hash);
-                            $('#result').prepend($('<li>').append($('<h3>').append(result.from_user).append('</h3>')));
-                        });
+                    incompleteMessage.push(r.getData());
+                    if (incompleteMessage.depth == 0) {
+                        var completeMessage = incompleteMessage.message;
+                        incompleteMessage.message = "";
+                        var swaggerResponse = $.parseJSON(completeMessage);
+                        if (swaggerResponse != null) {
+                            var hash = r.getRequest().getPath();
+                            swaggerResponse.statuses.forEach(function(result) {
+                                $('#result').prepend($('<li>').append($('<a>').append(result.text))).highlight(hash);
+                                $('#result').prepend($('<li>').append($('<h3>').append(result.from_user).append('</h3>')));
+                            });
+                        }
                     }
-                    incompleteMessage = "";
                 } catch (err) {
-                    incompleteMessage = r.getData();
+                    incompleteMessage.message = "";
                 }
             };
-            var incompleteMessage = "";
 
             open();
 
@@ -58,12 +77,12 @@
 
             function stop() {
                 if (lastHashtag.length > 0 && lastHashtag[0].length != 0) {
-                    var request = new jQuery.swaggersocket.Request()
-                            .path(lastHashtag[lastHashtag.length -1] + '/stop')
+                    lastHashtag.forEach(function(tag) {
+                        swaggerSocket.send(new jQuery.swaggersocket.Request()
+                            .path(tag + '/stop')
                             .method("GET")
-                            .listener(ss);
-
-                    swaggerSocket.send(request);
+                            .listener(ss));
+                    });
                 }
             }
 
@@ -77,8 +96,12 @@
 
             getElementById('phrase').setAttribute('autocomplete', 'OFF');
             getElementById('phrase').onkeyup = function(event) {
-                stop();
+                var kc = getKeyCode(event);
+                if (kc != 13) {
+                    return;
+                }
 
+                stop();
                 lastHashtag = $.trim(getElementById('phrase').value).split(" ");
                 if (lastHashtag == '') {
                     $('#result li').each(function(index) {
@@ -146,7 +169,9 @@
 <body>
 <h1>Twitter Search using SwaggerSocket</h1>
 
-<h2>Enter hashtag (for multiple, separate using a space)</h2>
+<h2>Enter hashtag (for multiple, separate using a space) and hit Return; Clear the field and hit Return to stop</h2>
+<h3>You need to configure the Twitter ConsumerKey and ConsumerSecret in web.xml: com.twitter.consumer.key and com.twitter.consumer.secret</h3>
+
 <div id='sendMessage'>
     <input id='phrase' type='text' value="Look up any hashtag...."/>
 </div>

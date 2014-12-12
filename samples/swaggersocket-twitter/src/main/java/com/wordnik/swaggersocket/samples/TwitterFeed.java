@@ -18,23 +18,31 @@ package com.wordnik.swaggersocket.samples;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
+import com.ning.http.util.Base64;
 import com.sun.jersey.spi.resource.Singleton;
+
 import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterLifeCyclePolicy;
 import org.atmosphere.jersey.SuspendResponse;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletConfig;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+
+import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -50,14 +58,32 @@ public class TwitterFeed {
     private final ConcurrentHashMap<String, Future<?>> futures = new ConcurrentHashMap<String, Future<?>>();
     private final CountDownLatch suspendLatch = new CountDownLatch(1);
 
+    @Context
+    private ServletConfig sc;
+
+    private boolean initialized;
+    private String authorizationValue;
+
     @GET
     public SuspendResponse<String> search(final @PathParam("tagid") Broadcaster feed,
                                           final @PathParam("tagid") String tagid) {
-
         if (tagid.isEmpty()) {
             throw new WebApplicationException();
         }
-
+        if (!initialized) {
+            initialized = true;
+            String key = sc.getInitParameter("com.twitter.consumer.key");
+            String secret = sc.getInitParameter("com.twitter.consumer.secret");
+            try {
+                Future<Response> f = asyncClient.preparePost("https://api.twitter.com/oauth2/token")
+                    .setHeader("Authorization", "Basic " + Base64.encode((key + ":" + secret).getBytes()))
+                    .setHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8").setBody("grant_type=client_credentials").execute();
+                JSONObject jtoken = new JSONObject(f.get().getResponseBody());
+                authorizationValue = "Bearer " + jtoken.getString("access_token");
+            } catch (Exception e) {
+                logger.error("Unable to obtain a valid bearer token", e);
+            }
+        }
         if (feed.getAtmosphereResources().size() == 0) {
 
             final Future<?> future = feed.scheduleFixedBroadcast(new Callable<String>() {
@@ -71,15 +97,16 @@ public class TwitterFeed {
                     } else {
                         query = "?q=" + tagid;
                     }
-                    
-                    //FIXME need oauth as v1.1 api needs authentication
-                    asyncClient.prepareGet("https://api.twitter.com/1.1/search/tweets.json?q=" + query).execute(
+
+                    //TODO add next_results handling 
+                    asyncClient.prepareGet("https://api.twitter.com/1.1/search/tweets.json" + query)
+                        .setHeader("Authorization",  authorizationValue)
+                        .execute(
                             new AsyncCompletionHandler<Object>() {
 
                                 @Override
                                 public Object onCompleted(Response response) throws Exception {
                                     String s = response.getResponseBody();
-
                                     if (response.getStatusCode() != 200) {
                                         feed.resumeAll();
                                         feed.destroy();
@@ -88,8 +115,9 @@ public class TwitterFeed {
                                     }
 
                                     JSONObject json = new JSONObject(s);
-                                    refreshUrl.set(json.getString("refresh_url"));
-                                    if (json.getJSONArray("results").length() > 1) {
+                                    JSONObject searchMetadata = json.getJSONObject("search_metadata");
+                                    refreshUrl.set(searchMetadata.getString("refresh_url"));
+                                    if (json.getJSONArray("statuses").length() > 0) {
                                         // Wait for the connection to be suspended.
                                         suspendLatch.await();
                                         feed.broadcast(s).get();
@@ -100,8 +128,8 @@ public class TwitterFeed {
                             });
                     return null;
                 }
-
-            }, 1, TimeUnit.SECONDS);
+                // rate-limit allows up to 450 searches/900 seconds
+            }, 4, TimeUnit.SECONDS);
 
             futures.put(tagid, future);
         }
