@@ -41,7 +41,6 @@ public class Handshake extends ProtocolBase {
         path = b.path;
         uuid = b.uuid;
         method = b.method;
-        dataFormat = b.dataFormat;
         messageBody = b.body;
     }
 

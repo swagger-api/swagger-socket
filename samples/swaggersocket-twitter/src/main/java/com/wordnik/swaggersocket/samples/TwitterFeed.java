@@ -25,7 +25,6 @@ import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterLifeCyclePolicy;
 import org.atmosphere.jersey.SuspendResponse;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +37,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 
-import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -63,6 +60,7 @@ public class TwitterFeed {
 
     private boolean initialized;
     private String authorizationValue;
+    private Exception authorizationException;
 
     @GET
     public SuspendResponse<String> search(final @PathParam("tagid") Broadcaster feed,
@@ -82,7 +80,12 @@ public class TwitterFeed {
                 authorizationValue = "Bearer " + jtoken.getString("access_token");
             } catch (Exception e) {
                 logger.error("Unable to obtain a valid bearer token", e);
+                authorizationException = e;
             }
+        }
+        // we avoid repeatedly invoking the above authorization tkoen retrieval call
+        if (authorizationValue == null) {
+        	throw new WebApplicationException(authorizationException);
         }
         if (feed.getAtmosphereResources().size() == 0) {
 
@@ -113,7 +116,6 @@ public class TwitterFeed {
                                         logger.info("Twitter Search API unavailable\n{}", s);
                                         return null;
                                     }
-
                                     JSONObject json = new JSONObject(s);
                                     JSONObject searchMetadata = json.getJSONObject("search_metadata");
                                     refreshUrl.set(searchMetadata.getString("refresh_url"));

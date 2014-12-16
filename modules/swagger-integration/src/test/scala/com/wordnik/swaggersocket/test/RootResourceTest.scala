@@ -18,7 +18,6 @@ package com.wordnik.swaggersocket.tests
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.FlatSpec
-import org.scalatest.matchers.ShouldMatchers
 
 import com.wordnik.swaggersocket.protocol.{Handshake, Request, Response}
 import java.util.concurrent.{TimeUnit, CountDownLatch}
@@ -27,7 +26,7 @@ import com.wordnik.api.ApiInvoker
 import collection.mutable.HashMap
 
 @RunWith(classOf[JUnitRunner])
-class RootResourceTest extends ApiInvokerTest with FlatSpec with ShouldMatchers {
+class RootResourceTest extends ApiInvokerTest {
   var apiInvoker = ApiInvoker
 
   it should "simple open/request/response cycle in" in {

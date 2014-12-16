@@ -20,22 +20,22 @@ import org.eclipse.jetty.server.nio.SelectChannelConnector
 import java.net.ServerSocket
 import org.eclipse.jetty.server.Server
 
-import org.scalatest.{ FlatSpec, BeforeAndAfterAll }
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.{ FlatSpec, BeforeAndAfterAll, ConfigMap }
 import org.eclipse.jetty.servlet.{ServletHolder, ServletContextHandler}
 import com.wordnik.swaggersocket.server.SwaggerSocketServlet
 
-class BaseTest extends Server with FlatSpec with BeforeAndAfterAll with ShouldMatchers {
+class BaseTest extends FlatSpec with BeforeAndAfterAll {
   protected final val log: Logger = LoggerFactory.getLogger(classOf[BaseTest])
   protected var port1: Int = 0
   private var _connector: SelectChannelConnector = null
   protected var framework: SwaggerSocketServlet = null
+  protected var server: Server = new Server();
 
-  override def beforeAll(configMap: Map[String, Any]) = {
+  override def beforeAll(configMap: ConfigMap) = {
     setUpGlobal
   }
 
-  override def afterAll(configMap: Map[String, Any]) = {
+  override def afterAll(configMap: ConfigMap) = {
     tearDownGlobal
   }
 
@@ -43,21 +43,21 @@ class BaseTest extends Server with FlatSpec with BeforeAndAfterAll with ShouldMa
     port1 = findFreePort
     _connector = new SelectChannelConnector
     _connector.setPort(port1)
-    addConnector(_connector)
+    server.addConnector(_connector)
 
     var context: ServletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS)
     context.setContextPath("/")
-    setHandler(context)
+    server.setHandler(context)
     val a = new SwaggerSocketServlet();
     a.framework.addInitParameter("com.sun.jersey.config.property.packages", this.getClass.getPackage.getName)
     context.addServlet(new ServletHolder(a), "/*")
 
-    start
+    server.start
     log.info("Local HTTP server started successfully")
   }
 
   def tearDownGlobal = {
-    stop
+    server.stop
   }
 
   protected def findFreePort: Int = {

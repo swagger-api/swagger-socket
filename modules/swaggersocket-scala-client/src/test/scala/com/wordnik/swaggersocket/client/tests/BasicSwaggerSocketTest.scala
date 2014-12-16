@@ -18,14 +18,13 @@ package com.wordnik.swaggersocket.client.tests
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.FlatSpec
-import org.scalatest.matchers.ShouldMatchers
 
 import com.wordnik.swaggersocket.protocol.{Handshake, Request, Response}
 import java.util.concurrent.{TimeUnit, CountDownLatch}
 import com.wordnik.swaggersocket.client.{SwaggerSocketException, SwaggerSocketListener, SwaggerSocket}
 
 @RunWith(classOf[JUnitRunner])
-class BasicSwaggerSocketTest extends BaseTest with FlatSpec with ShouldMatchers {
+class BasicSwaggerSocketTest extends BaseTest {
 
   it should "simple open/request/response cycle in" in {
     var cd: CountDownLatch = new CountDownLatch(1)

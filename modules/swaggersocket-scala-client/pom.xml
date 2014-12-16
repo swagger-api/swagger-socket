@@ -44,7 +44,7 @@
 
         <dependency>
             <groupId>com.wordnik</groupId>
-            <artifactId>swaggersocket</artifactId>
+            <artifactId>swaggersocket-server</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -63,7 +63,7 @@
 
         <dependency>
             <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.9.1</artifactId>
+            <artifactId>scalatest_2.10</artifactId>
             <version>${scala-test-version}</version>
             <scope>test</scope>
         </dependency>

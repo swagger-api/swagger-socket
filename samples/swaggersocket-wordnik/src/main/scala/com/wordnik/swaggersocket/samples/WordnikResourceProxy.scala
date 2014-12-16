@@ -18,7 +18,7 @@ package com.wordnik.swaggersocket.samples
 import org.slf4j.LoggerFactory
 
 import javax.ws.rs._
-import com.wordnik.swagger.core._
+import com.wordnik.swagger.annotations.{ApiOperation, ApiParam}
 import core.{Context, Response}
 import javax.xml.bind.annotation.XmlRootElement
 import org.codehaus.jackson.annotate.JsonProperty
@@ -40,9 +40,7 @@ class WordnikResourceProxy extends RestResourceUtil {
 
   @GET
   @Path("/{word}/examples")
-  @ApiOperation(value = "Returns examples for a word", responseClass = "String")
-  @ApiErrors(Array(
-    new ApiError(code = 400, reason = "Invalid word supplied.")))
+  @ApiOperation(value = "Returns examples for a word", response = classOf[String])
   def getExamples(
     @ApiParam(value = "Word to return examples for", required = true)@PathParam("word") word: String,
     @ApiParam(value = "Show duplicate examples from different sources", allowableValues = "false,true")@QueryParam("includeDuplicates") showDuplicates: String,
@@ -70,9 +68,7 @@ class WordnikResourceProxy extends RestResourceUtil {
 
   @GET
   @Path("/{word}/definitions")
-  @ApiOperation(value = "Returns definitions for a word", responseClass = "String")
-  @ApiErrors(Array(
-    new ApiError(code = 400, reason = "Invalid word supplied.")))
+  @ApiOperation(value = "Returns definitions for a word", response = classOf[String])
   def getDefinitions(
     @ApiParam(value = "Word to return definitions for", required = true)@PathParam("word") word: String,
     @ApiParam("Maximum number of results to return")@QueryParam("limit") limit: String,
@@ -97,9 +93,7 @@ class WordnikResourceProxy extends RestResourceUtil {
 
   @GET
   @Path("/{word}/details")
-  @ApiOperation(value = "Returns the definitions/examples for a given word", responseClass = "com.wordnik.async.WordDetails")
-  @ApiErrors(Array(
-    new ApiError(code = 400, reason = "Invalid word supplied.")))
+  @ApiOperation(value = "Returns the definitions/examples for a given word", response = classOf[com.wordnik.swaggersocket.samples.WordDetails])
   def getWordDetails(
     @ApiParam(value = "Word to return details for", required = true)@PathParam("word") word: String,
     @ApiParam(value = "If true will try to return the correct word root ('cats' -> 'cat'). If false returns exactly what was requested.", allowableValues = "false,true")@QueryParam("useCanonical") useCanonical: String,

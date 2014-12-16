@@ -200,7 +200,7 @@ object WordAPI {
 	            val args = Array(response, typeRef.toString())
 	            throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, args, "Error in converting response json value to java object : " + ioe.getMessage(), ioe)
 	        }
-	        case _ => throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, "Error in converting response json value to java object")
+	        case _:Exception => throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, "Error in converting response json value to java object")
         }                        
      }
     /**
@@ -302,7 +302,7 @@ object WordAPI {
 	            val args = Array(response, typeRef.toString())
 	            throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, args, "Error in converting response json value to java object : " + ioe.getMessage(), ioe)
 	        }
-	        case _ => throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, "Error in converting response json value to java object")
+	        case _:Exception => throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, "Error in converting response json value to java object")
         }                        
      }
     /**
@@ -357,7 +357,7 @@ object WordAPI {
 	            val args = Array(response, typeRef.toString())
 	            throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, args, "Error in converting response json value to java object : " + ioe.getMessage(), ioe)
 	        }
-	        case _ => throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, "Error in converting response json value to java object")
+	        case _:Exception => throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, "Error in converting response json value to java object")
         }                        
      }
     /**
@@ -459,7 +459,7 @@ object WordAPI {
 	            val args = Array(response, typeRef.toString())
 	            throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, args, "Error in converting response json value to java object : " + ioe.getMessage(), ioe)
 	        }
-	        case _ => throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, "Error in converting response json value to java object")
+	        case _:Exception => throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, "Error in converting response json value to java object")
         }                        
      }
     /**
@@ -522,7 +522,7 @@ object WordAPI {
 	            val args = Array(response, typeRef.toString())
 	            throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, args, "Error in converting response json value to java object : " + ioe.getMessage(), ioe)
 	        }
-	        case _ => throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, "Error in converting response json value to java object")
+	        case _:Exception => throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, "Error in converting response json value to java object")
         }                        
      }
     /**
@@ -573,7 +573,7 @@ object WordAPI {
 	            val args = Array(response, typeRef.toString())
 	            throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, args, "Error in converting response json value to java object : " + ioe.getMessage(), ioe)
 	        }
-	        case _ => throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, "Error in converting response json value to java object")
+	        case _:Exception => throw new APIException(APIExceptionCodes.ERROR_CONVERTING_JSON_TO_JAVA, "Error in converting response json value to java object")
         }                        
      }
 
