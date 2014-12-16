@@ -45,7 +45,7 @@ You can also build the sample yourself and use Jetty instead of NettoSphere.
   % git clone https://github.com/swagger-api/swagger-socket.git
   % cd swagger-socket
   % mvn 
-  % cd samples/swaggersocket-echo OR samples/swaggersocket-twitter
+  % cd samples/swaggersocket-{sample_name}
   % mvn jetty:run
 ```
 
@@ -58,6 +58,8 @@ You can also look at our real time samples:
  * Simple Swagger Sockets Protocol HelloWorld [client code](https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-helloworld/src/main/webapp/index.html) | [server code](https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-helloworld/src/main/scala/com/wordnik/swaggersocket/samples/HelloWorld.scala) | [download sample](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.wordnik.samples%22%20AND%20a%3A%22swaggersocket-helloworld%22)
 
 You can also download our [war files](http://search.maven.org/#search|ga|1|swaggersocket) and deploy them to any WebServer [supporting WebSockets](https://github.com/Atmosphere/atmosphere/wiki/Supported-WebServers-and-Browsers).
+
+Note that both Wordnik and Twitter Samples require a valid key to be configured in their web.xml file.
 
 ### Add bi-directional support to your REST application
 
