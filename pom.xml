@@ -328,7 +328,7 @@
         <target.property>1.6</target.property>
         <!-- dependency versions in alphabetical order -->
         <ahc-version>1.8.14</ahc-version>
-        <atmosphere-version>2.2.4</atmosphere-version>
+        <atmosphere-version>2.2.3</atmosphere-version>
         <jackson-version>1.9.13</jackson-version>
         <jersey-version>1.14</jersey-version>
         <jetty-version>${jetty8-version}</jetty-version>
