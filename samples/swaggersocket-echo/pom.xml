@@ -7,7 +7,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.wordnik.samples</groupId>
+    <groupId>com.wordnik.swaggersocket-samples</groupId>
     <artifactId>swaggersocket-echo</artifactId>
     <packaging>jar</packaging>
     <version>2.0.0-SNAPSHOT</version>
