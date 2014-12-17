@@ -76,6 +76,17 @@ To enable SwaggerSocket, add the following in your web.xml.
         <load-on-startup>0</load-on-startup>
     </servlet>
 ```
+In addition, configure additional init-param parameters required to run the application. For example,
+when using jersey to load resources under package com.wordnik.swaggersocket.samples.
+
+```xml
+    <servlet>
+	    ...
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>com.wordnik.swaggersocket.samples</param-value>
+        </init-param>
+```
 
 ### SwaggerSocket JavaScript API
 The SwaggerSocket Client is defined as
