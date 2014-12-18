@@ -332,7 +332,7 @@
         <atmosphere-version>2.2.3</atmosphere-version>
         <commons-lang-version>2.6</commons-lang-version>
         <jackson-version>1.9.13</jackson-version>
-        <jersey-version>1.14</jersey-version>
+        <jersey-version>1.18</jersey-version>
         <jetty-version>${jetty8-version}</jetty-version>
         <jetty8-version>8.1.16.v20140903</jetty8-version>
         <junit-version>4.8.1</junit-version>
