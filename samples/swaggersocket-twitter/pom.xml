@@ -14,7 +14,6 @@
     <version>2.0.0-RC1</version>
     <name>swaggersocket-twitter</name>
     <build>
-        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <executions>
