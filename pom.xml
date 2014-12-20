@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
     <description>
     </description>
-    <url>http://github.com/swagger-api/swagger-socket</url>
+    <url>https://github.com/swagger-api/swagger-socket</url>
     <scm>
         <connection>scm:git:git@github.com:swagger-api/swagger-socket.git</connection>
 
@@ -303,18 +303,18 @@
     <repositories>
         <repository>
             <id>oss.sonatype.org</id>
-            <url>http://oss.sonatype.org/content/repositories/releases</url>
+            <url>https://oss.sonatype.org/content/repositories/releases</url>
         </repository>
         <repository>
             <id>oss.sonatype.org-snapshot</id>
-            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
     </repositories>
     <distributionManagement>
         <repository>
             <id>sonatype-nexus-staging</id>
             <name>Sonatype Release</name>
-            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
         <snapshotRepository>
             <id>sonatype-nexus-snapshots</id>
@@ -323,7 +323,7 @@
         </snapshotRepository>
     </distributionManagement>
     <properties>
-        <distMgmtSnapshotsUrl>http://oss.sonatype.org/content/repositories/snapshots</distMgmtSnapshotsUrl>
+        <distMgmtSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots</distMgmtSnapshotsUrl>
         <surefire.redirectTestOutputToFile>true</surefire.redirectTestOutputToFile>
         <source.property>1.6</source.property>
         <target.property>1.6</target.property>
