@@ -32,10 +32,17 @@ public class NettoSphere {
     private static final Logger logger = LoggerFactory.getLogger(Nettosphere.class);
 
     public static void main(String[] args) throws IOException {
+        String key = null;
+        String secret = null;
+        if (args.length > 1) {
+            key = args[0];
+            secret = args[1];
+        }
         Config.Builder b = new Config.Builder();
         b.resource("./app")
+                .initParam("com.twitter.consumer.key", key)
+                .initParam("com.twitter.consumer.secret", secret)
                 .initParam("com.sun.jersey.config.property.packages", NettoSphere.class.getPackage().getName())
-                .initParam(DISABLE_ATMOSPHEREINTERCEPTOR, "true")
                 .interceptor(new SwaggerSocketProtocolInterceptor())
                 .port(8080)
                 .host("127.0.0.1")
