@@ -8,11 +8,11 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.wordnik.swaggersocket-samples</groupId>
-    <artifactId>swaggersocket-twitter</artifactId>
+    <groupId>com.wordnik</groupId>
+    <artifactId>swaggersocket-sample-twitter</artifactId>
     <packaging>jar</packaging>
     <version>2.0.0-SNAPSHOT</version>
-    <name>swaggersocket-twitter</name>
+    <name>swaggersocket-sample-twitter</name>
     <build>
         <plugins>
             <plugin>

@@ -7,11 +7,11 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.wordnik.swaggersocket-samples</groupId>
-    <artifactId>swaggersocket-helloword</artifactId>
+    <groupId>com.wordnik</groupId>
+    <artifactId>swaggersocket-sample-helloword</artifactId>
     <packaging>jar</packaging>
     <version>2.0.0-SNAPSHOT</version>
-    <name>swaggersocket-helloword</name>
+    <name>swaggersocket-sample-helloword</name>
     <url>http://www.wordnik.com</url>
 
     <dependencies>
