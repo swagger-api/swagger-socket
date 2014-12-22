@@ -20,8 +20,24 @@ described below:
    at its Application Settings section and its detail under the link
    "manage key and and access tokens".
 
-6. Configure web.xml with your Consumer Key and Secret.
+6. Configure the application with your Consumer Key and Secret.
 
+   - when using Web Application, set the following 
+     init-parameters in web.xml
+
+        <init-param>
+            <param-name>com.twitter.consumer.key</param-name>
+            <param-value>${your-consumer-key}</param-value>
+        </init-param>
+        <init-param>
+            <param-name>com.twitter.consumer.secret</param-name>
+            <param-value>${your-consumer-secret}</param-value>
+        </init-param>
+
+   - when using nettosphere.sh, pass the consumer key and secret
+     values as the command line arguments.
+
+       ./bin/nettosphere.sh ${your-consumer-key} ${your-consumer-secret}
 
 Running the demo
 ---------------------------------------

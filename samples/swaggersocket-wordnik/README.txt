@@ -13,7 +13,20 @@ described below:
 
 2. Click on "Sign me up for an API key
 
-6. Configure web.xml with your API key.
+6. Configure the application with your API keu.
+
+   - when using Web Application, set the following 
+     init-parameters in web.xml
+
+        <init-param>
+            <param-name>com.wordnik.swagger.key</param-name>
+            <param-value>${your-api-key}</param-value>
+        </init-param>
+
+   - when using nettosphere.sh, pass the API key value
+     as the command line arguments.
+
+       ./bin/nettosphere.sh ${your-api-key}
 
 Running the demo
 ---------------------------------------
