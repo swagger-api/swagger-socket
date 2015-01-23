@@ -58,11 +58,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 import static org.atmosphere.cpr.FrameworkConfig.INJECTED_ATMOSPHERE_RESOURCE;
 
@@ -89,10 +93,10 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
 
     @Override
     public void configure(AtmosphereConfig config) {
-    	heartbeat = config.getBroadcasterFactory().lookup(DefaultBroadcaster.class, "/swaggersocket.heartbeat");
-    	if (heartbeat == null) {
-    		heartbeat = config.getBroadcasterFactory().get(DefaultBroadcaster.class, "/swaggersocket.heartbeat");
-    	}
+        heartbeat = config.getBroadcasterFactory().lookup(DefaultBroadcaster.class, "/swaggersocket.heartbeat");
+        if (heartbeat == null) {
+            heartbeat = config.getBroadcasterFactory().get(DefaultBroadcaster.class, "/swaggersocket.heartbeat");
+        }
     }
 
     @Override
@@ -124,7 +128,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
 
         if (ok && request.getAttribute(SWAGGER_SOCKET_DISPATCHED) == null) {
 
-            AtmosphereResponse response = r.getResponse();
+            AtmosphereResponse response = new WrappedAtmosphereResponse(r.getResponse(), request);
             response.setContentType("application/json");
 
             logger.debug("Method {} Transport {}", request.getMethod(), r.transport());
@@ -345,7 +349,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
             // e.g. interceptor(AsyncIOInterceptor interceptor, int position)
             LinkedList<AsyncIOInterceptor> filters = AtmosphereInterceptorWriter.class.cast(writer).filters();
             if (!filters.contains(interceptor)) {
-            	filters.addFirst(interceptor);
+                filters.addFirst(interceptor);
             }
         }
     }
@@ -356,10 +360,10 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
 
     protected final static AtmosphereRequest toAtmosphereRequest(AtmosphereRequest r, ProtocolBase request) {
         AtmosphereRequest.Builder b = new AtmosphereRequest.Builder();
-
+        Map<String, String> hdrs = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
         if (request.getHeaders() != null) {
             for (Header h : request.getHeaders()) {
-                r.header(h.getName(), h.getValue());
+               hdrs.put(h.getName(), h.getValue());
             }
         }
 
@@ -393,8 +397,10 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
             p = "/" + p;
         }
         
+        String contentType = hdrs.get("Content-Type");
         b.pathInfo(p)
-                .contentType(request.getDataFormat())
+                .contentType(contentType)
+                .headers(hdrs)
                 .method(request.getMethod())
                 .queryStrings(queryStrings)
                 .requestURI(requestURI)
@@ -402,7 +408,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                 .request(r);
         // add the body only if it is present
         if (request.getMessageBody() != null) {
-        	b.body(request.getMessageBody().toString());
+            b.body(request.getMessageBody().toString());
         }
 
         return b.build();
@@ -499,9 +505,9 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
         }
     }
 
-	private Builder createResponseBuilder(AtmosphereResponse res, String message) {
-		Request swaggerSocketRequest = lookupRequest(res.request());
-		Response.Builder builder = new Response.Builder();
+    private Builder createResponseBuilder(AtmosphereResponse res, String message) {
+        Request swaggerSocketRequest = lookupRequest(res.request());
+        Response.Builder builder = new Response.Builder();
         builder.body(message).status(res.getStatus(), res.getStatusMessage());
 
         Map<String, String> headers = res.headers();
@@ -511,5 +517,45 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
 
         builder.uuid(swaggerSocketRequest.getUuid()).method(swaggerSocketRequest.getMethod()).path(swaggerSocketRequest.getPath());
         return builder;
-	}
+    }
+
+    // temporary workaround for https://github.com/Atmosphere/atmosphere/issues/1842
+    private static class WrappedAtmosphereResponse extends AtmosphereResponse {
+        public WrappedAtmosphereResponse(AtmosphereResponse resp, AtmosphereRequest req) {
+            super((HttpServletResponse)resp.getResponse(), resp.getAsyncIOWriter(), req, resp.isDestroyable());
+        }
+
+        @Override
+        public ServletOutputStream getOutputStream() throws IOException {
+            final ServletOutputStream delegate = super.getOutputStream();
+            return new ServletOutputStream() {
+
+                @Override
+                public void write(int i) throws IOException {
+                    delegate.write(i);
+                }
+
+                @Override
+                public void close() throws IOException {
+                    // ignore
+                }
+
+                @Override
+                public void flush() throws IOException {
+                    delegate.flush();
+                }
+
+                @Override
+                public void write(byte[] b, int off, int len) throws IOException {
+                    delegate.write(b, off, len);
+                }
+
+                @Override
+                public void write(byte[] b) throws IOException {
+                    delegate.write(b);
+                }
+            };
+        }
+        
+    }
 }

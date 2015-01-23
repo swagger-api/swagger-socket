@@ -29,8 +29,9 @@ import javax.servlet.ServletException;
  * The SwaggerSocket Servlet, which enable support for the SwaggerSocket Protocol.
  */
 public class SwaggerSocketServlet extends AtmosphereServlet {
+	private static final long serialVersionUID = 4402468478554948436L;
 
-    private final Logger logger = LoggerFactory.getLogger(SwaggerSocketServlet.class);
+	private final Logger logger = LoggerFactory.getLogger(SwaggerSocketServlet.class);
 
     public SwaggerSocketServlet() {
         this(false);
