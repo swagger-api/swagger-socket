@@ -83,18 +83,19 @@
                 /**
                  * Send the echo message with optionally an extra message associated with it
                  */
+                var oppath = getElementById('reverse_echo').checked ? "/ohce" : "/echo";
                 if (getElementById('extra_message').checked) {
                     // sending an array of messages
                     var requests = new Array();
                     requests[0] = new jQuery.swaggersocket.Request()
-                        .path("/echo")
+                        .path(oppath)
                         .dataFormat("text/plain")
                         .method("POST")
                         .data(getElementByIdValue('phrase'))
                         .listener(ss);
 
                     requests[1] = new jQuery.swaggersocket.Request()
-                        .path("/echo")
+                        .path(oppath)
                         .method("POST")
                         .dataFormat("text/plain")
                         .data("An extra request added for testing purpose")
@@ -107,7 +108,7 @@
                 } else {
                     // sending a message
                     var request = new jQuery.swaggersocket.Request()
-                        .path("/echo")
+                        .path(oppath)
                         .dataFormat("text/plain")
                         .method("POST")
                         .data(getElementByIdValue('phrase'))
@@ -165,6 +166,8 @@
     <input id='send_message' class='button' type='submit' name='Publish' value='Publish Message'/>
     <br/>
     Add an extra message: <input id='extra_message' type='checkbox' name='Extra' value='Extra'/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Echo the reversed text: <input id='reverse_echo' type='checkbox' name='Reverse' value='Reverse'/>
 </div>
 <br/>
 

@@ -31,4 +31,14 @@ class SwaggerSocketResource {
     m
   }
 
+  @Path("/ohce")
+  @POST
+  def ohce(m: String): String = {
+    // for testing a runtime exception handling
+    if (m == "secret") {
+        throw new RuntimeException("no secret")
+    }
+    new StringBuilder(m.length).append(m).reverse.toString
+  }
+
 }

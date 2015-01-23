@@ -299,6 +299,13 @@
                 <surefire.redirectTestOutputToFile>false</surefire.redirectTestOutputToFile>
             </properties>
         </profile>
+        <profile>
+            <id>fastinstall</id>
+            <properties>
+                <!-- set fast install options -->
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+        </profile>
     </profiles>
     <repositories>
         <repository>

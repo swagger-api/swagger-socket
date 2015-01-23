@@ -16,6 +16,8 @@
     <br />
     <strong>Enter a message</strong><br />
     <input id="phrase" style="width: 80%;"/> <button id="send">Publish Message</button>
+    <br/>
+    Echo the reversed text: <input id='reverse_echo' type='checkbox' name='Reverse' value='Reverse'/>
   </div>
 <br/>
   <div id="log" style="float: left; width: 90%; height: 500px;">
@@ -50,7 +52,6 @@
   servicebase = servicebase.replace(/^http/, 'ws');
   servicebase = servicebase.replace(/fallback$/, '');
   var swaggerpath = 'swaggersocket';
-  var oppath = "/echo";
 
   function init() {
     output = document.getElementById("output");
@@ -127,6 +128,7 @@
 
   function doSend(evt) {
     var phrase = document.getElementById("phrase");
+    var oppath = document.getElementById("reverse_echo").checked ? "/ohce" : "/echo";
     var msg = createPOSTMessage(0, oppath, "text/plain", phrase.value);
     writeToLog('<span style="color:green; font-size:75%; font-style:italic">SENT</span><span style="color: green;"><pre>' + createLogMessage(msg) + '</pre></span>');
     websocket.send(msg);
