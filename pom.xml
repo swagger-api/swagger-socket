@@ -157,6 +157,7 @@
         <module>samples/swaggersocket-wordnik</module>
         <module>samples/swaggersocket-twitter</module>
         <module>samples/swaggersocket-helloworld</module>
+        <module>samples/swaggersocket-cxf-echo</module>
     </modules>
     <build>
         <extensions>
@@ -338,6 +339,7 @@
         <ahc-version>1.8.14</ahc-version>
         <atmosphere-version>2.2.3</atmosphere-version>
         <commons-lang-version>2.6</commons-lang-version>
+        <cxf-version>3.0.3</cxf-version>
         <jackson-version>1.9.13</jackson-version>
         <jersey-version>1.18</jersey-version>
         <jetty-version>${jetty8-version}</jetty-version>

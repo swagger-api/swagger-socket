@@ -16,6 +16,10 @@
 package com.wordnik.swaggersocket.samples;
 
 import com.wordnik.swaggersocket.server.SwaggerSocketProtocolInterceptor;
+
+import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
+import org.atmosphere.cpr.ApplicationConfig;
+import org.atmosphere.handler.ReflectorServletProcessor;
 import org.atmosphere.nettosphere.Config;
 import org.atmosphere.nettosphere.Nettosphere;
 import org.slf4j.Logger;
@@ -27,21 +31,20 @@ import java.io.InputStreamReader;
 
 public class NettoSphere {
 
-    private static final Logger logger = LoggerFactory.getLogger(Nettosphere.class);
+    private static final Logger logger = LoggerFactory.getLogger(NettoSphere.class);
 
     public static void main(String[] args) throws IOException {
-        String key = null;
-        String secret = null;
-        if (args.length > 1) {
-            key = args[0];
-            secret = args[1];
-        }
+    	ReflectorServletProcessor rsp = new ReflectorServletProcessor();
+    	rsp.setServletClassName(CXFNonSpringJaxrsServlet.class.getName());
+    	
         Config.Builder b = new Config.Builder();
         b.resource("./app")
-                .initParam("com.twitter.consumer.key", key)
-                .initParam("com.twitter.consumer.secret", secret)
-                .initParam("com.sun.jersey.config.property.packages", NettoSphere.class.getPackage().getName())
+                .initParam(ApplicationConfig.WEBSOCKET_CONTENT_TYPE, "application/json")
+                .initParam(ApplicationConfig.WEBSOCKET_METHOD, "POST")
+                .initParam("jaxrs.serviceClasses", 
+                    SwaggerSocketResource.class.getName() + "," + FileServiceResource.class.getName())
                 .interceptor(new SwaggerSocketProtocolInterceptor())
+                .resource("/*", rsp)
                 .port(8080)
                 .host("127.0.0.1")
                 .build();
@@ -49,7 +52,7 @@ public class NettoSphere {
         s.start();
         String a = "";
 
-        logger.info("NettoSphere Twitter Search started on port {}", 8080);
+        logger.info("NettoSphere SwaggerSocket Server started on port {}", 8080);
         logger.info("Type quit to stop the server");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (!(a.equals("quit"))) {
