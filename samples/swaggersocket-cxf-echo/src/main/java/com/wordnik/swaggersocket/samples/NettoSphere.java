@@ -45,7 +45,7 @@ public class NettoSphere {
                     SwaggerSocketResource.class.getName() + "," + FileServiceResource.class.getName())
                 .interceptor(new SwaggerSocketProtocolInterceptor())
                 .resource("/*", rsp)
-                .port(8080)
+                .port(getHttpPort())
                 .host("127.0.0.1")
                 .build();
         Nettosphere s = new Nettosphere.Builder().config(b.build()).build();
@@ -61,4 +61,15 @@ public class NettoSphere {
         System.exit(-1);
     }
 
+    private static int getHttpPort() {
+        String v = System.getProperty("nettosphere.port");
+        if (v != null) {
+            try {
+                return Integer.parseInt(v);
+            } catch (NumberFormatException e) {
+                // ignore;
+            }
+        }
+        return 8080;
+    }
 }

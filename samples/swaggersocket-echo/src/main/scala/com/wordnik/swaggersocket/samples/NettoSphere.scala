@@ -21,7 +21,7 @@ object NettoSphere {
       .initParam("com.sun.jersey.api.json.POJOMappingFeature", "true")
       .initParam("com.sun.jersey.config.property.packages", getClass.getPackage.getName)
       .interceptor(new SwaggerSocketProtocolInterceptor())
-      .port(8080)
+      .port(getHttpPort())
       .host("127.0.0.1")
       .build
 
@@ -36,5 +36,18 @@ object NettoSphere {
       a = br.readLine
     }
     System.exit(-1)
+  }
+
+  def getHttpPort(): Int = {
+    var v = System.getProperty("nettosphere.port")
+    if (v != null) {
+      try {
+        return Integer.parseInt(v);
+      } catch {
+        // ignore;
+        case e:NumberFormatException => {}
+      }
+    }
+    8080;
   }
 }

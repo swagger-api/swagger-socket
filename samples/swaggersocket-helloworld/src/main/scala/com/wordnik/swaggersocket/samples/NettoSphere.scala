@@ -38,4 +38,17 @@ object NettoSphere {
     }
     System.exit(-1)
   }
+
+  def getHttpPort(): Int = {
+    var v = System.getProperty("nettosphere.port")
+    if (v != null) {
+      try {
+        return Integer.parseInt(v);
+      } catch {
+        // ignore;
+        case e:NumberFormatException => {}
+      }
+    }
+    8080;
+  }
 }
