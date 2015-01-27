@@ -38,7 +38,7 @@ object NettoSphere {
     System.exit(-1)
   }
 
-  def getHttpPort(): Int = {
+  private def getHttpPort(): Int = {
     var v = System.getProperty("nettosphere.port")
     if (v != null) {
       try {
