@@ -200,10 +200,9 @@
                         <contextPath>/</contextPath>
                     </webAppConfig>
                     <connectors>
-                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                            <port>8080</port>
-                            <maxIdleTime>60000</maxIdleTime>
-                        </connector>
+                        <!-- Using the default connector
+                             org.eclipse.jetty.server.nio.SelectChannelConnector on port 8080.
+                             to use other port, set system propety jetty.port -->
                     </connectors>
                 </configuration>
             </plugin>
