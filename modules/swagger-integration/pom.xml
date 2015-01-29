@@ -142,7 +142,7 @@
                         <jvmArg>-Xmx384m</jvmArg>
                     </jvmArgs>
                     <args>
-                        <arg>-target:jvm-1.5</arg>
+                        <arg>-target:jvm-1.6</arg>
                         <arg>-deprecation</arg>
                     </args>
                     <launchers>
