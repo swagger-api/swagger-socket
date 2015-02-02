@@ -55,4 +55,11 @@ class RootResource /* extend SwaggerSocket */ {
     }
     m
   }
+
+  @Path("/f")
+  @POST
+  @Produces(Array("text/plain"))
+  def yof(m: String): String = {
+    "peace"
+  }
 }

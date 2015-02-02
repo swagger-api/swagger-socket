@@ -19,7 +19,7 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.FlatSpec
 
-import com.wordnik.swaggersocket.protocol.{Handshake, Request, Response}
+import com.wordnik.swaggersocket.protocol.{Handshake, Request, Response, Header}
 import java.util.concurrent.{TimeUnit, CountDownLatch}
 import com.wordnik.swaggersocket.client.{SwaggerSocketException, SwaggerSocketListener, SwaggerSocket}
 
@@ -182,6 +182,44 @@ class RootResourceTest extends BaseTest {
     assert(responseCount == 1)
     assert(errorCodeMatch)
     assert(errorCount == 1)
+  }
+
+  it should "See if the correct headers are returned" in {
+    var cd: CountDownLatch = new CountDownLatch(1)
+    val ss = SwaggerSocket()
+
+    var req: Request = null
+    var res: Response = null
+    ss.open(new Request.Builder().path(getTargetUrl + "/").build())
+      .send(new Request.Builder()
+      .path("/f")
+      .method("POST")
+      .body("Yo!")
+      .format("application/json")
+      .build(), new SwaggerSocketListener() {
+
+      override def error(e: SwaggerSocketException) {
+        cd.countDown()
+      }
+
+      var contentType = null;
+      override def message(r: Request, s: Response) {
+        req = r
+        res = s
+        cd.countDown()
+      }
+    })
+
+    cd.await(10, TimeUnit.SECONDS)
+    ss.close
+
+    assert(req != null)
+    assert(res != null)
+
+    var ct: String = null;
+    for (h <- res.getHeaders.toArray if "Content-Type".equalsIgnoreCase(h.asInstanceOf[Header].getName))
+      ct = h.asInstanceOf[Header].getValue
+    assert("text/plain" == ct)
   }
 }
 
