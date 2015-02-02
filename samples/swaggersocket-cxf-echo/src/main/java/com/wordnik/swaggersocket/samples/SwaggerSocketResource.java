@@ -20,7 +20,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 
 @Path("/swaggersocket")
-@Produces({"application/json"})
+@Produces({"text/plain"})
 public class SwaggerSocketResource {
 
   @Path("/echo")

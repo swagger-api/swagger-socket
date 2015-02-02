@@ -18,7 +18,7 @@ package com.wordnik.swaggersocket.samples
 import javax.ws.rs.{Produces, POST, Path}
 
 @Path("/swaggersocket")
-@Produces(Array("application/json"))
+@Produces(Array("text/plain"))
 class SwaggerSocketResource {
 
   @Path("/echo")

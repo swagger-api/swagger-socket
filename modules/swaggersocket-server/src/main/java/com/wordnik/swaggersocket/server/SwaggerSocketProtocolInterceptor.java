@@ -81,7 +81,6 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
 
     private static final Logger logger = LoggerFactory.getLogger(SwaggerSocketProtocolInterceptor.class);
     private final ObjectMapper mapper;
-    private boolean delegateHandshake = false;
     private final AsyncIOInterceptor interceptor = new Interceptor();
     private final ThreadLocal<Request> ssRequest = new ThreadLocal<Request>();
     private final ThreadLocal<String> transactionIdentity = new ThreadLocal<String>();
@@ -128,8 +127,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
 
         if (ok && request.getAttribute(SWAGGER_SOCKET_DISPATCHED) == null) {
 
-            AtmosphereResponse response = new WrappedAtmosphereResponse(r.getResponse(), request);
-            response.setContentType("application/json");
+            AtmosphereResponse response = r.getResponse();
 
             logger.debug("Method {} Transport {}", request.getMethod(), r.transport());
             // Suspend to keep the connection OPEN.
@@ -197,10 +195,6 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
 
                     if (r.transport() == AtmosphereResource.TRANSPORT.WEBSOCKET) {
                         schedule(r, identity);
-                    }
-
-                    if (!delegateHandshake) {
-                        return Action.CANCELLED;
                     }
                 } else if (message.startsWith("{\"close\"")) {
                     CloseMessage c = mapper.readValue(data, CloseMessage.class);
@@ -510,52 +504,10 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
         Response.Builder builder = new Response.Builder();
         builder.body(message).status(res.getStatus(), res.getStatusMessage());
 
-        Map<String, String> headers = res.headers();
-        for (String s : headers.keySet()) {
-            builder.header(new Header(s, headers.get(s)));
-        }
+        // only include some headers and not all headers from the response
+        builder.header(new Header("Content-Type", res.getContentType()));
 
-        builder.uuid(swaggerSocketRequest.getUuid()).method(swaggerSocketRequest.getMethod()).path(swaggerSocketRequest.getPath());
+        builder.uuid(swaggerSocketRequest.getUuid()).path(swaggerSocketRequest.getPath());
         return builder;
-    }
-
-    // temporary workaround for https://github.com/Atmosphere/atmosphere/issues/1842
-    private static class WrappedAtmosphereResponse extends AtmosphereResponse {
-        public WrappedAtmosphereResponse(AtmosphereResponse resp, AtmosphereRequest req) {
-            super((HttpServletResponse)resp.getResponse(), resp.getAsyncIOWriter(), req, resp.isDestroyable());
-        }
-
-        @Override
-        public ServletOutputStream getOutputStream() throws IOException {
-            final ServletOutputStream delegate = super.getOutputStream();
-            return new ServletOutputStream() {
-
-                @Override
-                public void write(int i) throws IOException {
-                    delegate.write(i);
-                }
-
-                @Override
-                public void close() throws IOException {
-                    // ignore
-                }
-
-                @Override
-                public void flush() throws IOException {
-                    delegate.flush();
-                }
-
-                @Override
-                public void write(byte[] b, int off, int len) throws IOException {
-                    delegate.write(b, off, len);
-                }
-
-                @Override
-                public void write(byte[] b) throws IOException {
-                    delegate.write(b);
-                }
-            };
-        }
-        
     }
 }

@@ -34,6 +34,7 @@ public class Response extends ProtocolBase {
 		uuid = b.uuid;
 		path = b.path;
 		status = b.status;
+		headers = b.headers;
         messageBody = b.messageBody;
         reasonPhrase = b.reasonPhrase;
 	}
@@ -72,7 +73,6 @@ public class Response extends ProtocolBase {
 
 	public final static class Builder {
 		private String uuid = UUID.randomUUID().toString();
-		private String method = "POST";
 		private String path = "/";
         private String reasonPhrase;
 		private int status;
@@ -81,11 +81,6 @@ public class Response extends ProtocolBase {
 
 		public Builder uuid(String uuid) {
 			this.uuid = uuid;
-			return this;
-		}
-
-		public Builder method(String method) {
-			this.method = method;
 			return this;
 		}
 
