@@ -336,7 +336,7 @@
         <target.property>1.6</target.property>
         <!-- dependency versions in alphabetical order -->
         <ahc-version>1.8.14</ahc-version>
-        <atmosphere-version>2.2.5-SNAPSHOT</atmosphere-version>
+        <atmosphere-version>2.2.5</atmosphere-version>
         <commons-lang-version>2.6</commons-lang-version>
         <cxf-version>3.0.3</cxf-version>
         <jackson-version>1.9.13</jackson-version>
