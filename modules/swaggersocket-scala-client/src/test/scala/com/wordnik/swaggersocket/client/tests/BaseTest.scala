@@ -16,7 +16,7 @@
 package com.wordnik.swaggersocket.client.tests
 
 import org.slf4j.{ LoggerFactory, Logger }
-import org.eclipse.jetty.server.nio.SelectChannelConnector
+import org.eclipse.jetty.server.AbstractConnector
 import java.net.ServerSocket
 import org.eclipse.jetty.server.Server
 
@@ -27,7 +27,7 @@ import com.wordnik.swaggersocket.server.SwaggerSocketServlet
 class BaseTest extends FlatSpec with BeforeAndAfterAll {
   protected final val log: Logger = LoggerFactory.getLogger(classOf[BaseTest])
   protected var port1: Int = 0
-  private var _connector: SelectChannelConnector = null
+  private var _connector: AbstractConnector = null
   protected var framework: SwaggerSocketServlet = null
   protected var server: Server = new Server();
 
@@ -41,8 +41,7 @@ class BaseTest extends FlatSpec with BeforeAndAfterAll {
 
   def setUpGlobal = {
     port1 = findFreePort
-    _connector = new SelectChannelConnector
-    _connector.setPort(port1)
+    _connector = createConnector
     server.addConnector(_connector)
 
     var context: ServletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS)
@@ -54,6 +53,36 @@ class BaseTest extends FlatSpec with BeforeAndAfterAll {
 
     server.start
     log.info("Local HTTP server started successfully")
+  }
+
+  def createConnector: AbstractConnector = {
+    var usejetty9: Boolean = false
+    // probe
+    try {
+      Class.forName("org.eclipse.jetty.server.ServerConnector")
+      usejetty9 = true
+    } catch {
+      case e: Exception =>
+        try {
+          Class.forName("org.eclipse.jetty.server.nio.SelectChannelConnector")
+        } catch {
+          case e: Exception => fail("No jetty! This should not happen, though")
+        }
+    }
+
+    if (usejetty9) {
+      // jetty9
+      var clz = Class.forName("org.eclipse.jetty.server.ServerConnector")
+      var c = clz.getConstructor(classOf[Server]).newInstance(server).asInstanceOf[AbstractConnector]
+      clz.getMethod("setPort", classOf[Int]).invoke(c, new Integer(port1))
+      c
+    } else {
+      // jetty8
+      var clz = Class.forName("org.eclipse.jetty.server.nio.SelectChannelConnector")
+      var c = clz.newInstance().asInstanceOf[AbstractConnector]
+      clz.getMethod("setPort", classOf[Int]).invoke(c, new Integer(port1))
+      c
+    }
   }
 
   def tearDownGlobal = {

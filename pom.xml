@@ -191,7 +191,7 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.mortbay.jetty</groupId>
+                <groupId>${jetty-maven-plugin-group}</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty-version}</version>
                 <configuration>
@@ -300,6 +300,20 @@
             </properties>
         </profile>
         <profile>
+            <id>jetty9</id>
+            <properties>
+                <jetty-version>${jetty9-version}</jetty-version>
+                <jetty-maven-plugin-group>${jetty9-maven-plugin-group}</jetty-maven-plugin-group>
+            </properties>
+        </profile>
+        <profile>
+            <id>jetty8</id>
+            <properties>
+                <jetty-version>${jetty8-version}</jetty-version>
+                <jetty-maven-plugin-group>${jetty8-maven-plugin-group}</jetty-maven-plugin-group>
+            </properties>
+        </profile>
+        <profile>
             <id>fastinstall</id>
             <properties>
                 <!-- set fast install options -->
@@ -341,8 +355,12 @@
         <cxf-version>3.0.3</cxf-version>
         <jackson-version>1.9.13</jackson-version>
         <jersey-version>1.18</jersey-version>
-        <jetty-version>${jetty8-version}</jetty-version>
+        <jetty-version>${jetty9-version}</jetty-version>
         <jetty8-version>8.1.16.v20140903</jetty8-version>
+        <jetty9-version>9.2.7.v20150116</jetty9-version>
+        <jetty-maven-plugin-group>${jetty9-maven-plugin-group}</jetty-maven-plugin-group>
+        <jetty9-maven-plugin-group>org.eclipse.jetty</jetty9-maven-plugin-group>
+        <jetty8-maven-plugin-group>org.mortbay.jetty</jetty8-maven-plugin-group>
         <junit-version>4.8.1</junit-version>
         <logback-version>1.0.13</logback-version>
         <nettosphere-version>2.2.0</nettosphere-version>
