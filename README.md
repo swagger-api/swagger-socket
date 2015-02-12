@@ -40,6 +40,7 @@ The quickest way to see how the protocol works is to try the samples. You can do
 and then point your browser to http://127.0.0.1:8080
 
 You can also build the sample yourself and use Jetty instead of NettoSphere.
+By default, jetty9 is used in this case, but this can be changed with profile -Pjetty8
 
 ```bash
   % git clone https://github.com/swagger-api/swagger-socket.git

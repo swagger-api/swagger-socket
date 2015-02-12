@@ -56,33 +56,26 @@ class ApiInvokerTest extends FlatSpec with BeforeAndAfterAll {
   }
 
   def createConnector: AbstractConnector = {
-    var usejetty9: Boolean = false
-    // probe
+    var clz: Class[_]  = null
+    var c: AbstractConnector = null
+
+    // jetty probe
     try {
-      Class.forName("org.eclipse.jetty.server.ServerConnector")
-      usejetty9 = true
+      // jetty9
+      clz = Class.forName("org.eclipse.jetty.server.ServerConnector")
+      c = clz.getConstructor(classOf[Server]).newInstance(server).asInstanceOf[AbstractConnector]
     } catch {
       case e: Exception =>
         try {
-          Class.forName("org.eclipse.jetty.server.nio.SelectChannelConnector")
+          // jetty8
+          clz = Class.forName("org.eclipse.jetty.server.nio.SelectChannelConnector")
+          c = clz.newInstance().asInstanceOf[AbstractConnector]
         } catch {
           case e: Exception => fail("No jetty! This should not happen, though")
         }
     }
-
-    if (usejetty9) {
-      // jetty9
-      var clz = Class.forName("org.eclipse.jetty.server.ServerConnector")
-      var c = clz.getConstructor(classOf[Server]).newInstance(server).asInstanceOf[AbstractConnector]
-      clz.getMethod("setPort", classOf[Int]).invoke(c, new Integer(port1))
-      c
-    } else {
-      // jetty8
-      var clz = Class.forName("org.eclipse.jetty.server.nio.SelectChannelConnector")
-      var c = clz.newInstance().asInstanceOf[AbstractConnector]
-      clz.getMethod("setPort", classOf[Int]).invoke(c, new Integer(port1))
-      c
-    }
+    clz.getMethod("setPort", classOf[Int]).invoke(c, new Integer(port1))
+    c
   }
 
   def tearDownGlobal = {
