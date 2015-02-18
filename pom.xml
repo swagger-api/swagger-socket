@@ -372,7 +372,7 @@
         <jetty8-maven-plugin-group>org.mortbay.jetty</jetty8-maven-plugin-group>
         <junit-version>4.8.1</junit-version>
         <logback-version>1.0.13</logback-version>
-        <nettosphere-version>2.2.0</nettosphere-version>
+        <nettosphere-version>2.2.5</nettosphere-version>
         <scala-test-version>2.1.3</scala-test-version>
         <scala-version>2.10.0</scala-version>
         <slf4j-version>1.6.3</slf4j-version>
