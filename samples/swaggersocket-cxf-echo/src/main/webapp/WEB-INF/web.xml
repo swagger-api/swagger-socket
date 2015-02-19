@@ -16,6 +16,12 @@
             com.wordnik.swaggersocket.samples.FileServiceResource
             </param-value>
         </init-param>
+        <init-param>
+            <param-name>jaxrs.providers</param-name>
+            <param-value>
+            org.codehaus.jackson.jaxrs.JacksonJsonProvider
+            </param-value>
+        </init-param>
         <load-on-startup>0</load-on-startup>
         <async-supported>true</async-supported>
     </servlet>

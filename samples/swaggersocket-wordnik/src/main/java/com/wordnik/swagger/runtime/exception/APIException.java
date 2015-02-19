@@ -16,11 +16,7 @@
 
 package com.wordnik.swagger.runtime.exception;
 
-import com.sun.jersey.api.client.ClientResponse;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * Exception that is thrown if there are any issues in invoking Wordnik API.

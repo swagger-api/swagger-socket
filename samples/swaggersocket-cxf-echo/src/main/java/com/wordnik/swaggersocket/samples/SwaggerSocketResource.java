@@ -15,9 +15,12 @@
  */
 package com.wordnik.swaggersocket.samples;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.POST;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 @Path("/swaggersocket")
 @Produces({"text/plain"})
@@ -41,6 +44,20 @@ public class SwaggerSocketResource {
         throw new RuntimeException("no secret");
     }
     return new StringBuilder(m.length()).append(m).reverse().toString();
+  }
+
+  @Path("/xbox/{word}")
+  @GET
+  @Produces({"application/xml"})
+  public Box xbox(@PathParam("word") String word) {
+    return new Box("SwaggerSocket in Action", word);
+  }
+
+  @Path("/jbox/{word}")
+  @GET
+  @Produces({"application/json"})
+  public Box jbox(@PathParam("word") String word) {
+    return new Box("SwaggerSocket in Action", word);
   }
 
 }

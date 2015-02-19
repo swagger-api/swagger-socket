@@ -15,7 +15,7 @@
  */
 package com.wordnik.swaggersocket.samples
 
-import javax.ws.rs.{Produces, POST, Path}
+import javax.ws.rs.{Produces, POST, GET, Path, PathParam}
 
 @Path("/swaggersocket")
 @Produces(Array("text/plain"))
@@ -39,6 +39,20 @@ class SwaggerSocketResource {
         throw new RuntimeException("no secret")
     }
     new StringBuilder(m.length).append(m).reverse.toString
+  }
+
+  @Path("/xbox/{word}")
+  @GET
+  @Produces(Array("text/xml"))
+  def xbox(@PathParam("word") word: String): Box = {
+    new Box("SwaggerSocket in Action", word)
+  }
+
+  @Path("/jbox/{word}")
+  @GET
+  @Produces(Array("application/json"))
+  def jbox(@PathParam("word") word: String): Box = {
+    new Box("SwaggerSocket in Action", word)
   }
 
 }

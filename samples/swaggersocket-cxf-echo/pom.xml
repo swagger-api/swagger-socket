@@ -51,6 +51,11 @@
           <artifactId>cxf-rt-frontend-jaxrs</artifactId>
           <version>${cxf-version}</version>
         </dependency>
+        <dependency>
+          <groupId>org.codehaus.jackson</groupId>
+          <artifactId>jackson-jaxrs</artifactId>
+          <version>${jackson-version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -25,14 +25,11 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-import javax.ws.rs.core.MultivaluedMap;
-
 import com.wordnik.swagger.runtime.exception.APIException;
 import com.wordnik.swagger.runtime.exception.APIExceptionCodes;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.DeserializationConfig.Feature;
 import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.type.TypeReference;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;

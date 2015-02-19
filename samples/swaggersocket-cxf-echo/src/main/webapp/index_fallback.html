@@ -17,7 +17,12 @@
     <strong>Enter a message</strong><br />
     <input id="phrase" style="width: 80%;"/> <button id="send">Publish Message</button>
     <br/>
-    Echo the reversed text: <input id='reverse_echo' type='checkbox' name='Reverse' value='Reverse'/>
+    <select id='echo_mode'>
+      <option value='echo' selected='true'>Normal (POST /echo)</option>
+      <option value='ohce'>Reverse (POST /ohce)</option>
+      <option value='xbox'>Boxed in XML (GET /xbox/{word})</option>
+      <option value='jbox'>Boxed in JSON (GET /jbox/{word})</option>
+    </select>
   </div>
 <br/>
   <div id="log" style="float: left; width: 90%; height: 500px;">
@@ -128,8 +133,8 @@
 
   function doSend(evt) {
     var phrase = document.getElementById("phrase");
-    var oppath = document.getElementById("reverse_echo").checked ? "/ohce" : "/echo";
-    var msg = createPOSTMessage(0, oppath, "text/plain", phrase.value);
+    var oppath = "/" + document.getElementById("echo_mode").value;
+    var msg = oppath.indexOf("box") < 0 ? createPOSTMessage(0, oppath, "text/plain", phrase.value) : createGETMessage(0, oppath, phrase.value);
     writeToLog('<span style="color:green; font-size:75%; font-style:italic">SENT</span><span style="color: green;"><pre>' + createLogMessage(msg) + '</pre></span>');
     websocket.send(msg);
   }
@@ -150,6 +155,11 @@
 
   function createHandshakeMessage(path) {
     var msg = { "handshake" : { "protocolVersion" : "1.0", "protocolName" : "SwaggerSocket", "uuid" : "0", "path" : path, "dataFormat" : "text/plain"}};
+    return JSON.stringify(msg);
+  }
+
+  function createGETMessage(id, path, body) {
+    var msg = { "identity" : swaggerid, "requests" : [ { "uuid" : id, "method" : "GET", "path" : path + "/" + encodeURIComponent(body)} ] };
     return JSON.stringify(msg);
   }
 
