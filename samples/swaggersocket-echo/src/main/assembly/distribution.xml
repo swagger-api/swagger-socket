@@ -11,7 +11,7 @@
     <dependencySets>
         <dependencySet>
             <includes>
-                <include>com.wordnik:swaggersocket.js</include>
+                <include>com.wordnik:swaggersocket.jquery</include>
             </includes>
             <unpack>true</unpack>
             <unpackOptions>

@@ -153,10 +153,12 @@
         <module>modules/swaggersocket-scala-client</module>
         <module>modules/swagger-integration</module>
         <module>modules/swaggersocket.js</module>
+        <module>modules/swaggersocket.jquery</module>
         <module>samples/swaggersocket-echo</module>
         <module>samples/swaggersocket-wordnik</module>
         <module>samples/swaggersocket-twitter</module>
         <module>samples/swaggersocket-helloworld</module>
+        <module>samples/swaggersocket-helloworld2</module>
         <module>samples/swaggersocket-cxf-echo</module>
     </modules>
     <build>

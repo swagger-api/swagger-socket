@@ -1,0 +1,121 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <script type="text/javascript" src="javascript/atmosphere.js"></script>
+    <script type="text/javascript" src="javascript/swaggersocket.js"></script>
+
+    <script type="text/javascript">
+        window.onload = function() {
+            console.log('onload');
+
+            var identity = 0;
+            var ss = new swaggersocket.SwaggerSocketListener();
+            var swaggerSocket = new swaggersocket.SwaggerSocket();
+
+            ss.onOpen = function(r) {
+                log("<li></li>----------------------------");
+                log("<li></li>" + "STATUS: " + r.getReasonPhrase());
+                log("<li></li>SwaggerSocket connected");
+                log("<li></li>----------------------------");
+            };
+            ss.onClose = function(r) {
+                log("<li></li>----------------------------");
+                log("<li></li>STATUS: " + r.getReasonPhrase());
+                log("<li></li>SwaggerSocket closed; reconnecting ...");
+                log("<li></li>----------------------------");
+            };
+
+            ss.onError = function(r) {
+                log("<li></li>----------------------------");
+                log("<li></li>ERROR: " + r.getReasonPhrase());
+                log("<li></li>----------------------------");
+            };
+
+            ss.onResponse = function(r) {
+                log("<li></li>Response for Request: " + r.getRequest().getUUID() + " is '" + r.getData() + "'");
+            };
+
+            open();
+
+            function getKeyCode(ev) {
+                if (window.event) return window.event.keyCode;
+                return ev.keyCode;
+            }
+
+            function log(v) {
+                document.getElementById('ul').innerHTML = v + document.getElementById('ul').innerHTML;
+            }
+
+            function getElementById() {
+                return document.getElementById(arguments[0]);
+            }
+
+            function getElementByIdValue() {
+                return document.getElementById(arguments[0]).value;
+            }
+
+            function open() {
+                var request = new swaggersocket.Request()
+                        .path(document.location.toString() + 'helloworld')
+                        .dataFormat("text/plain")
+                        .listener(ss);
+                swaggerSocket.open(request);
+            }
+
+            getElementById('send_message').onclick = function(event) {
+                log("<li></li>----------------------------");
+
+                /**
+                 * Send the hello message.
+                 */
+                var request = new swaggersocket.Request()
+                        .path("/sayHello")
+                        .method("GET")
+                        .listener(ss);
+
+                log("<li></li>Sending a hello request using uuid " + request.getUUID());
+                log("<li></li>");
+
+                swaggerSocket.send(request);
+
+                return false;
+            };
+        }
+    </script>
+    <style type='text/css'>
+        div {
+            border: 0px solid black;
+        }
+
+        ul {
+            list-style-type: none;
+            text-align: left;
+        }
+
+        div.hidden {
+            display: none;
+        }
+
+        span.from {
+            font-weight: bold;
+        }
+
+        span.alert {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<h1>Swagger Socket HelloWorld Sample.</h1>
+<h2>The sample demonstrates how the swaggersocket.js works and output some information about the protocol itself. Take a look at <a href="https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-helloworld2/src/main/webapp/index.html">the details</a>. Under the hood swaggersocket will execute many requests using a single websocket connection. </h2>
+<br/>
+<h2 id="s_h" class='hidden'>Say Hello to SwaggerSocket</h2>
+
+<div id='sendMessage'>
+    <input id='send_message' class='button' type='submit' name='Publish' value='Hello'/>
+</div>
+<br/>
+
+<h2>Messages delivered asynchronously</h2>
+<ul id='ul'></ul>
+</body>
+</html>

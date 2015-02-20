@@ -80,7 +80,7 @@
         </dependency>
         <dependency>
             <groupId>com.wordnik</groupId>
-            <artifactId>swaggersocket.js</artifactId>
+            <artifactId>swaggersocket.jquery</artifactId>
             <version>${project.version}</version>
             <type>war</type>
         </dependency>

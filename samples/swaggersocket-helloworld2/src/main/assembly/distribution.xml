@@ -11,12 +11,12 @@
     <dependencySets>
         <dependencySet>
             <includes>
-                <include>com.wordnik:swaggersocket.jquery</include>
+                <include>com.wordnik:swaggersocket.js</include>
             </includes>
             <unpack>true</unpack>
             <unpackOptions>
                 <includes>
-                    <include>jquery/*</include>
+                    <include>javascript/*</include>
                 </includes>
             </unpackOptions>
             <outputDirectory>app</outputDirectory>
@@ -56,11 +56,11 @@
             <outputDirectory>app</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>src/main/webapp/jquery</directory>
+            <directory>src/main/webapp/javascript</directory>
             <includes>
                 <include>*.*</include>
             </includes>
-            <outputDirectory>app/jquery</outputDirectory>
+            <outputDirectory>app/javascript</outputDirectory>
         </fileSet>
     </fileSets>
 </assembly>

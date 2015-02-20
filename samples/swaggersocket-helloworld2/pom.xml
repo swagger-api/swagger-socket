@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.wordnik</groupId>
@@ -9,49 +8,14 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.wordnik</groupId>
-    <artifactId>swaggersocket-sample-wordnik</artifactId>
-    <name>swaggersocket-sample-wordnik</name>
-    <version>2.0.0-SNAPSHOT</version>
+    <artifactId>swaggersocket-sample-helloword2</artifactId>
     <packaging>jar</packaging>
-    <description>
-    </description>
+    <version>2.0.0-SNAPSHOT</version>
+    <name>swaggersocket-sample-helloword2</name>
+    <url>http://www.wordnik.com</url>
 
     <dependencies>
 
-        <dependency>
-            <groupId>com.wordnik</groupId>
-            <artifactId>swaggersocket.jquery</artifactId>
-            <version>${project.version}</version>
-            <type>war</type>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>${jersey-version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-server</artifactId>
-            <version>${jersey-version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-json</artifactId>
-            <version>${jersey-version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
@@ -68,13 +32,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-servlet_3.0_spec</artifactId>
+            <groupId>com.wordnik</groupId>
+            <artifactId>swaggersocket.js</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
         </dependency>
 
         <dependency>
@@ -84,15 +45,8 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>${commons-lang-version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wordnik</groupId>
-            <artifactId>swagger-core_2.10</artifactId>
-            <version>${swagger-core-version}</version>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-servlet_3.0_spec</artifactId>
         </dependency>
 
         <dependency>
@@ -101,6 +55,17 @@
             <version>${nettosphere-version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -150,5 +115,15 @@
             </plugin>
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <configuration>
+                    <scalaVersion>2.9.0</scalaVersion>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>
-
