@@ -486,7 +486,7 @@ jQuery.swaggersocket = function() {
                                 if (_incompleteMessage != "" ) {
                                     response.state = "messageReceived";
                                 }
-                                var messageData = response.state != "messageReceived" 
+                                var messageData = response.state != "messageReceived" || data.indexOf('heartbeat-') == 0
                                     ? "" : JSON.parse(data.replace(/^\d+<->/, ''));
                                 var listener = jQuery.extend(request.getListener(), new jQuery.swaggersocket.SwaggerSocketListener());
                                 var r = new jQuery.swaggersocket.Response();

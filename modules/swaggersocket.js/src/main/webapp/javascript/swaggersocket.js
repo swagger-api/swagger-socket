@@ -485,7 +485,7 @@ swaggersocket = function() {
                                 if (_incompleteMessage != "" ) {
                                     response.state = "messageReceived";
                                 }
-                                var messageData = response.state != "messageReceived" 
+                                var messageData = response.state != "messageReceived" || data.indexOf('heartbeat-') == 0
                                     ? "" : JSON.parse(data.replace(/^\d+<->/, ''));
                                 var listener = atmosphere.util.extend(request.getListener(), new swaggersocket.SwaggerSocketListener());
                                 var r = new swaggersocket.Response();
