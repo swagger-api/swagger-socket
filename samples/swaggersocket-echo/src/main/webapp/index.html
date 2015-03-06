@@ -32,7 +32,7 @@
             };
 
             ss.onResponse = function(r) {
-                $('ul').prepend($('<li></li>').text("Response for Request: " + r.getRequest().getUUID() + " is '" + r.getData() + "'"));
+                $('ul').prepend($('<li></li>').text("Response for Request: " + r.getRequest().getUUID() + (r.isLast() ? " (last)" : "") + " is '" + r.getData() + "'"));
             };
 
             open();

@@ -257,7 +257,7 @@ swaggersocket = function() {
          */
         Response : function() {
 
-            var _uuid = 0, _request = null, _status = "200", _reasonPhrase = "OK", _path = '/', _headers = [], _data = "", _self = {
+            var _uuid = 0, _last = false, _request = null, _status = "200", _reasonPhrase = "OK", _path = '/', _headers = [], _data = "", _self = {
 
                 uuid : function(uuid) {
                     _uuid = uuid;
@@ -266,6 +266,15 @@ swaggersocket = function() {
 
                 getUUID : function() {
                     return _uuid;
+                },
+
+                last : function(last) {
+                    _last = last;
+                    return this;
+                },
+
+                isLast : function() {
+                    return _last;
                 },
 
                 request : function(request) {
@@ -513,7 +522,7 @@ swaggersocket = function() {
                                         var _responses = new Array();
                                         var i = 0;
                                         atmosphere.util.each(messageData.responses, function(index, res) {
-                                            r.statusCode(res.statusCode).reasonPhrase(res.reasonPhrase).path(res.path).headers(res.headers).data(res.messageBody).uuid(res.uuid);
+                                            r.statusCode(res.statusCode).reasonPhrase(res.reasonPhrase).path(res.path).headers(res.headers).data(res.messageBody).uuid(res.uuid).last(res.last);
 
                                             /*
                                              We may run OOM here because we kept the Request object around.

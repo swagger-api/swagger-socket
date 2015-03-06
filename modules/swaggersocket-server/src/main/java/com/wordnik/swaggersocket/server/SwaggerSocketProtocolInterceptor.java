@@ -86,6 +86,8 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
     private final ThreadLocal<String> transactionIdentity = new ThreadLocal<String>();
     private Broadcaster heartbeat;
 
+    private boolean lazywrite;
+
     public SwaggerSocketProtocolInterceptor() {
         this.mapper = new ObjectMapper();
     }
@@ -96,6 +98,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
         if (heartbeat == null) {
             heartbeat = config.getBroadcasterFactory().get(DefaultBroadcaster.class, "/swaggersocket.heartbeat");
         }
+        lazywrite = config.getInitParameter("com.wordnik.swaggersocket.protocol.lazywrite", false);
     }
 
     @Override
@@ -127,7 +130,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
 
         if (ok && request.getAttribute(SWAGGER_SOCKET_DISPATCHED) == null) {
 
-            AtmosphereResponse response = r.getResponse();
+            AtmosphereResponse response = new WrappedAtmosphereResponse(r.getResponse(), request);
 
             logger.debug("Method {} Transport {}", request.getMethod(), r.transport());
             // Suspend to keep the connection OPEN.
@@ -508,6 +511,112 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
         builder.header(new Header("Content-Type", res.getContentType()));
 
         builder.uuid(swaggerSocketRequest.getUuid()).path(swaggerSocketRequest.getPath());
+        if (((WrappedAtmosphereResponse)res).isLast()) {
+            builder.last(true);
+        }
         return builder;
+    }
+
+    // REVISIT this workaround to provide the two features
+    // 1. flush the header data upon close when no write operation occurs so that the body-less response
+    //    can be generated in that case.
+    // 2. when a series of multiple writes are triggered for this response, make sure all but the last one
+    //    result in a response with last="false"
+    private class WrappedAtmosphereResponse extends AtmosphereResponse {
+        private int depth;
+        private byte[] buffer;
+        private int buffersize;
+        private boolean last;
+
+        public WrappedAtmosphereResponse(AtmosphereResponse resp, AtmosphereRequest req) {
+            super((HttpServletResponse)resp.getResponse(), resp.getAsyncIOWriter(), req, resp.isDestroyable());
+        }
+
+        public boolean isLast() {
+            return last;
+        }
+
+        @Override
+        public ServletOutputStream getOutputStream() throws IOException {
+            final ServletOutputStream delegate = super.getOutputStream();
+
+            return new ServletOutputStream() {
+                private boolean written;
+
+                @Override
+                public void write(int i) throws IOException {
+                    write(new byte[]{(byte)i});
+                }
+
+                @Override
+                public void close() throws IOException {
+                    last = true;
+                    closeUsingBuffer();
+                    if (!written) {
+                        //TODO add the body-less response code here
+                    }
+                }
+
+                @Override
+                public void flush() throws IOException {
+                    delegate.flush();
+                }
+
+                @Override
+                public void write(byte[] b, int off, int len) throws IOException {
+                    written = true;
+                    writeUsingBuffer(b, off, len);
+                }
+
+                @Override
+                public void write(byte[] b) throws IOException {
+                    written = true;
+                    writeUsingBuffer(b, 0, b.length);
+                }
+
+                private void writeUsingBuffer(byte[] b, int off, int len) throws IOException {
+                    depth++;
+                    try {
+                        if (lazywrite && depth == 1 && !isStatusMessage(b, off, len)) {
+                            if (buffer != null) {
+                                delegate.write(buffer, 0, buffersize);
+                            }
+                            if (buffer == null || buffer.length < len) {
+                                buffer = new byte[len];
+                            }
+                            System.arraycopy(b, off, buffer, 0, len);
+                            buffersize = len;
+                        } else {
+                            delegate.write(b, off, len);
+                        }
+                    } finally {
+                        depth--;
+                    }
+                }
+
+                private void closeUsingBuffer() throws IOException {
+                    depth++;
+                    try {
+                        if (lazywrite && depth == 1) {
+                            if (buffer != null) {
+                                delegate.write(buffer, 0, buffersize);
+                                buffer = null;
+                                buffersize = 0;
+                            }
+                            delegate.close();
+                        }
+                        else {
+                            delegate.close();
+                        }
+                    } finally {
+                        depth--;
+                    }
+                }
+
+                private boolean isStatusMessage(byte[] b, int off, int len) {
+                    return len > 10 && new String(b, off, 10).startsWith("{\"status\"");
+                }
+            };
+        }
     }
 }

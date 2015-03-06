@@ -362,10 +362,10 @@
         <ahc-version>1.8.14</ahc-version>
         <atmosphere-version>2.2.5</atmosphere-version>
         <commons-lang-version>2.6</commons-lang-version>
-        <cxf-version>3.0.3</cxf-version>
+        <cxf-version>3.0.5-SNAPSHOT</cxf-version>
         <jackson-version>1.9.13</jackson-version>
         <javax-mail-version>1.4.1</javax-mail-version>
-        <jersey-version>1.18.1</jersey-version>
+        <jersey-version>1.19</jersey-version>
         <jetty-version>${jetty9-version}</jetty-version>
         <jetty8-version>8.1.16.v20140903</jetty8-version>
         <jetty9-version>9.2.7.v20150116</jetty9-version>

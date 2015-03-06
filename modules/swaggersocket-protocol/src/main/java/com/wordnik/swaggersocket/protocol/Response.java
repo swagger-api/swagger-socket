@@ -23,45 +23,47 @@ import java.util.UUID;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Response extends ProtocolBase {
-	private String uuid;
-	private String path;
-	private int status;
+    private String uuid;
+    private boolean last;
+    private String path;
+    private int status;
     private String reasonPhrase;
 
-	public Response() {}
+    public Response() {}
 
-	private Response(Builder b) {
-		uuid = b.uuid;
-		path = b.path;
-		status = b.status;
-		headers = b.headers;
+    private Response(Builder b) {
+        uuid = b.uuid;
+        last = b.last;
+        path = b.path;
+        status = b.status;
+        headers = b.headers;
         messageBody = b.messageBody;
         reasonPhrase = b.reasonPhrase;
-	}
+    }
 
-	public String getPath() {
-		return path;
-	}
+    public String getPath() {
+        return path;
+    }
 
-	public void setPath(String path) {
-		this.path = path;
-	}
+    public void setPath(String path) {
+        this.path = path;
+    }
 
-	public String getUuid() {
-		return uuid;
-	}
+    public String getUuid() {
+        return uuid;
+    }
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 
-	public int getStatusCode() {
-		return status;
-	}
+    public int getStatusCode() {
+        return status;
+    }
 
-	public void setStatusCode(int status) {
-		this.status = status;
-	}
+    public void setStatusCode(int status) {
+        this.status = status;
+    }
 
     public String getReasonPhrase() {
         return reasonPhrase;
@@ -71,43 +73,56 @@ public class Response extends ProtocolBase {
         this.reasonPhrase = reasonPhrase;
     }
 
-	public final static class Builder {
-		private String uuid = UUID.randomUUID().toString();
-		private String path = "/";
+    public boolean isLast() {
+        return last;
+    }
+
+    public void setLast(boolean last) {
+        this.last = last;
+    }
+
+    public final static class Builder {
+        private String uuid = UUID.randomUUID().toString();
+        private boolean last;
+        private String path = "/";
         private String reasonPhrase;
-		private int status;
-		private final List<Header> headers = new ArrayList<Header>();
-		private Object messageBody;
+        private int status;
+        private final List<Header> headers = new ArrayList<Header>();
+        private Object messageBody;
 
-		public Builder uuid(String uuid) {
-			this.uuid = uuid;
-			return this;
-		}
+        public Builder uuid(String uuid) {
+            this.uuid = uuid;
+            return this;
+        }
 
-		public Builder path(String path) {
-			this.path = path;
-			return this;
-		}
+        public Builder last(boolean last) {
+            this.last = last;
+            return this;
+        }
 
-		public Builder status(int status, String reasonPhrase) {
-			this.status = status;
+        public Builder path(String path) {
+            this.path = path;
+            return this;
+        }
+
+        public Builder status(int status, String reasonPhrase) {
+            this.status = status;
             this.reasonPhrase = reasonPhrase;
-			return this;
-		}
+            return this;
+        }
 
-		public Builder header(Header header) {
-			headers.add(header);
-			return this;
-		}
+        public Builder header(Header header) {
+            headers.add(header);
+            return this;
+        }
 
-		public Builder body(Object messageBody) {
-			this.messageBody = messageBody;
-			return this;
-		}
+        public Builder body(Object messageBody) {
+            this.messageBody = messageBody;
+            return this;
+        }
 
-		public Response build() {
-			return new Response(this);
-		}
-
-	}
+        public Response build() {
+            return new Response(this);
+        }
+    }
 }

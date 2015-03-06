@@ -3,6 +3,7 @@
     "responses" : [
         {
             "uuid" : 0,
+            "last" : false,
             "status" : "status",
             "path" : "path",
             "headers" : [

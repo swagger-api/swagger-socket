@@ -22,6 +22,10 @@
             org.codehaus.jackson.jaxrs.JacksonJsonProvider
             </param-value>
         </init-param>
+        <init-param>
+            <param-name>com.wordnik.swaggersocket.protocol.lazywrite</param-name>
+            <param-value>true</param-value>
+        </init-param>
         <load-on-startup>0</load-on-startup>
         <async-supported>true</async-supported>
     </servlet>
