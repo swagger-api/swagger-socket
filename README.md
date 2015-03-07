@@ -17,8 +17,17 @@ Using Maven or SBT
        <artifactId>swaggersocket-server</artifactId>
        <version>2.0.0-RC1</version>
     </dependency>
-    <!-- Client side --> 
-     <dependency>
+
+    <!-- Client side when using jquery.swaggersocket.js --> 
+    <dependency>
+       <groupId>com.wordnik</groupId>
+       <artifactId>swaggersocket.jquery</artifactId>
+       <version>2.0.0-RC1</version>
+       <type>war</type>
+    </dependency>   
+
+    <!-- Client side when using swaggersocket.js --> 
+    <dependency>
        <groupId>com.wordnik</groupId>
        <artifactId>swaggersocket.js</artifactId>
        <version>2.0.0-RC1</version>
@@ -84,7 +93,7 @@ when using jersey to load resources under package com.wordnik.swaggersocket.samp
 
 ```xml
     <servlet>
-	    ...
+        ...
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
             <param-value>com.wordnik.swaggersocket.samples</param-value>
@@ -101,6 +110,7 @@ The SwaggerSocket Client is defined as
 #### Listeners are per Request. The responses will be delivered as they come and can be correlated with their associated request using response.getRequest().
 
 ```javascript
+    // use new jQuery.swaggersocket... when using jQuery, otherwise use new swaggersocket...
     var ss = new jQuery.swaggersocket.SwaggerSocketListener();
     ss.onOpen = function(response) {};
     ss.onClose = function(Response) {}; // Called when the Websocket gets closed
@@ -112,16 +122,18 @@ The SwaggerSocket Client is defined as
 #### Opening a connection
 
 ```javascript
-     var request = new jQuery.swaggersocket.Request()
-           .path(document.location.toString())
-           .listener(ss);
-     swaggerSocket.open(request);
+    // use new jQuery.swaggersocket... when using jQuery, otherwise use new swaggersocket...
+    var request = new jQuery.swaggersocket.Request()
+          .path(document.location.toString())
+          .listener(ss);
+    swaggerSocket.open(request);
 ```
 
 #### Sending requests -- You can send an array of Requests or single Request.
 
 ```javascript
     var requests = new Array();
+    // use new jQuery.swaggersocket... when using jQuery, otherwise use new swaggersocket...
     requests[0] = new jQuery.swaggersocket.Request()
             .path("path1")
             .method("POST")
@@ -153,10 +165,10 @@ Then you are ready to start sending requests. As simple as:
       .body("Yo!")
       .dataFormat("application/json")
       .build(), new SwaggerSocketListener() {
-      	override def error(e: SwaggerSocketException) {
+        override def error(e: SwaggerSocketException) {
            // Invoked when an exception occurs
-	    }
-     	override def message(r: Request, s: Response) {
+        }
+        override def message(r: Request, s: Response) {
            // Response is delievered here
         }
       })
