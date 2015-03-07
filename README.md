@@ -15,14 +15,14 @@ Using Maven or SBT
     <dependency>
        <groupId>com.wordnik</groupId>
        <artifactId>swaggersocket-server</artifactId>
-       <version>2.0.0-RC1</version>
+       <version>2.0.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Client side when using jquery.swaggersocket.js --> 
     <dependency>
        <groupId>com.wordnik</groupId>
        <artifactId>swaggersocket.jquery</artifactId>
-       <version>2.0.0-RC1</version>
+       <version>2.0.0-SNAPSHOT</version>
        <type>war</type>
     </dependency>   
 
@@ -30,7 +30,7 @@ Using Maven or SBT
     <dependency>
        <groupId>com.wordnik</groupId>
        <artifactId>swaggersocket.js</artifactId>
-       <version>2.0.0-RC1</version>
+       <version>2.0.0-SNAPSHOT</version>
        <type>war</type>
     </dependency>   
 ```
