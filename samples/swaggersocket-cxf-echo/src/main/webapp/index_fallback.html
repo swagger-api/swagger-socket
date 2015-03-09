@@ -22,6 +22,7 @@
       <option value='ohce'>Reverse (POST /ohce)</option>
       <option value='xbox'>Boxed in XML (GET /xbox/{word})</option>
       <option value='jbox'>Boxed in JSON (GET /jbox/{word})</option>
+      <option value='put'>No echo (PUT /put)</option>
     </select>
   </div>
 <br/>
@@ -164,7 +165,8 @@
   }
 
   function createPOSTMessage(id, path, ct, body) {
-    var msg = { "identity" : swaggerid, "requests" : [ { "uuid" : id, "method" : "POST", "path" : path, "headers" : [ {"name" : "Content-Type", "value" : ct } ], "messageBody" : body } ] };
+    var method = path.indexOf("put") < 0 ? "POST" : "PUT";
+    var msg = { "identity" : swaggerid, "requests" : [ { "uuid" : id, "method" : method, "path" : path, "headers" : [ {"name" : "Content-Type", "value" : ct } ], "messageBody" : body } ] };
     return JSON.stringify(msg);
   }
 

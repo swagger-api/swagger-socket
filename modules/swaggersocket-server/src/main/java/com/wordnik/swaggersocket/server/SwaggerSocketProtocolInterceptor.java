@@ -87,6 +87,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
     private Broadcaster heartbeat;
 
     private boolean lazywrite;
+    private boolean emptyentity;
 
     public SwaggerSocketProtocolInterceptor() {
         this.mapper = new ObjectMapper();
@@ -99,6 +100,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
             heartbeat = config.getBroadcasterFactory().get(DefaultBroadcaster.class, "/swaggersocket.heartbeat");
         }
         lazywrite = config.getInitParameter("com.wordnik.swaggersocket.protocol.lazywrite", false);
+        emptyentity = config.getInitParameter("com.wordnik.swaggersocket.protocol.emptyentity", false);
     }
 
     @Override
@@ -505,10 +507,13 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
     private Builder createResponseBuilder(AtmosphereResponse res, String message) {
         Request swaggerSocketRequest = lookupRequest(res.request());
         Response.Builder builder = new Response.Builder();
-        builder.body(message).status(res.getStatus(), res.getStatusMessage());
+        builder.status(res.getStatus(), res.getStatusMessage());
 
         // only include some headers and not all headers from the response
-        builder.header(new Header("Content-Type", res.getContentType()));
+        //TODO add the header transfer option to make the set of transfered headers configurable
+        if (message != null && message.length() > 0) {
+            builder.body(message).header(new Header("Content-Type", res.getContentType()));
+        }
 
         builder.uuid(swaggerSocketRequest.getUuid()).path(swaggerSocketRequest.getPath());
         if (((WrappedAtmosphereResponse)res).isLast()) {
@@ -551,10 +556,10 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                 @Override
                 public void close() throws IOException {
                     last = true;
-                    closeUsingBuffer();
-                    if (!written) {
-                        //TODO add the body-less response code here
+                    if (!written && emptyentity) {
+                        writeUsingBuffer(new byte[0], 0, 0);
                     }
+                    closeUsingBuffer();
                 }
 
                 @Override

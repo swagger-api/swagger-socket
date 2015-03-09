@@ -15,7 +15,7 @@
  */
 package com.wordnik.swaggersocket.samples
 
-import javax.ws.rs.{Produces, POST, GET, Path, PathParam}
+import javax.ws.rs.{Produces, GET, POST, PUT, Path, PathParam}
 
 @Path("/swaggersocket")
 @Produces(Array("text/plain"))
@@ -53,6 +53,13 @@ class SwaggerSocketResource {
   @Produces(Array("application/json"))
   def jbox(@PathParam("word") word: String): Box = {
     new Box("SwaggerSocket in Action", word)
+  }
+
+  //for empty-entity test #27
+  @Path("/put")
+  @PUT
+  def put(m: String): Unit = {
+      System.out.println("Putting " + m);
   }
 
 }
