@@ -362,7 +362,7 @@
         <ahc-version>1.8.14</ahc-version>
         <atmosphere-version>2.2.6</atmosphere-version>
         <commons-lang-version>2.6</commons-lang-version>
-        <cxf-version>3.0.5-SNAPSHOT</cxf-version>
+        <cxf-version>3.0.4</cxf-version>
         <jackson-version>1.9.13</jackson-version>
         <javax-mail-version>1.4.1</javax-mail-version>
         <jersey-version>1.19</jersey-version>
