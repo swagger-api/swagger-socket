@@ -115,6 +115,46 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
         }
     }
 
+    public SwaggerSocketProtocolInterceptor lazywrite(boolean lazywrite) {
+        this.lazywrite = lazywrite;
+        return this;
+    }
+
+    public void setLazywrite(boolean lazywrite) {
+        this.lazywrite = lazywrite;
+    }
+
+    public SwaggerSocketProtocolInterceptor emptyentity(boolean emptyentity) {
+        this.emptyentity = emptyentity;
+        return this;
+    }
+
+    public void setEmptyentity(boolean emptyentity) {
+        this.emptyentity = emptyentity;
+    }
+
+    public SwaggerSocketProtocolInterceptor includedheaders(String p) {
+        if (p != null) {
+            this.includedheaders = Pattern.compile(p, Pattern.CASE_INSENSITIVE);
+        }
+        return this;
+    }
+
+    public void setIncludedheaders(Pattern includedheaders) {
+        this.includedheaders = includedheaders;
+    }
+
+    public SwaggerSocketProtocolInterceptor excludedheaders(String p) {
+        if (p != null) {
+            this.excludedheaders = Pattern.compile(p, Pattern.CASE_INSENSITIVE);
+        }
+        return this;
+    }
+
+    public void setExcludedheaders(Pattern excludedheaders) {
+        this.excludedheaders = excludedheaders;
+    }
+
     @Override
     public Action inspect(final AtmosphereResource r) {
 
