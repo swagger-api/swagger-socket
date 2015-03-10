@@ -64,6 +64,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -88,6 +89,8 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
 
     private boolean lazywrite;
     private boolean emptyentity;
+    private Pattern includedheaders;
+    private Pattern excludedheaders;
 
     public SwaggerSocketProtocolInterceptor() {
         this.mapper = new ObjectMapper();
@@ -101,6 +104,15 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
         }
         lazywrite = config.getInitParameter("com.wordnik.swaggersocket.protocol.lazywrite", false);
         emptyentity = config.getInitParameter("com.wordnik.swaggersocket.protocol.emptyentity", false);
+
+        String p = config.getInitParameter("com.wordnik.swaggersocket.protocol.includedheaders");
+        if (p != null) {
+            includedheaders = Pattern.compile(p, Pattern.CASE_INSENSITIVE);
+        }
+        p = config.getInitParameter("com.wordnik.swaggersocket.protocol.excludedheaders");
+        if (p != null) {
+            excludedheaders = Pattern.compile(p, Pattern.CASE_INSENSITIVE);
+        }
     }
 
     @Override
@@ -510,11 +522,18 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
         builder.status(res.getStatus(), res.getStatusMessage());
 
         // only include some headers and not all headers from the response
-        //TODO add the header transfer option to make the set of transfered headers configurable
         if (message != null && message.length() > 0) {
             builder.body(message).header(new Header("Content-Type", res.getContentType()));
         }
 
+        // transfer those headers that match included and does not match excluded
+        for (Map.Entry<String, String> hv : res.headers().entrySet()) {
+            if (!"Content-Type".equalsIgnoreCase(hv.getKey()) 
+                && includedheaders != null && includedheaders.matcher(hv.getKey()).matches()
+                && !(excludedheaders != null && excludedheaders.matcher(hv.getKey()).matches())) {
+                builder.header(new Header(hv.getKey(), hv.getValue()));
+            }
+        }
         builder.uuid(swaggerSocketRequest.getUuid()).path(swaggerSocketRequest.getPath());
         if (((WrappedAtmosphereResponse)res).isLast()) {
             builder.last(true);
