@@ -22,6 +22,7 @@ import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.handler.ReflectorServletProcessor;
 import org.atmosphere.nettosphere.Config;
 import org.atmosphere.nettosphere.Nettosphere;
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +44,10 @@ public class NettoSphere {
                 .initParam(ApplicationConfig.WEBSOCKET_METHOD, "POST")
                 .initParam("jaxrs.serviceClasses", 
                     SwaggerSocketResource.class.getName() + "," + FileServiceResource.class.getName())
+                .initParam("jaxrs.providers", 
+                    JacksonJsonProvider.class.getName())
+                .initParam("com.wordnik.swaggersocket.protocol.lazywrite", "true")
+                .initParam("com.wordnik.swaggersocket.protocol.emptyentity", "true")
                 .interceptor(new SwaggerSocketProtocolInterceptor())
                 .resource("/*", rsp)
                 .port(getHttpPort())
