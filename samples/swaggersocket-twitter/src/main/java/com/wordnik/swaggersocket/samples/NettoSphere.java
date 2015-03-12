@@ -36,20 +36,21 @@ public class NettoSphere {
             key = args[0];
             secret = args[1];
         }
+        int p = getHttpPort();
         Config.Builder b = new Config.Builder();
         b.resource("./app")
                 .initParam("com.twitter.consumer.key", key)
                 .initParam("com.twitter.consumer.secret", secret)
                 .initParam("com.sun.jersey.config.property.packages", NettoSphere.class.getPackage().getName())
                 .interceptor(new SwaggerSocketProtocolInterceptor())
-                .port(getHttpPort())
+                .port(p)
                 .host("127.0.0.1")
                 .build();
         Nettosphere s = new Nettosphere.Builder().config(b.build()).build();
         s.start();
         String a = "";
 
-        logger.info("NettoSphere Twitter Search started on port {}", 8080);
+        logger.info("NettoSphere Twitter Search started on port {}", p);
         logger.info("Type quit to stop the server");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (!(a.equals("quit"))) {

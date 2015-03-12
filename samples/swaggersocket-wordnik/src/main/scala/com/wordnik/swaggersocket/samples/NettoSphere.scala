@@ -19,13 +19,14 @@ object NettoSphere {
       key = args(0)
     }
 
+    var p = getHttpPort()
     var b: Config.Builder = new Config.Builder
     b.resource("./app")
       .initParam("com.wordnik.swagger.key", key)
       .initParam("com.sun.jersey.api.json.POJOMappingFeature", "true")
       .initParam("com.sun.jersey.config.property.packages", getClass.getPackage.getName)
       .interceptor(new SwaggerSocketProtocolInterceptor())
-      .port(getHttpPort())
+      .port(p)
       .host("127.0.0.1")
       .build
 
@@ -33,7 +34,7 @@ object NettoSphere {
     s.start
 
     var a: String = ""
-    logger.info("NettoSphere SwaggerSocket Server started on port {}", 8080)
+    logger.info("NettoSphere SwaggerSocket Server started on port {}", p)
     logger.info("Type quit to stop the server")
     var br: BufferedReader = new BufferedReader(new InputStreamReader(System.in))
     while (!((a == "quit"))) {

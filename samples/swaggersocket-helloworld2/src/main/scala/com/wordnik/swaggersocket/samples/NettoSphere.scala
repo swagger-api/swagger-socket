@@ -15,6 +15,7 @@ object NettoSphere {
   private final val logger: Logger = LoggerFactory.getLogger(classOf[Nettosphere])
 
   def main(args: Array[String]): Unit = {
+    var p = getHttpPort()
     var b: Config.Builder = new Config.Builder
     b.resource("./app")
       .initParam(ApplicationConfig.WEBSOCKET_CONTENT_TYPE, "application/json")
@@ -22,7 +23,7 @@ object NettoSphere {
       .initParam("com.sun.jersey.api.json.POJOMappingFeature", "true")
       .initParam("com.sun.jersey.config.property.packages", getClass.getPackage.getName)
       .interceptor(new SwaggerSocketProtocolInterceptor())
-      .port(8080)
+      .port(p)
       .host("127.0.0.1")
       .build
 
@@ -30,7 +31,7 @@ object NettoSphere {
     s.start
 
     var a: String = ""
-    logger.info("NettoSphere SwaggerSocket Server started on port {}", 8080)
+    logger.info("NettoSphere SwaggerSocket Server started on port {}", p)
     logger.info("Type quit to stop the server")
     var br: BufferedReader = new BufferedReader(new InputStreamReader(System.in))
     while (!((a == "quit"))) {

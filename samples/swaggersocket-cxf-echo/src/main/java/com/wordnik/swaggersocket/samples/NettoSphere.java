@@ -38,6 +38,7 @@ public class NettoSphere {
     	ReflectorServletProcessor rsp = new ReflectorServletProcessor();
     	rsp.setServletClassName(CXFNonSpringJaxrsServlet.class.getName());
     	
+        int p = getHttpPort();
         Config.Builder b = new Config.Builder();
         b.resource("./app")
                 .initParam(ApplicationConfig.WEBSOCKET_CONTENT_TYPE, "application/json")
@@ -50,14 +51,14 @@ public class NettoSphere {
                 .initParam("com.wordnik.swaggersocket.protocol.emptyentity", "true")
                 .interceptor(new SwaggerSocketProtocolInterceptor())
                 .resource("/*", rsp)
-                .port(getHttpPort())
+                .port(p)
                 .host("127.0.0.1")
                 .build();
         Nettosphere s = new Nettosphere.Builder().config(b.build()).build();
         s.start();
         String a = "";
 
-        logger.info("NettoSphere SwaggerSocket Server started on port {}", 8080);
+        logger.info("NettoSphere SwaggerSocket Server started on port {}", p);
         logger.info("Type quit to stop the server");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (!(a.equals("quit"))) {
