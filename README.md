@@ -4,7 +4,8 @@ The SwaggerSocket protocol allows any existing REST Resources to be executed on 
 
 ### Join the community
 
-You can subscribe to our [Google Group](https://groups.google.com/forum/?fromgroups#!forum/swagger-swaggersocket) or follow us on [Twitter](https://twitter.com/#!/swaggersocket)
+You can subscribe to our [Google Group](https://groups.google.com/forum/?fromgroups#!forum/swagger-swaggersocket).
+<!-- or follow us on [Twitter](https://twitter.com/#!/swaggersocket)-->
 
 ### Download SwaggerSocket
 
@@ -15,14 +16,14 @@ Using Maven or SBT
     <dependency>
        <groupId>com.wordnik</groupId>
        <artifactId>swaggersocket-server</artifactId>
-       <version>2.0.0-SNAPSHOT</version>
+       <version>2.0.0</version>
     </dependency>
 
     <!-- Client side when using jquery.swaggersocket.js --> 
     <dependency>
        <groupId>com.wordnik</groupId>
        <artifactId>swaggersocket.jquery</artifactId>
-       <version>2.0.0-SNAPSHOT</version>
+       <version>2.0.0</version>
        <type>war</type>
     </dependency>   
 
@@ -30,7 +31,7 @@ Using Maven or SBT
     <dependency>
        <groupId>com.wordnik</groupId>
        <artifactId>swaggersocket.js</artifactId>
-       <version>2.0.0-SNAPSHOT</version>
+       <version>2.0.0</version>
        <type>war</type>
     </dependency>   
 ```
@@ -104,6 +105,7 @@ when using jersey to load resources under package com.wordnik.swaggersocket.samp
 The SwaggerSocket Client is defined as
 
 ```javascript
+    // use new jQuery.swaggersocket... when using jQuery, otherwise use new swaggersocket...
     var swaggerSocket = new jQuery.swaggersocket.SwaggerSocket();
 ```
 
