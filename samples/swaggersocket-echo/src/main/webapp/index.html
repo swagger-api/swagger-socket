@@ -59,6 +59,22 @@
                 swaggerSocket.open(request);
             }
 
+            function createRequest(oppath, phrase) {
+                var request = new jQuery.swaggersocket.Request();
+                if (oppath.indexOf("box") < 0) {
+                    // one of echo, ohce, put using either POST or PUT
+                    request.method(oppath.indexOf("put") < 0 ? "POST" : "PUT")
+                        .path(oppath)
+                        .dataFormat("text/plain")
+                        .data(phrase)
+                } else {
+                    // one of xbox, jbox using GET
+                    request.method("GET")
+                        .path(oppath + "/" + encodeURIComponent(phrase));
+                }
+                return request;
+            }
+
             getElementById('phrase').setAttribute('autocomplete', 'OFF');
             getElementById('send_message').onclick = function(event) {
                 $('ul').prepend($('<li></li>').text("----------------------------"));
@@ -67,12 +83,7 @@
                     /**
                       * Send a warm up request. This is just for demo purpose
                       */
-                    request = new jQuery.swaggersocket.Request()
-                            .path("/echo")
-                            .method("POST")
-                            .dataFormat("text/plain")
-                            .data("Welcome to SwaggerSocket Echo demo!")
-                            .listener(ss);
+                    request = createRequest("/echo", "Welcome to SwaggerSocket Echo demo!").listener(ss);
 
                     swaggerSocket.send(request);
 
@@ -83,36 +94,20 @@
                 /**
                  * Send the echo message with optionally an extra message associated with it
                  */
-                var oppath = getElementById('reverse_echo').checked ? "/ohce" : "/echo";
+                var oppath = "/" + document.getElementById("echo_mode").value
                 if (getElementById('extra_message').checked) {
                     // sending an array of messages
                     var requests = new Array();
-                    requests[0] = new jQuery.swaggersocket.Request()
-                        .path(oppath)
-                        .dataFormat("text/plain")
-                        .method("POST")
-                        .data(getElementByIdValue('phrase'))
-                        .listener(ss);
+                    requests[0] = createRequest(oppath, getElementByIdValue('phrase')).listener(ss);
 
-                    requests[1] = new jQuery.swaggersocket.Request()
-                        .path(oppath)
-                        .method("POST")
-                        .dataFormat("text/plain")
-                        .data("An extra request added for testing purpose")
-                        .listener(ss);
-
+                    requests[1] = createRequest(oppath, "An extra request added for testing purpose").listener(ss);
                     $('ul').prepend($('<li></li>').text("Sending an array of requests using uuid " + requests[0].getUUID() + " and " + requests[1].getUUID()));
                     $('ul').prepend($('<li></li>').text(""));
 
                     swaggerSocket.send(requests);
                 } else {
                     // sending a message
-                    var request = new jQuery.swaggersocket.Request()
-                        .path(oppath)
-                        .dataFormat("text/plain")
-                        .method("POST")
-                        .data(getElementByIdValue('phrase'))
-                        .listener(ss);
+                    var request = createRequest(oppath, getElementByIdValue('phrase')).listener(ss);
 
                     $('ul').prepend($('<li></li>').text("Sending a request using uuid " + request.getUUID()));
                     $('ul').prepend($('<li></li>').text(""));
@@ -166,8 +161,16 @@
     <input id='send_message' class='button' type='submit' name='Publish' value='Publish Message'/>
     <br/>
     Add an extra message: <input id='extra_message' type='checkbox' name='Extra' value='Extra'/>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    Echo the reversed text: <input id='reverse_echo' type='checkbox' name='Reverse' value='Reverse'/>
+    &nbsp;&nbsp;&nbsp;
+    <select id='echo_mode'>
+      <option value='echo' selected='true'>Normal (POST /echo)</option>
+      <option value='ohce'>Reverse (POST /ohce)</option>
+      <option value='xbox'>Boxed in XML (GET /xbox/{word})</option>
+      <option value='jbox'>Boxed in JSON (GET /jbox/{word})</option>
+<!-- not supported when using jersey
+      <option value='put'>No echo (PUT /put)</option>
+-->
+    </select>
 </div>
 <br/>
 
