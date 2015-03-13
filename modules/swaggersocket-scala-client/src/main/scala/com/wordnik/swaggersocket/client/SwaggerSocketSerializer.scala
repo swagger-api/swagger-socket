@@ -15,7 +15,7 @@
  */
 package com.wordnik.swaggersocket.client
 
-import org.codehaus.jackson.map.ObjectMapper
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.wordnik.swaggersocket.protocol._
 
 class SwaggerSocketSerializer {

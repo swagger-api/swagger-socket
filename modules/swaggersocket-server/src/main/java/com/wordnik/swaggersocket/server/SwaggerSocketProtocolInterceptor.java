@@ -15,6 +15,7 @@
  */
 package com.wordnik.swaggersocket.server;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wordnik.swaggersocket.protocol.CloseMessage;
 import com.wordnik.swaggersocket.protocol.HandshakeMessage;
 import com.wordnik.swaggersocket.protocol.Header;
@@ -45,7 +46,6 @@ import org.atmosphere.cpr.AtmosphereResourceEventListenerAdapter;
 import org.atmosphere.cpr.AtmosphereResponse;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.DefaultBroadcaster;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

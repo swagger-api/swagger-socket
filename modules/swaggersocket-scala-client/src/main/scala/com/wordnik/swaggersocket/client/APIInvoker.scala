@@ -15,17 +15,18 @@
  */
 package com.wordnik.swaggersocket.client
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.DeserializationConfig.Feature;
-import org.codehaus.jackson.map.SerializationConfig;
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 
 object APIInvoker {
   val mapper = new ObjectMapper()
-  mapper.getDeserializationConfig().set(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-  mapper.getSerializationConfig().set(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false)
-  mapper.configure(SerializationConfig.Feature.WRITE_NULL_PROPERTIES, false)
-  mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false)
+  mapper.getDeserializationConfig().without(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+  mapper.getSerializationConfig().without(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+  mapper.getSerializationConfig().withSerializationInclusion(JsonInclude.Include.NON_NULL);
+  mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
 
   def deserialize(response: String, className: Class[_]): AnyRef = {
     if (className.isAssignableFrom(classOf[String])) {

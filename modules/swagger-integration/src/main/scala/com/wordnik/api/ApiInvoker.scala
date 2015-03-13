@@ -19,20 +19,20 @@ package com.wordnik.api
 import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
 import java.util.concurrent._
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.{ObjectMapper, DeserializationFeature, SerializationFeature}
 import com.wordnik.swaggersocket.protocol.{Header, QueryString, Response, Request}
 import com.wordnik.swaggersocket.client.{SwaggerSocketException, SwaggerSocketListener, SwaggerSocket, APIInvoker}
-import org.codehaus.jackson.map.{SerializationConfig, ObjectMapper}
-import org.codehaus.jackson.map.DeserializationConfig.Feature
 import java.net.URLEncoder
 import collection.mutable.HashMap
 
 object JsonUtil {
   def getJsonMapper = {
     val mapper = new ObjectMapper()
-    mapper.getDeserializationConfig().set(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    mapper.getSerializationConfig().set(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false)
-    mapper.configure(SerializationConfig.Feature.WRITE_NULL_PROPERTIES, false)
-    mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false)
+    mapper.getDeserializationConfig().without(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    mapper.getSerializationConfig().without(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+    mapper.getSerializationConfig().withSerializationInclusion(JsonInclude.Include.NON_NULL);
+    mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
 
     mapper
   }

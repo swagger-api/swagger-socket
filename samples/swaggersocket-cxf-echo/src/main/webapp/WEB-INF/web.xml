@@ -18,9 +18,7 @@
         </init-param>
         <init-param>
             <param-name>jaxrs.providers</param-name>
-            <param-value>
-            org.codehaus.jackson.jaxrs.JacksonJsonProvider
-            </param-value>
+            <param-value>com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider</param-value>
         </init-param>
         <init-param>
             <param-name>com.wordnik.swaggersocket.protocol.lazywrite</param-name>

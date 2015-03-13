@@ -15,6 +15,7 @@
  */
 package com.wordnik.swaggersocket.samples;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.wordnik.swaggersocket.server.SwaggerSocketProtocolInterceptor;
 
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
@@ -22,7 +23,6 @@ import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.handler.ReflectorServletProcessor;
 import org.atmosphere.nettosphere.Config;
 import org.atmosphere.nettosphere.Nettosphere;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

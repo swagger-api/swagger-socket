@@ -15,8 +15,7 @@
  */
 package com.wordnik.swaggersocket.protocol;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
