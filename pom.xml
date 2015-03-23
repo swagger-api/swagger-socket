@@ -158,6 +158,7 @@
         <module>modules/swagger-integration</module>
         <module>modules/swaggersocket.js</module>
         <module>modules/swaggersocket.jquery</module>
+        <module>osgi/karaf/features</module>
         <module>samples/swaggersocket-echo</module>
         <module>samples/swaggersocket-wordnik</module>
         <module>samples/swaggersocket-twitter</module>
@@ -364,9 +365,12 @@
         <target.property>1.6</target.property>
         <!-- dependency versions in alphabetical order -->
         <ahc-version>1.8.14</ahc-version>
+        <aries-version>1.0.0</aries-version>
         <atmosphere-version>2.2.6</atmosphere-version>
         <commons-lang-version>2.6</commons-lang-version>
         <cxf-version>3.0.4</cxf-version>
+        <felix-configadmin-version>1.8.0</felix-configadmin-version>
+        <felix-framework-version>3.2.2</felix-framework-version>
         <jackson-version>2.4.1</jackson-version>
         <javax-mail-version>1.4.1</javax-mail-version>
         <jersey-version>1.19</jersey-version>
@@ -380,8 +384,10 @@
         <logback-version>1.0.13</logback-version>
         <maven-bundle-plugin-version>2.3.4</maven-bundle-plugin-version>
         <nettosphere-version>2.2.1</nettosphere-version>
+        <osgi-core-version>4.2.0</osgi-core-version>
         <osgi-slf4j-version>[1.5,2)</osgi-slf4j-version>
         <osgi-javax-servlet-version>[0.0,4)</osgi-javax-servlet-version>
+        <pax-logging-version>1.7.1</pax-logging-version>
         <scala-test-version>2.1.3</scala-test-version>
         <scala-version>2.10.0</scala-version>
         <slf4j-version>1.6.3</slf4j-version>

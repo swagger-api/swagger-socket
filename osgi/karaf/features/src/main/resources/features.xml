@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.0.0" name="swaggersocket-${project.version}">
+    <feature name="swaggersocket-server" version="${project.version}" resolver="(obr)">
+        <feature version="[2,5)">http-whiteboard</feature>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-core/${jackson-version}</bundle>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson-version}</bundle>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-databind/${jackson-version}</bundle>
+        <bundle dependency="true">mvn:org.atmosphere/atmosphere-runtime/${atmosphere-version}</bundle>
+
+        <bundle>mvn:com.wordnik/swaggersocket-protocol/${project.version}</bundle>
+        <bundle>mvn:com.wordnik/swaggersocket-server/${project.version}</bundle>
+    </feature>
+</features>
