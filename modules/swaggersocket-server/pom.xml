@@ -9,7 +9,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.wordnik</groupId>
     <artifactId>swaggersocket-server</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <version>2.0.1-SNAPSHOT</version>
     <name>swaggersocket-server</name>
     <url>http://www.wordnik.com</url>
@@ -35,4 +35,25 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            com.wordnik.swaggersocket.server
+                        </Export-Package>
+                        <Import-Package>
+                            javax.servlet*;version="${osgi-javax-servlet-version}",
+                            org.slf4j;version="${osgi-slf4j-version}",
+                            *
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
