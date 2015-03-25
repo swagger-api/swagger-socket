@@ -315,7 +315,6 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
             }
 
         } else {
-            request.attributes().remove(SWAGGER_SOCKET_DISPATCHED);
             if (!ok) {
                 request.setAttribute(TrackMessageSizeInterceptor.SKIP_INTERCEPTOR, "true");
             }
@@ -575,7 +574,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
             }
         }
         builder.uuid(swaggerSocketRequest.getUuid()).path(swaggerSocketRequest.getPath());
-        if (((WrappedAtmosphereResponse)res).isLast()) {
+        if (res instanceof WrappedAtmosphereResponse && ((WrappedAtmosphereResponse)res).isLast()) {
             builder.last(true);
         }
         return builder;
