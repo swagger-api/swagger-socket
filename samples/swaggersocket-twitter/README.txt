@@ -39,6 +39,10 @@ described below:
 
        ./bin/nettosphere.sh ${your-consumer-key} ${your-consumer-secret}
 
+     or run the command without the argument to get 
+     promted for entering the key and secret (from 2.0.1)
+
+
 Running the demo
 ---------------------------------------
 Please refer to README.md at the samples root folder.
