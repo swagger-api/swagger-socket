@@ -182,7 +182,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
             ok = true;
         }
 
-        if (ok && request.getAttribute(SWAGGER_SOCKET_DISPATCHED) == null) {
+        if (ok && request.attributes().get(SWAGGER_SOCKET_DISPATCHED) == null) {
 
             AtmosphereResponse response = new WrappedAtmosphereResponse(r.getResponse(), request);
 
@@ -285,7 +285,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
                     for (Request req : requests) {
                         ar = toAtmosphereRequest(request, req);
                         try {
-                            ar.setAttribute(SWAGGER_SOCKET_DISPATCHED, "true");
+                            ar.attributes().put(SWAGGER_SOCKET_DISPATCHED, "true");
 
                             // This is a new request, we must clean the Websocket AtmosphereResource.
                             request.removeAttribute(INJECTED_ATMOSPHERE_RESOURCE);
@@ -315,7 +315,7 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
             }
 
         } else {
-            request.setAttribute(SWAGGER_SOCKET_DISPATCHED, null);
+            request.attributes().remove(SWAGGER_SOCKET_DISPATCHED);
             if (!ok) {
                 request.setAttribute(TrackMessageSizeInterceptor.SKIP_INTERCEPTOR, "true");
             }
