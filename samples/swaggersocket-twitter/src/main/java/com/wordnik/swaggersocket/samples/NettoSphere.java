@@ -36,6 +36,14 @@ public class NettoSphere {
             key = args[0];
             secret = args[1];
         }
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        if (key == null) {
+            System.out.print("API-Key: ");
+            key = br.readLine();
+            System.out.print("API-Secret: ");
+            secret = br.readLine();
+        }
+
         int p = getHttpPort();
         Config.Builder b = new Config.Builder();
         b.resource("./app")
@@ -52,7 +60,6 @@ public class NettoSphere {
 
         logger.info("NettoSphere Twitter Search started on port {}", p);
         logger.info("Type quit to stop the server");
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (!(a.equals("quit"))) {
             a = br.readLine();
         }

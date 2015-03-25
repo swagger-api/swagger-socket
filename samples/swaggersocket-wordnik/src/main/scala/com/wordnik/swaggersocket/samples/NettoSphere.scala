@@ -15,8 +15,11 @@ object NettoSphere {
   def main(args: Array[String]): Unit = {
 
     var key = "0";
-    if (args !=null && args.length > 0) {
+    if (args != null && args.length > 0) {
       key = args(0)
+    }
+    if (key == "0") {
+      key = readLine("API-Key: ")
     }
 
     var p = getHttpPort()
@@ -36,9 +39,8 @@ object NettoSphere {
     var a: String = ""
     logger.info("NettoSphere SwaggerSocket Server started on port {}", p)
     logger.info("Type quit to stop the server")
-    var br: BufferedReader = new BufferedReader(new InputStreamReader(System.in))
     while (!((a == "quit"))) {
-      a = br.readLine
+      a = readLine
     }
     System.exit(-1)
   }
