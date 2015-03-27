@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.0.0" name="swaggersocket-${project.version}">
     <feature name="swaggersocket-server" version="${project.version}" resolver="(obr)">
-        <feature version="[2,5)">http-whiteboard</feature>
-        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-core/${jackson-version}</bundle>
-        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson-version}</bundle>
-        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-databind/${jackson-version}</bundle>
+        <!-- common specs -->
+        <feature>http</feature>
+        <bundle start-level="10">mvn:javax.annotation/javax.annotation-api/${javax-annotation-api-version}</bundle>
+        <bundle start-level="10">mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jsr339-api-2.0/${servicemix-specs-jsr339-version}</bundle>
+        <!-- jackson provider -->
+        <bundle start-level="30" dependency="true">mvn:com.fasterxml.jackson.core/jackson-core/${jackson-version}</bundle>
+        <bundle start-level="30" dependency="true">mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson-version}</bundle>
+        <bundle start-level="30" dependency="true">mvn:com.fasterxml.jackson.core/jackson-databind/${jackson-version}</bundle>
+        <bundle start-level="30" dependency="true">mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/${jackson-version}</bundle>
+        <bundle start-level="30" dependency="true">mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/${jackson-version}</bundle>
+        <!-- atmosphere -->
         <bundle dependency="true">mvn:org.atmosphere/atmosphere-runtime/${atmosphere-version}</bundle>
-
+        <!-- swaggersocket -->
         <bundle>mvn:com.wordnik/swaggersocket-protocol/${project.version}</bundle>
         <bundle>mvn:com.wordnik/swaggersocket-server/${project.version}</bundle>
     </feature>

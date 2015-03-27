@@ -372,6 +372,7 @@
         <felix-configadmin-version>1.8.0</felix-configadmin-version>
         <felix-framework-version>3.2.2</felix-framework-version>
         <jackson-version>2.4.1</jackson-version>
+        <javax-annotation-api-version>1.2</javax-annotation-api-version>
         <javax-mail-version>1.4.1</javax-mail-version>
         <jersey-version>1.19</jersey-version>
         <jetty-version>${jetty9-version}</jetty-version>
@@ -390,6 +391,7 @@
         <pax-logging-version>1.7.1</pax-logging-version>
         <scala-test-version>2.1.3</scala-test-version>
         <scala-version>2.10.0</scala-version>
+        <servicemix-specs-jsr339-version>2.4.0</servicemix-specs-jsr339-version>
         <slf4j-version>1.6.3</slf4j-version>
         <swagger-core-version>1.3.11</swagger-core-version>
     </properties>
