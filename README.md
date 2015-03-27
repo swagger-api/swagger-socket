@@ -1,5 +1,7 @@
 ## [SwaggerSocket](https://github.com/wordnik/swaggersocket/wiki/SwaggerSocket-Protocol): A REST over WebSocket Protocol
 
+[![Build Status](https://travis-ci.org/swagger-api/swagger-socket.png)](https://travis-ci.org/swagger-api/swagger-socket)
+
 The SwaggerSocket protocol allows any existing REST Resources to be executed on top of the WebSocket Protocol. Resources can be deployed as it is, without any modification and take advantage of the SwaggerSocket protocol.
 
 ### Join the community
