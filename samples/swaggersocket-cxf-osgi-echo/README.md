@@ -99,6 +99,5 @@ to access the sample echo page.
 ### Note
 
 This sample uses Atmosphere using the SwaggerSocket protocol handler to host CXF's JAXRS service.
-CXF 3.0.5 supports the Atmosphere based transport and the SwaggerSocket protocol handler can be
-integrated in the CXF's transport.
+CXF 3.0.5 will support the Atmosphere based transport directly and the SwaggerSocket protocol handler can be embedded in the CXF's transport. Thus, SwaggerSocket can be enabled on CXF endpoints without configuring an Atmosphere or SwaggerSocket servlet.
 
