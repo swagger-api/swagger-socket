@@ -165,6 +165,7 @@
         <module>samples/swaggersocket-helloworld</module>
         <module>samples/swaggersocket-helloworld2</module>
         <module>samples/swaggersocket-cxf-echo</module>
+        <module>samples/swaggersocket-cxf-osgi-echo</module>
     </modules>
     <build>
         <extensions>

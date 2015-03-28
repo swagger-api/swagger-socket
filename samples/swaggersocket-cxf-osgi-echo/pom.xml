@@ -8,10 +8,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.wordnik</groupId>
-    <artifactId>swaggersocket-cxf-sample-echo</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>swaggersocket-cxf-sample-osgi-echo</artifactId>
+    <packaging>bundle</packaging>
     <version>2.0.1-SNAPSHOT</version>
-    <name>swaggersocket-cxf-sample-echo</name>
+    <name>swaggersocket-cxf-sample-osgi-echo</name>
     <url>http://www.wordnik.com</url>
 
     <dependencies>
@@ -33,13 +33,6 @@
             <artifactId>logback-classic</artifactId>
             <version>${logback-version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.atmosphere</groupId>
-            <artifactId>nettosphere</artifactId>
-            <version>${nettosphere-version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-servlet_3.0_spec</artifactId>
@@ -54,46 +47,37 @@
         <dependency>
           <groupId>com.fasterxml.jackson.jaxrs</groupId>
           <artifactId>jackson-jaxrs-json-provider</artifactId>
-<!--
-          <groupId>org.codehaus.jackson</groupId>
-          <artifactId>jackson-jaxrs</artifactId>
--->
           <version>${jackson-version}</version>
         </dependency>
     </dependencies>
     <build>
         <plugins>
             <plugin>
-                <executions>
-                    <execution>
-                        <id>distro-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.3</version>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
                 <configuration>
-                    <descriptors>
-                        <descriptor>src/main/assembly/distribution.xml</descriptor>
-                    </descriptors>
+                    <instructions>
+                        <Export-Package>
+                        </Export-Package>
+                        <Import-Package>
+                            com.wordnik.swaggersocket.protocol,
+                            com.wordnik.swaggersocket.server,
+                            com.fasterxml.jackson.jaxrs.json,
+                            org.apache.cxf.jaxrs.servlet,
+                            org.apache.catalina;resolution:=optional,
+                            org.apache.catalina.comet;resolution:=optional,
+                            org.apache.catalina.websocket;resolution:=optional,
+                            org.apache.coyote.http11.upgrade;resolution:=optional,
+                            org.eclipse.jetty.continuation;resolution:=optional,
+                            org.eclipse.jetty.server;resolution:=optional,
+                            org.eclipse.jetty.util.ssl;resolution:=optional,
+                            *
+                        </Import-Package>
+                        <_wab>src/main/webapp/</_wab>
+                        <Web-ContextPath>swaggersocket-cxf-echo</Web-ContextPath>
+                    </instructions>
                 </configuration>
-            </plugin>
-            <plugin>
-                <executions>
-                    <execution>
-                        <id>distro-war</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>war</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.2</version>
             </plugin>
         </plugins>
     </build>

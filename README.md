@@ -183,5 +183,9 @@ Once completed, you just need to close
     ss.close
 ```
 
+### SwaggerSocket on OSGi
+SwaggerSocket (2.0.1-SNAPSHOT) is not only OSGi enabled but also available as a Karaf feature. To see how it works, see [the swaggersocket-cxf-osgi-echo sample](samples/swaggersocket-cxf-osgi-echo).
+
+
 ### How the protocol works
 To read more about how the protocol works, take a look at the [SwaggerSocket Protocol Specification](https://github.com/swagger-api/swagger-socket/wiki/SwaggerSocket-Protocol)

@@ -1,0 +1,10 @@
+<atmosphere-handlers>
+    <!-- CXF -->
+    <atmosphere-handler support-session="false"
+                        context-root="/*"
+                        class-name="org.atmosphere.handler.ReflectorServletProcessor">
+        <property name="servletClassName" 
+                  value="org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet"/>
+    </atmosphere-handler>
+</atmosphere-handlers>
+

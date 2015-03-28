@@ -1,0 +1,178 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <script type="text/javascript" src="jquery/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="jquery/jquery.form.js"></script>
+    <script type="text/javascript" src="jquery/jquery.atmosphere.js"></script>
+    <script type="text/javascript" src="jquery/jquery.swaggersocket.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var identity = 0;
+            var ss = new jQuery.swaggersocket.SwaggerSocketListener();
+            var swaggerSocket = new jQuery.swaggersocket.SwaggerSocket();
+            var warmup = true;
+
+            ss.onOpen = function(r) {
+                $('ul').prepend($('<li></li>').text("----------------------------"));
+                $('ul').prepend($('<li></li>').text("STATUS: " + r.getReasonPhrase()));
+                $('ul').prepend($('<li></li>').text("SwaggerSocket connected"));
+                $('ul').prepend($('<li></li>').text("----------------------------"));
+            };
+            ss.onClose = function(r) {
+                $('ul').prepend($('<li></li>').text("----------------------------"));
+                $('ul').prepend($('<li></li>').text("STATUS: " + r.getReasonPhrase()));
+                $('ul').prepend($('<li></li>').text("SwaggerSocket closed; reconnecting ..."));
+                $('ul').prepend($('<li></li>').text("----------------------------"));
+            };
+
+            ss.onError = function(r) {
+                $('ul').prepend($('<li></li>').text("----------------------------"));
+                $('ul').prepend($('<li></li>').text("ERROR: " + r.getReasonPhrase()));
+                $('ul').prepend($('<li></li>').text("----------------------------"));
+            };
+
+            ss.onResponse = function(r) {
+                $('ul').prepend($('<li></li>').text("Response for Request: " + r.getRequest().getUUID() + (r.isLast() ? " (last)" : "") + " is '" + r.getData() + "'"));
+            };
+
+            open();
+
+            function getKeyCode(ev) {
+                if (window.event) return window.event.keyCode;
+                return ev.keyCode;
+            }
+
+            function getElementById() {
+                return document.getElementById(arguments[0]);
+            }
+
+            function getElementByIdValue() {
+                return document.getElementById(arguments[0]).value;
+            }
+
+            function open() {
+                var request = new jQuery.swaggersocket.Request()
+                        .path(document.location.toString() + 'swaggersocket')
+                        .dataFormat("text/plain")
+                        .listener(ss);
+
+                swaggerSocket.open(request);
+            }
+
+            function createRequest(oppath, phrase) {
+                var request = new jQuery.swaggersocket.Request();
+                if (oppath.indexOf("box") < 0) {
+                    // one of echo, ohce, put using either POST or PUT
+                    request.method(oppath.indexOf("put") < 0 ? "POST" : "PUT")
+                        .path(oppath)
+                        .dataFormat("text/plain")
+                        .data(phrase)
+                } else {
+                    // one of xbox, jbox using GET
+                    request.method("GET")
+                        .path(oppath + "/" + encodeURIComponent(phrase));
+                }
+                return request;
+            }
+
+            getElementById('phrase').setAttribute('autocomplete', 'OFF');
+            getElementById('send_message').onclick = function(event) {
+                $('ul').prepend($('<li></li>').text("----------------------------"));
+                if (warmup) {
+                    warmup = false;
+                    /**
+                      * Send a warm up request. This is just for demo purpose
+                      */
+                    request = createRequest("/echo", "Welcome to SwaggerSocket CXF Echo demo!").listener(ss);
+
+                    swaggerSocket.send(request);
+
+                    $('ul').prepend($('<li></li>').text("Sending a warm up request using uuid " + request.getUUID()));
+
+                }
+
+                /**
+                 * Send the echo message with optionally an extra message associated with it
+                 */
+                var oppath = "/" + document.getElementById("echo_mode").value
+                if (getElementById('extra_message').checked) {
+                    // sending an array of messages
+                    var requests = new Array();
+                    requests[0] = createRequest(oppath, getElementByIdValue('phrase')).listener(ss);
+
+                    requests[1] = createRequest(oppath, "An extra request added for testing purpose").listener(ss);
+                    $('ul').prepend($('<li></li>').text("Sending an array of requests using uuid " + requests[0].getUUID() + " and " + requests[1].getUUID()));
+                    $('ul').prepend($('<li></li>').text(""));
+
+                    swaggerSocket.send(requests);
+                } else {
+                    // sending a message
+                    var request = createRequest(oppath, getElementByIdValue('phrase')).listener(ss);
+
+                    $('ul').prepend($('<li></li>').text("Sending a request using uuid " + request.getUUID()));
+                    $('ul').prepend($('<li></li>').text(""));
+                    swaggerSocket.send(request);
+                }
+                $('ul').prepend($('<li></li>').text("----------------------------"));
+
+                getElementById('phrase').value = '';
+                return false;
+            };
+        });
+    </script>
+    <style type='text/css'>
+        div {
+            border: 0px solid black;
+        }
+
+        input#phrase {
+            width: 20em;
+            height: 3em;
+            font-size: 100%;
+            background-color: #e0f0f0;
+        }
+
+        ul {
+            list-style-type: none;
+            text-align: left;
+        }
+
+        div.hidden {
+            display: none;
+        }
+
+        span.from {
+            font-weight: bold;
+        }
+
+        span.alert {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<h1>Swagger Socket CXF OSGi Echo Sample.</h1>
+<h2>The sample demonstrates how the SwaggerSocket echo sample using CXF runs on an OSGi container. Take a look at <a href="https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-cxf-osgi-echo/">this sample</a>. For the non-OSGI echo sample, refer to <a href="https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-cxf-echo/">the standalone sample</a>.</h2>
+<br/>
+<h2 id="s_h" class='hidden'>Enter a message to be echoed.</h2>
+
+<div id='sendMessage'>
+    <input id='phrase' type='text'/>
+    <input id='send_message' class='button' type='submit' name='Publish' value='Publish Message'/>
+    <br/>
+    Add an extra message: <input id='extra_message' type='checkbox' name='Extra' value='Extra'/>
+    &nbsp;&nbsp;&nbsp;
+    <select id='echo_mode'>
+      <option value='echo' selected='true'>Normal (POST /echo)</option>
+      <option value='ohce'>Reverse (POST /ohce)</option>
+      <option value='xbox'>Boxed in XML (GET /xbox/{word})</option>
+      <option value='jbox'>Boxed in JSON (GET /jbox/{word})</option>
+      <option value='put'>No echo (PUT /put)</option>
+    </select>
+</div>
+<br/>
+
+<h2>Messages delivered asynchronously</h2>
+<ul></ul>
+</body>
+</html>

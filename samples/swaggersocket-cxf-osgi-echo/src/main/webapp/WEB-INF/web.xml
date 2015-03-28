@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:j2ee="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/ns/j2ee/web-app_2.5.xsd">
+    <description>Atmosphere JQuery PubSub</description>
+    <display-name>Atmosphere JQuery PubSub</display-name>
+    <servlet>
+        <description>SwaggerSocketServlet</description>
+        <servlet-name>SwaggerSocketServlet</servlet-name>
+        <servlet-class>com.wordnik.swaggersocket.server.SwaggerSocketServlet</servlet-class>
+        <init-param>
+            <param-name>jaxrs.serviceClasses</param-name>
+            <param-value>
+            com.wordnik.swaggersocket.samples.SwaggerSocketResource,
+            com.wordnik.swaggersocket.samples.FileServiceResource
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>jaxrs.providers</param-name>
+            <param-value>com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider</param-value>
+        </init-param>
+        <init-param>
+            <param-name>com.wordnik.swaggersocket.protocol.lazywrite</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>com.wordnik.swaggersocket.protocol.emptyentity</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <load-on-startup>0</load-on-startup>
+        <async-supported>true</async-supported>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SwaggerSocketServlet</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+</web-app>
