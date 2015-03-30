@@ -28,7 +28,7 @@ swaggersocket = function() {
 
     return {
 
-        version : 2.0,
+        version : "2.0.1-javascript",
 
         Options : {
             timeout : 300000,
@@ -92,7 +92,11 @@ swaggersocket = function() {
                 },
 
                 headers : function(headers) {
-                    _headers = headers;
+                    if (Object.prototype.toString.call(headers) == '[object Array]' || headers == null) {
+                        _headers = headers;
+                    } else {
+                        _headers = [headers];
+                    }
                     return this;
                 },
 
@@ -105,7 +109,11 @@ swaggersocket = function() {
                 },
 
                 queryString : function(queryString) {
-                    _queryString = queryString;
+                    if (Object.prototype.toString.call(queryString) == '[object Array]' || queryString == null) {
+                        _queryString = queryString;
+                    } else {
+                        _queryString = [queryString];
+                    }
                     return this;
                 },
 
@@ -118,14 +126,11 @@ swaggersocket = function() {
                         + "\"dataFormat\" : \" " + _dataFormat + "\"";
 
                     if (_headers != null) {
-                        s += ",\"headers\" : [" + atmosphere.util.stringifyJSON(_headers) + "],";
+                        s += ",\"headers\" : " + atmosphere.util.stringifyJSON(_headers);
                     }
 
                     if (_queryString != null) {
-                        if (_headers == null) {
-                            s += ",";
-                        }
-                        s += "\"queryString\" : [" + atmosphere.util.stringifyJSON(_queryString) + "]";
+                        s += ",\"queryString\" : " + atmosphere.util.stringifyJSON(_queryString);
                     }
 
                     s += "}}";
@@ -169,7 +174,11 @@ swaggersocket = function() {
                 },
 
                 headers : function(headers) {
-                    _headers = headers;
+                    if (Object.prototype.toString.call(headers) == '[object Array]' || headers == null) {
+                        _headers = headers;
+                    } else {
+                        _headers = [headers];
+                    }
                     return this;
                 },
 
@@ -187,7 +196,11 @@ swaggersocket = function() {
                 },
 
                 queryString : function(queryString) {
-                    _queryString = queryString;
+                    if (Object.prototype.toString.call(queryString) == '[object Array]' || queryString == null) {
+                        _queryString = queryString;
+                    } else {
+                        _queryString = [queryString];
+                    }
                     return this;
                 },
 
@@ -231,14 +244,11 @@ swaggersocket = function() {
                         + "\"dataFormat\" : \"" + _dataFormat + "\"";
 
                     if (_headers != null) {
-                        s += ",\"headers\" : [" + atmosphere.util.stringifyJSON(_headers) + "],";
+                        s += ",\"headers\" : " + atmosphere.util.stringifyJSON(_headers);
                     }
 
                     if (_queryString != null) {
-                        if (_headers == null) {
-                            s += ",";
-                        }
-                        s += "\"queryString\" : [" + atmosphere.util.stringifyJSON(_queryString) + "]";
+                        s += ",\"queryString\" : " + atmosphere.util.stringifyJSON(_queryString);
                     }
 
                     if (_dataFormat.toLowerCase().indexOf("json") == -1 || _data == "") {
