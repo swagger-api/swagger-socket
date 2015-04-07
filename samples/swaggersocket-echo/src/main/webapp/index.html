@@ -53,7 +53,6 @@
             function open() {
                 var request = new jQuery.swaggersocket.Request()
                         .path(document.location.toString() + 'swaggersocket')
-                        .dataFormat("text/plain")
                         .listener(ss);
 
                 swaggerSocket.open(request);

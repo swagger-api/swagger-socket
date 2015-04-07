@@ -50,7 +50,6 @@ ss.onError = function(response) {
 
 var request = new swaggersocket.Request()
     .path('http://localhost:8080/swaggersocket')
-    .dataFormat("text/plain")
     .listener(ss);
 swaggerSocket.open(request);
 

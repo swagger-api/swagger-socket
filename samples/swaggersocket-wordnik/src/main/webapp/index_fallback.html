@@ -149,7 +149,7 @@
   }
 
   function createHandshakeMessage(path) {
-    var msg = { "handshake" : { "protocolVersion" : "1.0", "protocolName" : "SwaggerSocket", "uuid" : "0", "path" : path, "dataFormat" : "text/plain"}};
+    var msg = { "handshake" : { "protocolVersion" : "1.0", "protocolName" : "SwaggerSocket", "uuid" : "0", "path" : path}};
     return JSON.stringify(msg);
   }
 

@@ -124,8 +124,11 @@ jQuery.swaggersocket = function() {
                         + _protocolVersion
                         + "\",\"protocolName\" : \"" + _protocolName
                         + "\", \"uuid\" : \"" + _uuid
-                        + "\", \"path\" : \"" + _path + "\","
-                        + "\"dataFormat\" : \" " + _dataFormat + "\"";
+                        + "\", \"path\" : \"" + _path;
+
+                    if (_dataFormat != null) {
+                        s += ",\"dataFormat\" : \" " + _dataFormat + "\"";
+                    }
 
                     if (_headers != null) {
                         s += ",\"headers\" : " + jQuery.stringifyJSON(_headers);
@@ -242,8 +245,11 @@ jQuery.swaggersocket = function() {
                 _toJSON : function() {
                     var s = "\"uuid\" : \"" + _uuid + "\","
                         + "\"method\" : \"" + _method + "\","
-                        + "\"path\" : \"" + _path + "\","
-                        + "\"dataFormat\" : \"" + _dataFormat + "\"";
+                        + "\"path\" : \"" + _path;
+
+                    if (_dataFormat != null) {
+                        s += ",\"dataFormat\" : \" " + _dataFormat + "\"";
+                    }
 
                     if (_headers != null) {
                         s += ",\"headers\" : " + jQuery.stringifyJSON(_headers);
@@ -253,7 +259,7 @@ jQuery.swaggersocket = function() {
                         s += ",\"queryString\" : " + jQuery.stringifyJSON(_queryString);
                     }
 
-                    if (_dataFormat.toLowerCase().indexOf("json") == -1 || _data == "") {
+                    if (_dataFormat == null || _dataFormat.toLowerCase().indexOf("json") == -1 || _data == "") {
                         s += ",\"messageBody\" : \"" + _data + "\"}";
                     } else {
                         s += ",\"messageBody\" : " + _data + "}";

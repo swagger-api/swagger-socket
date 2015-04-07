@@ -446,8 +446,12 @@ public class SwaggerSocketProtocolInterceptor extends AtmosphereInterceptorAdapt
         if (!p.startsWith("/")) {
             p = "/" + p;
         }
-        
-        String contentType = hdrs.get("Content-Type");
+
+        // get the content-type
+        String contentType = request.getDataFormat();
+        if (contentType == null) {
+            contentType = hdrs.get("Content-Type");
+        }
         b.pathInfo(p)
                 .contentType(contentType)
                 .headers(hdrs)

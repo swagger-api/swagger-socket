@@ -154,7 +154,7 @@
   }
 
   function createHandshakeMessage(path) {
-    var msg = { "handshake" : { "protocolVersion" : "1.0", "protocolName" : "SwaggerSocket", "uuid" : "0", "path" : path, "dataFormat" : "text/plain"}};
+    var msg = { "handshake" : { "protocolVersion" : "1.0", "protocolName" : "SwaggerSocket", "uuid" : "0", "path" : path}};
     return JSON.stringify(msg);
   }
 
@@ -164,7 +164,7 @@
   }
 
   function createPOSTMessage(id, path, ct, body) {
-    var msg = { "identity" : swaggerid, "requests" : [ { "uuid" : id, "method" : "POST", "path" : path, "headers" : [ {"name" : "Content-Type", "value" : ct } ], "messageBody" : body } ] };
+    var msg = { "identity" : swaggerid, "requests" : [ { "uuid" : id, "method" : "POST", "path" : path, "dataFormat" : ct, "messageBody" : body } ] };
     return JSON.stringify(msg);
   }
 
