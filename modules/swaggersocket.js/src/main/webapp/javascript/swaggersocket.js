@@ -122,10 +122,10 @@ swaggersocket = function() {
                         + _protocolVersion
                         + "\",\"protocolName\" : \"" + _protocolName
                         + "\", \"uuid\" : \"" + _uuid
-                        + "\", \"path\" : \"" + _path;
+                        + "\", \"path\" : \"" + _path + "\"";
 
                     if (_dataFormat != null) {
-                        s += ",\"dataFormat\" : \" " + _dataFormat + "\"";
+                        s += ",\"dataFormat\" : \"" + _dataFormat + "\"";
                     }
 
                     if (_headers != null) {
@@ -243,10 +243,10 @@ swaggersocket = function() {
                 _toJSON : function() {
                     var s = "\"uuid\" : \"" + _uuid + "\","
                         + "\"method\" : \"" + _method + "\","
-                        + "\"path\" : \"" + _path;
+                        + "\"path\" : \"" + _path + "\"";
 
                     if (_dataFormat != null) {
-                        s += ",\"dataFormat\" : \" " + _dataFormat + "\"";
+                        s += ",\"dataFormat\" : \"" + _dataFormat + "\"";
                     }
 
                     if (_headers != null) {
