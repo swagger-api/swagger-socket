@@ -47,7 +47,7 @@ karaf@root()>
 ### Install SwaggerSocket feature
 
 ```bash
-karaf@root()> feature:repo-add mvn:com.wordnik/swaggersocket-karaf-features/2.0.1-SNAPSHOT/xml/features
+karaf@root()> feature:repo-add mvn:com.wordnik/swaggersocket-karaf-features/2.0.1/xml/features
 karaf@root()> feature:install swaggersocket-server
 ```
 
@@ -67,7 +67,7 @@ The above will install the necessary CXF components and Karaf's war support comp
 ### Install SwaggerSocket OSGi CXF Echo Sample 
 
 ```bash
-karaf@root()> install -s mvn:com.wordnik/swaggersocket-cxf-sample-osgi-echo/2.0.1-SNAPSHOT
+karaf@root()> install -s mvn:com.wordnik/swaggersocket-cxf-sample-osgi-echo/2.0.1
 ```
 
 Verify whether the bundle is successfully installed and started by using command list.
@@ -76,16 +76,15 @@ If everything is fine, command web:list should show the installed web applicatio
 ```bash
 karaf@root()> list
 START LEVEL 100 , List Threshold: 50
- ID | State  | Lvl | Version        | Name                              
-------------------------------------------------------------------------
- 90 | Active |  80 | 2.2.6          | atmosphere-runtime                
- 91 | Active |  80 | 2.0.1.SNAPSHOT | swaggersocket-protocol            
- 92 | Active |  80 | 2.0.1.SNAPSHOT | swaggersocket-server              
-130 | Active |  80 | 2.0.1.SNAPSHOT | swaggersocket-cxf-sample-osgi-echo
+ID | State  | Lvl | Version | Name                  
+----------------------------------------------------
+90 | Active |  80 | 2.2.6   | atmosphere-runtime    
+91 | Active |  80 | 2.0.1   | swaggersocket-protocol
+92 | Active |  80 | 2.0.1   | swaggersocket-server  
 karaf@root()> web:list
 ID  | State       | Web-State   | Level | Web-ContextPath         | Name                                               
 -----------------------------------------------------------------------------------------------------------------------
-130 | Active      | Deployed    | 80    | /swaggersocket-cxf-echo | swaggersocket-cxf-sample-osgi-echo (2.0.1.SNAPSHOT)
+130 | Active      | Deployed    | 80    | /swaggersocket-cxf-echo | swaggersocket-cxf-sample-osgi-echo (2.0.1)
 karaf@root()> 
 ```
 

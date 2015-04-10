@@ -28,7 +28,7 @@ swaggersocket = function() {
 
     return {
 
-        version : "2.0.1-javascript",
+        version : "2.0.2-javascript",
 
         Options : {
             timeout : 300000,

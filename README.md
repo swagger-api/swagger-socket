@@ -18,14 +18,14 @@ Using Maven or SBT
     <dependency>
        <groupId>com.wordnik</groupId>
        <artifactId>swaggersocket-server</artifactId>
-       <version>2.0.0</version>
+       <version>2.0.1</version>
     </dependency>
 
     <!-- Client side when using jquery.swaggersocket.js --> 
     <dependency>
        <groupId>com.wordnik</groupId>
        <artifactId>swaggersocket.jquery</artifactId>
-       <version>2.0.0</version>
+       <version>2.0.1</version>
        <type>war</type>
     </dependency>   
 
@@ -33,7 +33,7 @@ Using Maven or SBT
     <dependency>
        <groupId>com.wordnik</groupId>
        <artifactId>swaggersocket.js</artifactId>
-       <version>2.0.0</version>
+       <version>2.0.1</version>
        <type>war</type>
     </dependency>   
 ```
@@ -69,8 +69,10 @@ You can also look at our real time samples:
  * Wordnik's Real Time Search [client code](https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-wordnik/src/main/webapp/index.html) | [server code](https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-wordnik/src/main/scala/com/wordnik/swaggersocket/samples/WordnikResourceProxy.scala) | [download sample](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.wordnik%22%20AND%20a%3A%22swaggersocket-sample-wordnik%22) | [README](https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-wordnik/README.txt)
  * Simple Swagger Sockets Protocol Echo [client code](https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-echo/src/main/webapp/index.html) | [server code](https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-echo/src/main/scala/com/wordnik/swaggersocket/samples/SwaggerSocketResource.scala) | [download sample](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.wordnik%22%20AND%20a%3A%22swaggersocket-sample-echo%22) | [README](https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-echo/README.txt)
  * Simple Swagger Sockets Protocol HelloWorld [client code](https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-helloworld/src/main/webapp/index.html) | [server code](https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-helloworld/src/main/scala/com/wordnik/swaggersocket/samples/HelloWorld.scala) | [download sample](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.wordnik%22%20AND%20a%3A%22swaggersocket-sample-helloword%22) | [README](https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-helloworld/README.txt)
+ * Swagger Sockets Protocol Echo using CXF [client code](https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-cxf-echo/src/main/webapp/index.html) | [server code](https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-cxf-echo/src/main/java/com/wordnik/swaggersocket/samples/SwaggerSocketResource.java) | [download sample](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.wordnik%22%20AND%20a%3A%22swaggersocket-cxf-sample-echo%22) | [README](https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-cxf-echo/README.txt)
+ * Swagger Sockets Protocol Echo using Node.js [client code](https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-echo-node-client/src/main/resources/echo-client.js) | [download sample](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.wordnik%22%20AND%20a%3A%22swaggersocket-sample-echo-node-client%22) | [README](https://github.com/swagger-api/swagger-socket/blob/master/samples/swaggersocket-echo-node-client/README.txt)
 
-You can also download our [war files](http://search.maven.org/#search|ga|1|swaggersocket) and deploy them to any WebServer [supporting WebSockets](https://github.com/Atmosphere/atmosphere/wiki/Supported-WebServers-and-Browsers).
+For Webapp samples, you can also download our [war files](http://search.maven.org/#search|ga|1|swaggersocket) and deploy them to any WebServer [supporting WebSockets](https://github.com/Atmosphere/atmosphere/wiki/Supported-WebServers-and-Browsers).
 
 Note that both both Wordnik and Twitter Samples require a valid key to be configured in their corresponding web.xml file or passed as the command arguments when using nettosphere.sh. For details, refer to the README file of each sample project.
 
@@ -142,11 +144,13 @@ The SwaggerSocket Client is defined as
             .path("path1")
             .method("POST")
             .data("FOO")
+            .dataFormat("text/plain")
             .listener(ss);
     requests[1] = new jQuery.swaggersocket.Request()
             .path("/path2")
             .method("POST")
             .data("BAR")
+            .dataFormat("text/plain")
             .listener(ss);
     swaggerSocket.send(requests);
 ```
@@ -183,9 +187,11 @@ Once completed, you just need to close
     ss.close
 ```
 
-### SwaggerSocket on OSGi
-SwaggerSocket (2.0.1-SNAPSHOT) is not only OSGi enabled but also available as a Karaf feature. To see how it works, see [the swaggersocket-cxf-osgi-echo sample](samples/swaggersocket-cxf-osgi-echo).
+### SwaggerSocket on Node.js
+SwaggerSocket client (From 2.0.0) is available for Node.js. To see how it works, see [the swaggersocket-echo-node-client sample](samples/swaggersocket-echo-node-client).
 
+### SwaggerSocket on OSGi
+SwaggerSocket (From 2.0.1) is not only OSGi enabled but also available as a Karaf feature. To see how it works, see [the swaggersocket-cxf-osgi-echo sample](samples/swaggersocket-cxf-osgi-echo).
 
 ### How the protocol works
 To read more about how the protocol works, take a look at the [SwaggerSocket Protocol Specification](https://github.com/swagger-api/swagger-socket/wiki/SwaggerSocket-Protocol)
