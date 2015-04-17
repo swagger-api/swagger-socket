@@ -26,6 +26,8 @@ $ cd apache-karaf-3.0.3
 
 ### Starting Karaf
 
+Start Karaf by running bin/karaf at the Karaf folder, as shown below.
+
 ```bash
 $ bin/karaf
 
@@ -46,32 +48,61 @@ karaf@root()>
 
 ### Install SwaggerSocket feature
 
+Run the following Karaf console commands.
+
 ```bash
-karaf@root()> feature:repo-add mvn:com.wordnik/swaggersocket-karaf-features/2.0.1/xml/features
-karaf@root()> feature:install swaggersocket-server
+feature:repo-add mvn:com.wordnik/swaggersocket-karaf-features/2.0.1/xml/features
+feature:install swaggersocket-server
 ```
 
 The above will install the swaggersocket-server feature that includes SwaggerSocket's server components
-including the depending components.
+including the depending components, as shown below.
+
+```bash
+karaf@root()> feature:repo-add mvn:com.wordnik/swaggersocket-karaf-features/2.0.1/xml/features
+Adding feature url mvn:com.wordnik/swaggersocket-karaf-features/2.0.1/xml/features
+karaf@root()> feature:install swaggersocket-server
+karaf@root()> 
+```
 
 ### Install CXF's JAXRS and Karaf's War features
 
+Run the following Karaf commands.
+
 ```bash
-karaf@root()> feature:repo-add cxf 3.0.4
-karaf@root()> feature:install cxf-jaxrs
-karaf@root()> feature:install war
+feature:repo-add cxf 3.0.4
+feature:install cxf-jaxrs
+feature:install war
 ```
 
-The above will install the necessary CXF components and Karaf's war support component.
+The above will install the necessary CXF components and Karaf's war support component, as shown below.
+
+```bash
+karaf@root()> feature:repo-add cxf 3.0.4
+Adding feature url mvn:org.apache.cxf.karaf/apache-cxf/3.0.4/xml/features
+karaf@root()> feature:install cxf-jaxrs
+Refreshing bundles org.ops4j.pax.web.pax-web-runtime (79), org.ops4j.pax.web.pax-web-jetty (80), org.apache.geronimo.specs.geronimo-jaspic_1.0_spec (69)
+karaf@root()> feature:install war
+karaf@root()>
+```
 
 ### Install SwaggerSocket OSGi CXF Echo Sample 
 
+Finally, run the following command to install this sample bundle.
+
 ```bash
+install -s mvn:com.wordnik/swaggersocket-cxf-sample-osgi-echo/2.0.1
+```
+
+This will install and start the sample bundle, as shown below.
+
+```
 karaf@root()> install -s mvn:com.wordnik/swaggersocket-cxf-sample-osgi-echo/2.0.1
+Bundle ID: 130
+karaf@root()> 
 ```
 
 Verify whether the bundle is successfully installed and started by using command list.
-If everything is fine, command web:list should show the installed web application.
 
 ```bash
 karaf@root()> list
@@ -80,7 +111,12 @@ ID | State  | Lvl | Version | Name
 ----------------------------------------------------
 90 | Active |  80 | 2.2.6   | atmosphere-runtime    
 91 | Active |  80 | 2.0.1   | swaggersocket-protocol
-92 | Active |  80 | 2.0.1   | swaggersocket-server  
+92 | Active |  80 | 2.0.1   | swaggersocket-server
+```
+
+If everything is fine, command web:list should show the installed web application.
+
+```bash
 karaf@root()> web:list
 ID  | State       | Web-State   | Level | Web-ContextPath         | Name                                               
 -----------------------------------------------------------------------------------------------------------------------
