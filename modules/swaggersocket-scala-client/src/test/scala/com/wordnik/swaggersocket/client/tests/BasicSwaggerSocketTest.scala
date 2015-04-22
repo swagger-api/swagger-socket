@@ -268,7 +268,7 @@ class BasicSwaggerSocketTest extends BaseTest {
   }
 
   it should "Send invalid handhskake" in {
-    val handshake = new Request.Builder().path("ws://127.0.0.1").build()
+    val handshake = new Request.Builder().path(getBadTargetUrl).build()
 
     try {
       SwaggerSocket().open(handshake)
