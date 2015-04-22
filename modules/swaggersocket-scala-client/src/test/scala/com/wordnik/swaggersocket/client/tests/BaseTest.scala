@@ -27,6 +27,7 @@ import com.wordnik.swaggersocket.server.SwaggerSocketServlet
 class BaseTest extends FlatSpec with BeforeAndAfterAll {
   protected final val log: Logger = LoggerFactory.getLogger(classOf[BaseTest])
   protected var port1: Int = 0
+  private var port2: Int = 0
   private var _connector: AbstractConnector = null
   protected var framework: SwaggerSocketServlet = null
   protected var server: Server = new Server();
@@ -41,6 +42,7 @@ class BaseTest extends FlatSpec with BeforeAndAfterAll {
 
   def setUpGlobal = {
     port1 = findFreePort
+    port2 = findFreePort
     _connector = createConnector
     server.addConnector(_connector)
 
@@ -96,5 +98,9 @@ class BaseTest extends FlatSpec with BeforeAndAfterAll {
 
   protected def getTargetUrl: String = {
     "ws://127.0.0.1:" + port1;
+  }
+
+  protected def getBadTargetUrl: String = {
+    "ws://127.0.0.1:" + port2;
   }
 }
