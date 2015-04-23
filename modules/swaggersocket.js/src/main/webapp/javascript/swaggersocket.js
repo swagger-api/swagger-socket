@@ -421,7 +421,7 @@ swaggersocket = function() {
              * @private
              */
             var _construct = function(requests) {
-                var jsonReq = "{ \"identity\" : \"" + _identity + "\"," + "\"requests\" : [ {";
+                var jsonReq = "{ \"identity\" : \"" + swaggersocket._identity + "\"," + "\"requests\" : [ {";
                 atmosphere.util.each(requests, function(index, req) {
                     _requestsMap.put(req.getUUID(), req);
                     jsonReq += (index == requests.length - 1) ? req._toJSON() : req._toJSON() + ",{";
