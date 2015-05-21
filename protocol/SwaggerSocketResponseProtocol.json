@@ -4,7 +4,8 @@
         {
             "uuid" : 0,
             "last" : false,
-            "status" : "status",
+            "statusCode" : "code",
+            "reasonPhrase" : "phrase",
             "path" : "path",
             "headers" : [
                 {

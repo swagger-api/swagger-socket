@@ -2,7 +2,6 @@
     "handshake" : {
         "protocolVersion" : "1.0",
         "protocolName" : "SwaggerSocket",
-        "dataFormat" : "JSON",
         "identity" : 0,
         "path" : "/any_url",
         "method" : "GET",
@@ -25,10 +24,11 @@
             "uuid" : 0,
             "method" : "POST",
             "path" : "/any_url/",
+            "dataFormat" : "text/plain",
             "headers" : [
                 {
-                    "name" : "Content-Type",
-                    "value" : "test/plain"
+                    "name" : "x-foo-key",
+                    "value" : "69124"
                 }
             ],
             "queryStrings" : [
