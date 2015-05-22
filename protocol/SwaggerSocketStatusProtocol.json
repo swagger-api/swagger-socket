@@ -1,5 +1,5 @@
 {
-    "identity" : "some_unique_uuid_generated_by_the_server",
+    "identity" : "uuid_generated_by_the_server",
     "status" : {
         "statusCode" : "code",
         "reasonPhrase" : "phrase"
