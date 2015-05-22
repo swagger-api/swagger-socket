@@ -2,7 +2,7 @@
     "identity" : "uuid-server-generated-number",
     "responses" : [
         {
-            "uuid" : 0,
+            "uuid" : "0",
             "last" : false,
             "statusCode" : "code",
             "reasonPhrase" : "phrase",

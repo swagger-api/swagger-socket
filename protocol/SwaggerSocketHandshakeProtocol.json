@@ -2,11 +2,8 @@
     "handshake" : {
         "protocolVersion" : "1.0",
         "protocolName" : "SwaggerSocket",
-        "dataFormat" : "JSON",
-        "uuid" : 0,
+        "uuid" : "0",
         "path" : "/any_url",
-        "method" : "GET",
-
         "headers" : [
             {
                 "name" : "name",
@@ -19,15 +16,5 @@
                 "value" : "value"
             }
         ]
-    }
-}
-
-{
-    "handshake" : {
-        "uuid" : 0,
-        "status" : {
-            "code" : "200",
-            "reasonPhrase" : "reason"
-        }
     }
 }

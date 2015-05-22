@@ -1,27 +1,8 @@
 {
-    "handshake" : {
-        "protocolVersion" : "1.0",
-        "protocolName" : "SwaggerSocket",
-        "identity" : 0,
-        "path" : "/any_url",
-        "method" : "GET",
-
-        "headers" : [
-            {
-                "name" : "name",
-                "value" : "value"
-            }
-        ],
-        "queryStrings" : [
-            {
-                "name" : "name",
-                "value" : "value"
-            }
-        ]
-    },
+    "identity" : "uuid-server-generated-number",
     "requests" : [
         {
-            "uuid" : 0,
+            "uuid" : "0",
             "method" : "POST",
             "path" : "/any_url/",
             "dataFormat" : "text/plain",
