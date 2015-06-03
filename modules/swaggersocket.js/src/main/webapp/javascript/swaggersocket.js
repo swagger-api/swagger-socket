@@ -22,10 +22,25 @@
  *
  *
  */
-swaggersocket = function() {
+(function() {
+   "use strict";
 
-    "use strict";
+    var root = this;
+    var has_require = typeof require !== 'undefined';
+    var atmosphere = root.atmosphere;
 
+    if(typeof atmosphere === 'undefined') {
+        if(has_require) {
+            atmosphere = require('atmosphere-client');
+        }
+        else {
+            throw new Error('swaggersocket requires atmosphere, see https://github.com/swagger-api/swagger-socket');
+        }
+    }
+
+
+
+var swaggersocket = function() {
     return {
 
         version : "2.1.0-javascript",
@@ -752,3 +767,15 @@ function HashMap() {
         this.length = 0;
     }
 }
+
+
+    if(typeof exports !== 'undefined') {
+        if(typeof module !== 'undefined' && module.exports) {
+            exports = module.exports = swaggersocket;
+        }
+        exports.swaggersocket = swaggersocket;
+    } else {
+        root.swaggersocket = swaggersocket;
+    }
+
+}).call(this);
