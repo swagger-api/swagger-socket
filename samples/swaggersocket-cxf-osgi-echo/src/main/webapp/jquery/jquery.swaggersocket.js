@@ -30,7 +30,7 @@ jQuery.swaggersocket = function() {
 
     return {
 
-        version : 2.0,
+        version : "2.1.0-jquery",
 
         Options : {
             timeout : 300000,
@@ -94,7 +94,11 @@ jQuery.swaggersocket = function() {
                 },
 
                 headers : function(headers) {
-                    _headers = headers;
+                    if (Object.prototype.toString.call(headers) == '[object Array]' || headers == null) {
+                        _headers = headers;
+                    } else {
+                        _headers = [headers];
+                    }
                     return this;
                 },
 
@@ -107,7 +111,11 @@ jQuery.swaggersocket = function() {
                 },
 
                 queryString : function(queryString) {
-                    _queryString = queryString;
+                    if (Object.prototype.toString.call(queryString) == '[object Array]' || queryString == null) {
+                        _queryString = queryString;
+                    } else {
+                        _queryString = [queryString];
+                    }
                     return this;
                 },
 
@@ -116,18 +124,18 @@ jQuery.swaggersocket = function() {
                         + _protocolVersion
                         + "\",\"protocolName\" : \"" + _protocolName
                         + "\", \"uuid\" : \"" + _uuid
-                        + "\", \"path\" : \"" + _path + "\","
-                        + "\"dataFormat\" : \" " + _dataFormat + "\"";
+                        + "\", \"path\" : \"" + _path + "\"";
+
+                    if (_dataFormat != null) {
+                        s += ",\"dataFormat\" : \"" + _dataFormat + "\"";
+                    }
 
                     if (_headers != null) {
-                        s += ",\"headers\" : [" + jQuery.stringifyJSON(_headers) + "],";
+                        s += ",\"headers\" : " + jQuery.stringifyJSON(_headers);
                     }
 
                     if (_queryString != null) {
-                        if (_headers == null) {
-                            s += ",";
-                        }
-                        s += "\"queryString\" : [" + jQuery.stringifyJSON(_queryString) + "]";
+                        s += ",\"queryString\" : " + jQuery.stringifyJSON(_queryString);
                     }
 
                     s += "}}";
@@ -171,7 +179,11 @@ jQuery.swaggersocket = function() {
                 },
 
                 headers : function(headers) {
-                    _headers = headers;
+                    if (Object.prototype.toString.call(headers) == '[object Array]' || headers == null) {
+                        _headers = headers;
+                    } else {
+                        _headers = [headers];
+                    }
                     return this;
                 },
 
@@ -189,7 +201,11 @@ jQuery.swaggersocket = function() {
                 },
 
                 queryString : function(queryString) {
-                    _queryString = queryString;
+                    if (Object.prototype.toString.call(queryString) == '[object Array]' || queryString == null) {
+                        _queryString = queryString;
+                    } else {
+                        _queryString = [queryString];
+                    }
                     return this;
                 },
 
@@ -229,21 +245,21 @@ jQuery.swaggersocket = function() {
                 _toJSON : function() {
                     var s = "\"uuid\" : \"" + _uuid + "\","
                         + "\"method\" : \"" + _method + "\","
-                        + "\"path\" : \"" + _path + "\","
-                        + "\"dataFormat\" : \"" + _dataFormat + "\"";
+                        + "\"path\" : \"" + _path + "\"";
+
+                    if (_dataFormat != null) {
+                        s += ",\"dataFormat\" : \"" + _dataFormat + "\"";
+                    }
 
                     if (_headers != null) {
-                        s += ",\"headers\" : [" + jQuery.stringifyJSON(_headers) + "],";
+                        s += ",\"headers\" : " + jQuery.stringifyJSON(_headers);
                     }
 
                     if (_queryString != null) {
-                        if (_headers == null) {
-                            s += ",";
-                        }
-                        s += "\"queryString\" : [" + jQuery.stringifyJSON(_queryString) + "]";
+                        s += ",\"queryString\" : " + jQuery.stringifyJSON(_queryString);
                     }
 
-                    if (_dataFormat.toLowerCase().indexOf("json") == -1 || _data == "") {
+                    if (_dataFormat == null || _dataFormat.toLowerCase().indexOf("json") == -1 || _data == "") {
                         s += ",\"messageBody\" : \"" + _data + "\"}";
                     } else {
                         s += ",\"messageBody\" : " + _data + "}";
@@ -331,7 +347,11 @@ jQuery.swaggersocket = function() {
                 },
 
                 headers : function(headers) {
-                    _headers = headers;
+                    if (Object.prototype.toString.call(headers) == '[object Array]') {
+                        _headers = headers;
+                    } else {
+                        _headers = [headers];
+                    }
                     return this;
                 },
 
