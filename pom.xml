@@ -368,7 +368,7 @@
         <!-- dependency versions in alphabetical order -->
         <ahc-version>1.8.14</ahc-version>
         <aries-version>1.0.0</aries-version>
-        <atmosphere-version>2.3.1</atmosphere-version>
+        <atmosphere-version>2.3.2</atmosphere-version>
         <commons-lang-version>2.6</commons-lang-version>
         <cxf-version>3.0.5</cxf-version>
         <felix-configadmin-version>1.8.0</felix-configadmin-version>
