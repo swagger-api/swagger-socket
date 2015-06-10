@@ -8,14 +8,6 @@ it is the OSGi version of the SwaggerSocket CXF echo sample.
 
 ### Preparation
 
-Build SwaggerSocket.
-
-```bash
-$ clone https://github.com/swagger-api/swagger-socket.git
-$ cd swagger-socket
-$ mvn install
-```
-
 Download apache-karaf-3.0.3.tar.gz from one of the [mirror sites](http://www.apache.org/dyn/closer.cgi/karaf/3.0.3/apache-karaf-3.0.3.tar.gz) and unpack the archive.
 
 ```bash
@@ -107,11 +99,13 @@ Verify whether the bundle is successfully installed and started by using command
 ```bash
 karaf@root()> list
 START LEVEL 100 , List Threshold: 50
-ID | State  | Lvl | Version | Name                  
-----------------------------------------------------
-90 | Active |  80 | 2.2.6   | atmosphere-runtime    
-91 | Active |  80 | 2.0.1   | swaggersocket-protocol
-92 | Active |  80 | 2.0.1   | swaggersocket-server
+ ID | State  | Lvl | Version | Name                              
+-----------------------------------------------------------------
+ 90 | Active |  80 | 2.2.6   | atmosphere-runtime                
+ 91 | Active |  80 | 2.0.1   | swaggersocket-protocol            
+ 92 | Active |  80 | 2.0.1   | swaggersocket-server              
+130 | Active |  80 | 2.0.1   | swaggersocket-cxf-sample-osgi-echo
+karaf@root()>
 ```
 
 If everything is fine, command web:list should show the installed web application.
