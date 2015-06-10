@@ -21,13 +21,20 @@
             <artifactId>swaggersocket-server</artifactId>
         </dependency>
 
+        <!-- REVISIT make these js included so that we don't need to include them in src/main/webapp
+        <dependency>
+            <groupId>org.atmosphere.client</groupId>
+            <artifactId>jquery</artifactId>
+            <type>war</type>
+        </dependency>
+
         <dependency>
             <groupId>com.wordnik</groupId>
             <artifactId>swaggersocket.jquery</artifactId>
             <version>${project.version}</version>
             <type>war</type>
         </dependency>
-
+-->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>

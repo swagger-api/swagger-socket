@@ -41,10 +41,8 @@
         jQuery.atmosphere.unsubscribe();
     });
 
-    // Temp fix for https://github.com/Atmosphere/atmosphere-javascript/issues/143
     jQuery(window).bind("beforeunload.atmosphere", function () {
         jQuery.atmosphere.debug(new Date() + " Atmosphere: " + "beforeunload event");
-        jQuery.atmosphere.unsubscribe();
     });
 
     jQuery(window).bind("offline", function () {
@@ -87,7 +85,7 @@
     };
 
     jQuery.atmosphere = {
-        version: "2.2.8-jquery",
+        version: "2.2.11-jquery",
         uuid: 0,
         offline: false,
         requests: [],
@@ -1432,7 +1430,7 @@
                     } else if (!webSocketOpened) {
                         _reconnectWithFallbackTransport("Websocket failed. Downgrading to Comet and resending");
 
-                    } else if (_request.reconnect && _response.transport === 'websocket' && message.code !== 1001) {
+                    } else if (_request.reconnect && _response.transport === 'websocket') {
                         _clearState();
                         if (_requestCount++ < _request.maxReconnectOnClose) {
                             _open('re-connecting', _request.transport, _request);
@@ -1728,7 +1726,7 @@
                 if (!isNaN(_heartbeatInterval) && _heartbeatInterval > 0) {
                     var _pushHeartbeat = function () {
                         if (_canLog('debug')) {
-                            atmosphere.util.debug("Sending heartbeat");
+                            jQuery.atmosphere.debug("Sending heartbeat");
                         }
                         _push(_heartbeatPadding);
                         rq.heartbeatTimer = setTimeout(_pushHeartbeat, _heartbeatInterval);

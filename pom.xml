@@ -113,9 +113,15 @@
             </dependency>
 
             <dependency>
-                <groupId>org.atmosphere</groupId>
-                <artifactId>atmosphere-jquery</artifactId>
-                <version>${atmosphere-version}</version>
+                <groupId>org.atmosphere.client</groupId>
+                <artifactId>jquery</artifactId>
+                <version>${atmosphere-client-version}</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.atmosphere.client</groupId>
+                <artifactId>javascript</artifactId>
+                <version>${atmosphere-client-version}</version>
                 <type>war</type>
             </dependency>
 
@@ -369,6 +375,7 @@
         <ahc-version>1.8.14</ahc-version>
         <aries-version>1.0.0</aries-version>
         <atmosphere-version>2.2.7</atmosphere-version>
+        <atmosphere-client-version>2.2.11</atmosphere-client-version>
         <commons-lang-version>2.6</commons-lang-version>
         <cxf-version>3.0.5</cxf-version>
         <felix-configadmin-version>1.8.0</felix-configadmin-version>
