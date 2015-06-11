@@ -16,26 +16,38 @@ Using Maven or SBT
 ```xml
     <!-- Server side -->
     <dependency>
-       <groupId>com.wordnik</groupId>
-       <artifactId>swaggersocket-server</artifactId>
-       <version>2.0.1</version>
+      <groupId>com.wordnik</groupId>
+      <artifactId>swaggersocket-server</artifactId>
+      <version>2.0.2</version>
     </dependency>
 
-    <!-- Client side when using jquery.swaggersocket.js --> 
+    <!-- Client side when using jquery.swaggersocket.js -->
     <dependency>
-       <groupId>com.wordnik</groupId>
-       <artifactId>swaggersocket.jquery</artifactId>
-       <version>2.0.1</version>
-       <type>war</type>
-    </dependency>   
+      <groupId>org.atmosphere.client</groupId>
+      <artifactId>jquery</artifactId>
+      <version>2.2.11</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>com.wordnik</groupId>
+      <artifactId>swaggersocket.jquery</artifactId>
+      <version>2.0.2</version>
+      <type>war</type>
+    </dependency>
 
-    <!-- Client side when using swaggersocket.js --> 
+    <!-- Client side when using swaggersocket.js -->
     <dependency>
-       <groupId>com.wordnik</groupId>
-       <artifactId>swaggersocket.js</artifactId>
-       <version>2.0.1</version>
-       <type>war</type>
-    </dependency>   
+      <groupId>org.atmosphere.client</groupId>
+      <artifactId>javascript</artifactId>
+      <version>2.2.11</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>com.wordnik</groupId>
+      <artifactId>swaggersocket.js</artifactId>
+      <version>2.0.2</version>
+      <type>war</type>
+    </dependency>
 ```
 
 Manual download [here](http://search.maven.org/#search|ga|1|swaggersocket)
