@@ -30,7 +30,7 @@ jQuery.swaggersocket = function() {
 
     return {
 
-        version : "2.0.2-jquery",
+        version : "2.0.3-jquery",
 
         Options : {
             timeout : 300000,
