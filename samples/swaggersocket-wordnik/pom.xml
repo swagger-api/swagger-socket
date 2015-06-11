@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.wordnik</groupId>
         <artifactId>swaggersocket-project</artifactId>
-        <version>2.0.2</version>
+        <version>2.0.3-SNAPSHOT</version>
         <relativePath>../../</relativePath>
     </parent>
 
@@ -11,7 +11,7 @@
     <groupId>com.wordnik</groupId>
     <artifactId>swaggersocket-sample-wordnik</artifactId>
     <name>swaggersocket-sample-wordnik</name>
-    <version>2.0.2</version>
+    <version>2.0.3-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>
     </description>
