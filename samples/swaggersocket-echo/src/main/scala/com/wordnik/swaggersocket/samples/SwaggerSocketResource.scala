@@ -27,6 +27,15 @@ class SwaggerSocketResource {
     // for testing a runtime exception handling
     if (m == "secret") {
         throw new RuntimeException("no secret")
+    } else if (m.startsWith("sleep")) {
+        // sleep n
+        try {
+            Thread.sleep(m.substring(6).trim.toInt * 1000)
+            return "Good Morning"
+        } catch {
+            // ignore;
+            case e:Exception => {}
+        }
     }
     m
   }

@@ -32,6 +32,14 @@ public class SwaggerSocketResource {
     // for testing a runtime exception handling
     if ("secret".equals(m)) {
         throw new RuntimeException("no secret");
+    } else if (m.startsWith("sleep")) {
+        // sleep n
+        try {
+            Thread.sleep(Integer.parseInt(m.substring(6).trim()) * 1000);
+            return "Good Morning";
+        } catch (Exception e) {
+            // ignore;
+        }
     }
     return m;
   }
