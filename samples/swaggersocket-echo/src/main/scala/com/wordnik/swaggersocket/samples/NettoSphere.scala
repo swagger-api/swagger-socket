@@ -21,6 +21,7 @@ object NettoSphere {
       .initParam(ApplicationConfig.WEBSOCKET_METHOD, "POST")
       .initParam("com.sun.jersey.api.json.POJOMappingFeature", "true")
       .initParam("com.sun.jersey.config.property.packages", getClass.getPackage.getName)
+      .initParam("org.atmosphere.websocket.WebSocketProtocol.executeAsync", "true")
       .interceptor(new SwaggerSocketProtocolInterceptor())
       .port(p)
       .host("127.0.0.1")

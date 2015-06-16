@@ -47,6 +47,7 @@ public class NettoSphere {
                     SwaggerSocketResource.class.getName() + "," + FileServiceResource.class.getName())
                 .initParam("jaxrs.providers", 
                     JacksonJsonProvider.class.getName())
+                .initParam("org.atmosphere.websocket.WebSocketProtocol.executeAsync", "true")
                 .initParam("com.wordnik.swaggersocket.protocol.lazywrite", "true")
                 .initParam("com.wordnik.swaggersocket.protocol.emptyentity", "true")
                 .interceptor(new SwaggerSocketProtocolInterceptor())
