@@ -21,6 +21,10 @@
             <param-value>com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider</param-value>
         </init-param>
         <init-param>
+            <param-name>org.atmosphere.websocket.WebSocketProtocol.executeAsync</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
             <param-name>com.wordnik.swaggersocket.protocol.lazywrite</param-name>
             <param-value>true</param-value>
         </init-param>
