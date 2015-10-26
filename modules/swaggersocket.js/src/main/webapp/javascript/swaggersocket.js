@@ -26,11 +26,10 @@
    "use strict";
 
     var root = this;
-    var has_require = typeof require !== 'undefined';
     var atmosphere = root.atmosphere;
 
     if(typeof atmosphere === 'undefined') {
-        if(has_require) {
+        if(typeof require !== 'undefined') {
             atmosphere = require('atmosphere-client');
         }
         else {
