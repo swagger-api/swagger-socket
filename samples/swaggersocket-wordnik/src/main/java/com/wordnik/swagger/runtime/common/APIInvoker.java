@@ -78,6 +78,7 @@ public class APIInvoker {
 	 * @param enableLogging This will enable the logging using Jersey logging filter. Refer the following documentation 
 	 * 						for more details. {@link com.sun.jersey.api.client.filter.LoggingFilter}. Default output is sent to system.out.
 	 * 						Create a logger ({@link java.util.logging.Logger} class and set using setLogger method.
+ 	 * @return APIInvoker
 	 */
 	public static APIInvoker initialize(SecurityHandler securityHandler, String apiServer, boolean enableLogging) {
         APIInvoker invoker = new APIInvoker();
@@ -103,7 +104,7 @@ public class APIInvoker {
 
     /**
      * Returns lst initialized API invoker
-     * @return
+     * @return APIInvoker
      */
     public static APIInvoker getApiInvoker(){
         return apiInvoker;
@@ -111,7 +112,7 @@ public class APIInvoker {
 
 	/**
 	 * Set the logger instance used for Jersey logging. 
-	 * @param aLogger
+	 * @param aLogger - the Logger
 	 */
 	public void setLogger(Logger aLogger) {
 		logger = aLogger; 
@@ -120,7 +121,7 @@ public class APIInvoker {
 	/**
 	 * Gets the API key used for server communication. 
 	 * This value is set using initialize method. 
-	 * @return
+	 * @return SecurityHandler
 	 */
 	public SecurityHandler setSecurityHandler() {
 		return securityHandler;
@@ -132,7 +133,6 @@ public class APIInvoker {
 
 	/**
 	 * Sets the URL for the API server. It is defaulted to the server used while building the driver.
-	 * @return 
 	 */
 	private String getApiServer() {
 		return apiServer;
@@ -151,7 +151,8 @@ public class APIInvoker {
      * based ons ecuroty handler
 	 *
 	 * @param resourceURL - URL for the rest resource
-	 * @param method - Method we should use for communicating to the back end. 
+	 * @param method - Method we should use for communicating to the back end.
+	 * @param queryParams - the query parameters 
 	 * @param postData - if the method is POST, provide the object that should be sent as part of post request.
 	 * @return JSON response of the API call. 
 	 * @throws com.wordnik.swagger.runtime.exception.APIException if the call to API server fails.
@@ -220,9 +221,9 @@ public class APIInvoker {
 	
 	/**
 	 * De-serialize the object from String to object of type input class name.
-	 * @param response
-	 * @param inputClassName
-	 * @return
+	 * @param response - the response string
+	 * @param inputClassName - the target class name
+	 * @return Object
 	 */
 	public static Object deserialize(String response, Class inputClassName) throws APIException {
         try {
@@ -249,8 +250,8 @@ public class APIInvoker {
 
 	/**
 	 * serialize the object from String to input object. 
-	 * @param input
-	 * @return
+	 * @param input - the object to be serialized
+	 * @return String
 	 */
 	public static String serialize(Object input) throws APIException {
         try {
@@ -268,8 +269,8 @@ public class APIInvoker {
     /**
      * Overloaded method for returning the path value
      * For a string value an empty value is returned if the value is null
-     * @param value
-     * @return
+     * @param value - the unencoded path value
+     * @return String
      */
     public static String toPathValue(String value) {
         value = (value == null) ? "" : value;
@@ -279,8 +280,8 @@ public class APIInvoker {
     /**
      * Overloaded method for returning a path value
      * For a list of objects a comma separated string is returned
-     * @param objects
-     * @return
+     * @param objects - the unencoded path values
+     * @return String
      */
     public static String toPathValue(List objects) {
         StringBuilder out = new StringBuilder();
