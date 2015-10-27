@@ -94,8 +94,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.wordnik</groupId>
-            <artifactId>swagger-core_2.10</artifactId>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-core</artifactId>
             <version>${swagger-core-version}</version>
         </dependency>
 

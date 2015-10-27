@@ -18,7 +18,7 @@ package com.wordnik.swaggersocket.samples
 import org.slf4j.LoggerFactory
 
 import javax.ws.rs._
-import com.wordnik.swagger.annotations.{ApiOperation, ApiParam}
+import io.swagger.annotations.{ApiOperation, ApiParam}
 import core.{Context, Response}
 import javax.xml.bind.annotation.XmlRootElement
 import org.codehaus.jackson.annotate.JsonProperty
