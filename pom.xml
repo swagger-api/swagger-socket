@@ -374,10 +374,10 @@
         <!-- dependency versions in alphabetical order -->
         <ahc-version>1.8.14</ahc-version>
         <aries-version>1.0.0</aries-version>
-        <atmosphere-version>2.3.5</atmosphere-version>
+        <atmosphere-version>2.3.6</atmosphere-version>
         <atmosphere-client-version>2.2.13</atmosphere-client-version>
         <commons-lang-version>2.6</commons-lang-version>
-        <cxf-version>3.0.5</cxf-version>
+        <cxf-version>3.0.7</cxf-version>
         <felix-configadmin-version>1.8.0</felix-configadmin-version>
         <felix-framework-version>3.2.2</felix-framework-version>
         <jackson-version>2.4.1</jackson-version>
@@ -393,7 +393,7 @@
         <junit-version>4.8.1</junit-version>
         <logback-version>1.0.13</logback-version>
         <maven-bundle-plugin-version>2.3.4</maven-bundle-plugin-version>
-        <nettosphere-version>2.2.1</nettosphere-version>
+        <nettosphere-version>2.3.3</nettosphere-version>
         <osgi-core-version>4.2.0</osgi-core-version>
         <osgi-slf4j-version>[1.5,2)</osgi-slf4j-version>
         <osgi-javax-servlet-version>[0.0,4)</osgi-javax-servlet-version>
