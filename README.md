@@ -18,20 +18,20 @@ Using Maven or SBT
     <dependency>
       <groupId>com.wordnik</groupId>
       <artifactId>swaggersocket-server</artifactId>
-      <version>2.0.2</version>
+      <version>2.1.0</version>
     </dependency>
 
     <!-- Client side when using jquery.swaggersocket.js -->
     <dependency>
       <groupId>org.atmosphere.client</groupId>
       <artifactId>jquery</artifactId>
-      <version>2.2.11</version>
+      <version>2.2.13</version>
       <type>war</type>
     </dependency>
     <dependency>
       <groupId>com.wordnik</groupId>
       <artifactId>swaggersocket.jquery</artifactId>
-      <version>2.0.2</version>
+      <version>2.1.0</version>
       <type>war</type>
     </dependency>
 
@@ -39,13 +39,13 @@ Using Maven or SBT
     <dependency>
       <groupId>org.atmosphere.client</groupId>
       <artifactId>javascript</artifactId>
-      <version>2.2.11</version>
+      <version>2.2.13</version>
       <type>war</type>
     </dependency>
     <dependency>
       <groupId>com.wordnik</groupId>
       <artifactId>swaggersocket.js</artifactId>
-      <version>2.0.2</version>
+      <version>2.1.0</version>
       <type>war</type>
     </dependency>
 ```
@@ -207,3 +207,8 @@ SwaggerSocket (From 2.0.1) is not only OSGi enabled but also available as a Kara
 
 ### How the protocol works
 To read more about how the protocol works, take a look at the [SwaggerSocket Protocol Specification](https://github.com/swagger-api/swagger-socket/wiki/SwaggerSocket-Protocol)
+
+### Versions
+2.1.x release: [2.1.0](https://goo.gl/WqiK20)
+
+2.0.x release: [2.0.2](https://goo.gl/qj7Ln2) [2.0.1](http://goo.gl/Hm7B6o) [2.0.0](http://goo.gl/UciZGm) 
