@@ -212,3 +212,6 @@ To read more about how the protocol works, take a look at the [SwaggerSocket Pro
 2.1.x release: [2.1.0](https://goo.gl/WqiK20)
 
 2.0.x release: [2.0.2](https://goo.gl/qj7Ln2) [2.0.1](http://goo.gl/Hm7B6o) [2.0.0](http://goo.gl/UciZGm) 
+
+---
+<img src="http://swagger.io/wp-content/uploads/2016/02/logo.jpg"/>
