@@ -6,7 +6,7 @@
         <version>5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.wordnik</groupId>
+    <groupId>io.swagger</groupId>
     <artifactId>swaggersocket-project</artifactId>
     <name>swaggersocket-project</name>
     <version>2.2.0-SNAPSHOT</version>
@@ -71,25 +71,25 @@
             </dependency>
 
             <dependency>
-                <groupId>com.wordnik</groupId>
+                <groupId>io.swagger</groupId>
                 <artifactId>swaggersocket-server</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.wordnik</groupId>
+                <groupId>io.swagger</groupId>
                 <artifactId>swaggersocket.js</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.wordnik</groupId>
+                <groupId>io.swagger</groupId>
                 <artifactId>swaggersocket-scala-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.wordnik</groupId>
+                <groupId>io.swagger</groupId>
                 <artifactId>swaggersocket-protocol</artifactId>
                 <version>${project.version}</version>
             </dependency>

@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>com.wordnik</groupId>
+        <groupId>io.swagger</groupId>
         <artifactId>swaggersocket-project</artifactId>
         <version>2.2.0-SNAPSHOT</version>
         <relativePath>../../</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.wordnik</groupId>
+    <groupId>io.swagger</groupId>
     <artifactId>swaggersocket-server</artifactId>
     <packaging>bundle</packaging>
     <version>2.2.0-SNAPSHOT</version>
@@ -20,7 +20,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.wordnik</groupId>
+            <groupId>io.swagger</groupId>
             <artifactId>swaggersocket-protocol</artifactId>
         </dependency>
 
@@ -44,7 +44,7 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            com.wordnik.swaggersocket.server
+                            io.swagger.swaggersocket.server
                         </Export-Package>
                         <Import-Package>
                             javax.servlet*;version="${osgi-javax-servlet-version}",

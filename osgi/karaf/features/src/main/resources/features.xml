@@ -14,7 +14,7 @@
         <!-- atmosphere -->
         <bundle dependency="true">mvn:org.atmosphere/atmosphere-runtime/${atmosphere-version}</bundle>
         <!-- swaggersocket -->
-        <bundle>mvn:com.wordnik/swaggersocket-protocol/${project.version}</bundle>
-        <bundle>mvn:com.wordnik/swaggersocket-server/${project.version}</bundle>
+        <bundle>mvn:io.swagger/swaggersocket-protocol/${project.version}</bundle>
+        <bundle>mvn:io.swagger/swaggersocket-server/${project.version}</bundle>
     </feature>
 </features>

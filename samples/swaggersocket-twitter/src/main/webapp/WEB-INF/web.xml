@@ -8,10 +8,10 @@
     <servlet>
         <description>SwaggerSocketServlet</description>
         <servlet-name>SwaggerSocketServlet</servlet-name>
-        <servlet-class>com.wordnik.swaggersocket.server.SwaggerSocketServlet</servlet-class>
+        <servlet-class>io.swagger.swaggersocket.server.SwaggerSocketServlet</servlet-class>
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>com.wordnik.swaggersocket.samples</param-value>
+            <param-value>io.swagger.swaggersocket.samples</param-value>
         </init-param>
  <!--  Configure the twitter consumer key and secret. Obtain your consumer key from http://apps.twitter.com
         <init-param>

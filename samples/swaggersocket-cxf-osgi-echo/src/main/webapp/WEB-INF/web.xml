@@ -8,12 +8,12 @@
     <servlet>
         <description>SwaggerSocketServlet</description>
         <servlet-name>SwaggerSocketServlet</servlet-name>
-        <servlet-class>com.wordnik.swaggersocket.server.SwaggerSocketServlet</servlet-class>
+        <servlet-class>io.swagger.swaggersocket.server.SwaggerSocketServlet</servlet-class>
         <init-param>
             <param-name>jaxrs.serviceClasses</param-name>
             <param-value>
-            com.wordnik.swaggersocket.samples.SwaggerSocketResource,
-            com.wordnik.swaggersocket.samples.FileServiceResource
+            io.swagger.swaggersocket.samples.SwaggerSocketResource,
+            io.swagger.swaggersocket.samples.FileServiceResource
             </param-value>
         </init-param>
         <init-param>
@@ -25,11 +25,11 @@
             <param-value>true</param-value>
         </init-param>
         <init-param>
-            <param-name>com.wordnik.swaggersocket.protocol.lazywrite</param-name>
+            <param-name>io.swagger.swaggersocket.protocol.lazywrite</param-name>
             <param-value>true</param-value>
         </init-param>
         <init-param>
-            <param-name>com.wordnik.swaggersocket.protocol.emptyentity</param-name>
+            <param-name>io.swagger.swaggersocket.protocol.emptyentity</param-name>
             <param-value>true</param-value>
         </init-param>
         <load-on-startup>0</load-on-startup>
