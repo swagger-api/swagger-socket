@@ -52,7 +52,7 @@ class WordnikResourceProxy extends RestResourceUtil {
 
     if (!initialized) {
       initialized = true
-      val key = sc.getInitParameter("io.swagger.swagger.key")
+      val key = sc.getInitParameter("com.wordnik.swagger.key")
       APIInvoker.initialize(new ApiKeyAuthTokenBasedSecurityHandler(key, null), "http://api.wordnik.com/v4", false);
     }
 

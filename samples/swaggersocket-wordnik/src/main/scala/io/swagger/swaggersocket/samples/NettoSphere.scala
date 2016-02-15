@@ -25,7 +25,7 @@ object NettoSphere {
     var p = getHttpPort()
     var b: Config.Builder = new Config.Builder
     b.resource("./app")
-      .initParam("io.swagger.swagger.key", key)
+      .initParam("com.wordnik.swagger.key", key)
       .initParam("com.sun.jersey.api.json.POJOMappingFeature", "true")
       .initParam("com.sun.jersey.config.property.packages", getClass.getPackage.getName)
       .interceptor(new SwaggerSocketProtocolInterceptor())

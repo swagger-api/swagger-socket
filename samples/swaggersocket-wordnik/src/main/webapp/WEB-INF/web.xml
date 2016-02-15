@@ -15,7 +15,7 @@
         </init-param>
  <!--  Configure the wordnik api key. Get a key from http://developer.wordnik.com
         <init-param>
-            <param-name>io.swagger.swagger.key</param-name>
+            <param-name>com.wordnik.swagger.key</param-name>
             <param-value>0000000000000000000000000000000000000000000000000</param-value>
         </init-param>
  -->
