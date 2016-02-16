@@ -173,6 +173,7 @@
         <module>samples/swaggersocket-cxf-echo</module>
         <module>samples/swaggersocket-cxf-osgi-echo</module>
         <module>samples/swaggersocket-echo-node-client</module>
+        <module>modules/swaggersocket-java-jsr356-client</module>
     </modules>
     <build>
         <extensions>
