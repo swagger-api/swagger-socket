@@ -19,6 +19,7 @@ import io.swagger.swaggersocket.protocol.Request;
 import io.swagger.swaggersocket.protocol.Response;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 public interface JSR356SwaggerSocketClient {
 
@@ -35,6 +36,14 @@ public interface JSR356SwaggerSocketClient {
     <T> List<T> send(List<Request> requests, Class<T> resultClass);
 
     <T> T send(Request request, Class<T> resultClass);
+
+    Future<Response> sendAsync(Request request);
+
+    List<Future<Response>> sendAsync(List<Request> requests);
+
+    <T> List<Future<T>> sendAsync(List<Request> requests, Class<T> resultClass);
+
+    <T> Future<T> sendAsync(Request request, Class<T> resultClass);
 
     void close();
 
