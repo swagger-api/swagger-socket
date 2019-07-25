@@ -182,8 +182,77 @@ public class JSR356SwaggerSocketClientImpl implements JSR356SwaggerSocketClient 
     }
 
     @Override
+    public Future<Response> sendAsync(final Request request) {
+        final List<Request> requests = new ArrayList<Request>();
+        requests.add(request);
+
+        final List<Future<Response>> responses = sendAsync(requests);
+        return responses.get(0);
+    }
+
+    @Override
     public List<Response> send(final List<Request> requests){
-        final List<FutureCountDownLatch<Response>> resultList = new ArrayList<FutureCountDownLatch<Response>>();
+        final List<Future<Response>> resultList = sendAsync(requests);
+
+        try {
+            final List<Response> responses = new ArrayList<Response>();
+
+            for(final Future<Response> resultLatches : resultList){
+	            final Response response = resultLatches.get();
+                responses.add(response);
+	            messages.remove(response.getUuid());
+            }
+
+            return responses;
+        }
+        catch(final Exception e){
+            throw new JSR356SwaggerSocketException("Error Receiving Swagger Socket Response(s)", e);
+        }
+    }
+
+    @Override
+    public List<Future<Response>> sendAsync(final List<Request> requests){
+        return sendRequests(requests, Response.class);
+    }
+
+    @Override
+    public <T> T send(final Request request, final Class<T> resultClass) {
+        final List<Request> requests = new ArrayList<Request>();
+        requests.add(request);
+        return send(requests, resultClass).get(0);
+    }
+
+    @Override
+    public <T> Future<T> sendAsync(final Request request, final Class<T> resultClass) {
+        final List<Request> requests = new ArrayList<Request>();
+        requests.add(request);
+        return sendAsync(requests, resultClass).get(0);
+    }
+
+    @Override
+    public <T> List<T> send(final List<Request> requests, final Class<T> resultClass) {
+        serializeRequestBodies(requests);
+
+        final List<Response> responses = send(requests);
+
+        final List<T> resultValues = new ArrayList<T>();
+
+        for (final Response response : responses) {
+            final T resultValue = deserializeResponse(response, resultClass);
+            resultValues.add(resultValue);
+        }
+
+        return resultValues;
+    }
+
+    @Override
+    public <T> List<Future<T>> sendAsync(final List<Request> requests, final Class<T> resultClass) {
+        serializeRequestBodies(requests);
+        return sendRequests(requests, resultClass);
+    }
+
+    private <T> List<Future<T>> sendRequests(final List<Request> requests, final Class<T> resultClass){
+        final List<Future<T>> resultList = new ArrayList<Future<T>>();
 
         try {
             reentrantLock.lock();
@@ -199,7 +268,16 @@ public class JSR356SwaggerSocketClientImpl implements JSR356SwaggerSocketClient 
             for(final Request thisRequest : requestMessage.getRequests()){
                 final String uuid = UUID.randomUUID().toString();
                 thisRequest.setUuid(uuid);
-                final FutureCountDownLatch<Response> result = new FutureCountDownLatch<Response>();
+
+                final FutureCountDownLatch<T> result;
+
+                if(resultClass == Response.class){
+                    result = new FutureCountDownLatch<T>();
+                }
+                else {
+                    result = new FutureCountDownLatchWithAutoDeserialize<T>(resultClass);
+                }
+
                 messages.put(uuid, result);
                 resultList.add(result);
             }
@@ -212,29 +290,14 @@ public class JSR356SwaggerSocketClientImpl implements JSR356SwaggerSocketClient 
             reentrantLock.unlock();
         }
 
-        try {
-            final List<Response> responses = new ArrayList<Response>();
-
-            for(final FutureCountDownLatch<Response> resultLatches : resultList){
-	            final Response response = resultLatches.get();
-                responses.add(response);
-	            messages.remove(response.getUuid());
-            }
-
-            return responses;
-        }
-        catch(final Exception e){
-            throw new JSR356SwaggerSocketException("Error Receiving Swagger Socket Response(s)", e);
-        }
+        return resultList;
     }
 
-    @Override
-    public <T> List<T> send(final List<Request> requests, final Class<T> resultClass) {
-
-        for(final Request request: requests){
+    private void serializeRequestBodies(final List<Request> requests){
+        for (final Request request : requests) {
             final Object messageBody = request.getMessageBody();
 
-            if(!(messageBody instanceof String)) {
+            if (!(messageBody instanceof String)) {
                 try {
                     request.setMessageBody(objectMapper.writeValueAsString(messageBody));
                 } catch (JsonProcessingException e) {
@@ -242,32 +305,16 @@ public class JSR356SwaggerSocketClientImpl implements JSR356SwaggerSocketClient 
                 }
             }
         }
-
-        final List<Response> responses = send(requests);
-
-        final List<T> resultValues = new ArrayList<T>();
-
-        for(final Response response : responses) {
-            final String responseBody = (String) response.getMessageBody();
-            final T resultValue;
-
-            try {
-                resultValue = objectMapper.readValue(responseBody, resultClass);
-            } catch (IOException e) {
-                throw new JSR356SwaggerSocketException("Error Deserializing Swagger Socket Response(s)", e);
-            }
-
-            resultValues.add(resultValue);
-        }
-
-        return resultValues;
     }
 
-    @Override
-    public <T> T send(final Request request, final Class<T> resultClass) {
-        final List<Request> requests = new ArrayList<Request>();
-        requests.add(request);
-        return send(requests, resultClass).get(0);
+    private <T> T deserializeResponse(final Response response, final Class<T> resultClass){
+        final String responseBody = (String) response.getMessageBody();
+
+        try {
+            return objectMapper.readValue(responseBody, resultClass);
+        } catch (final IOException e) {
+            throw new JSR356SwaggerSocketException("Error Deserializing Swagger Socket Response(s)", e);
+        }
     }
 
     @Override
@@ -315,7 +362,13 @@ public class JSR356SwaggerSocketClientImpl implements JSR356SwaggerSocketClient 
         for(int i = 0; i < responseMessageList.size(); i++){
             final Response thisResponse = responseMessageList.get(i);
             final FutureCountDownLatch<Response> responseLatch = messages.get(thisResponse.getUuid());
-            responseLatch.set(thisResponse);
+
+            if(responseLatch instanceof FutureCountDownLatchWithAutoDeserialize){
+                ((FutureCountDownLatchWithAutoDeserialize)responseLatch).setResponse(thisResponse);
+            }
+            else {
+                responseLatch.set(thisResponse);
+            }
         }
     }
 
@@ -332,7 +385,7 @@ public class JSR356SwaggerSocketClientImpl implements JSR356SwaggerSocketClient 
             writeMessage(handshakeJson);
         } catch (final JsonProcessingException e) {
             close();
-            throw new JSR356SwaggerSocketException("Error Performing Handhsake!", e);
+            throw new JSR356SwaggerSocketException("Error Performing Handshake!", e);
         }
     }
 
@@ -348,8 +401,8 @@ public class JSR356SwaggerSocketClientImpl implements JSR356SwaggerSocketClient 
 
     private class FutureCountDownLatch<T> implements Future<T> {
 
-        private CountDownLatch countDownLatch = new CountDownLatch(1);
-        private T result = null;
+        protected CountDownLatch countDownLatch = new CountDownLatch(1);
+        protected T result = null;
 
         @Override
         public boolean cancel(boolean mayInterruptIfRunning) {
@@ -374,13 +427,51 @@ public class JSR356SwaggerSocketClientImpl implements JSR356SwaggerSocketClient 
         }
 
         @Override
-        public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        public T get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
             countDownLatch.await(timeout, unit);
             return result;
         }
 
         public void set(final T result) {
             this.result = result;
+            countDownLatch.countDown();
+        }
+
+    }
+
+    private class FutureCountDownLatchWithAutoDeserialize<T> extends FutureCountDownLatch<T> {
+        private Class<T> targetClass;
+        private JSR356SwaggerSocketException deserializationException;
+
+        public FutureCountDownLatchWithAutoDeserialize(final Class<T> targetClass) {
+            this.targetClass = targetClass;
+        }
+
+        @Override
+        public T get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+            countDownLatch.await(timeout, unit);
+
+            // If we had a deserialization exception it will be stored - rethrow it here.
+            if(deserializationException == null){
+                return result;
+            }
+            else {
+                throw deserializationException;
+            }
+        }
+
+        public void setResponse(final Response response) {
+            try {
+                this.result = deserializeResponse(response, targetClass);
+            }
+            catch(final JSR356SwaggerSocketException e){
+                // Since this will be done async, capture a deserialization
+                // exception and re-throw it when get() is called to make sure
+                // the caller is actually notified instead of it being swallowed
+                // by the message handling thread.
+                deserializationException = e;
+            }
+
             countDownLatch.countDown();
         }
 

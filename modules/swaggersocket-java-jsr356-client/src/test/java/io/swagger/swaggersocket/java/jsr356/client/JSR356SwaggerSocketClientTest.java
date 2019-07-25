@@ -25,10 +25,10 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class JSR356SwaggerSocketClientTest extends EmbeddedTomcatTestBase {
 
@@ -49,6 +49,17 @@ public class JSR356SwaggerSocketClientTest extends EmbeddedTomcatTestBase {
                 .build());
 
         assertEquals("Echo Text Doesn't Match!", "echo this...", response.getMessageBody());
+    }
+
+    @Test
+    public void testAsyncJSR356SwaggerSocketClientWithEchoService() throws ExecutionException, InterruptedException {
+        final Future<Response> response = jsr356SwaggerSocketClient.sendAsync(new Request.Builder()
+                .path("/echo")
+                .method("POST")
+                .body("echo this...")
+                .build());
+
+        assertEquals("Echo Tex.get()t Doesn't Match!", "echo this...", response.get().getMessageBody());
     }
 
     @Test
@@ -85,6 +96,39 @@ public class JSR356SwaggerSocketClientTest extends EmbeddedTomcatTestBase {
     }
 
     @Test
+    public void testAsyncJSR356SwaggerSocketClientWithBatchCallToEchoService() throws ExecutionException, InterruptedException {
+        final List<Request> requests = new ArrayList<Request>();
+
+        final Request request1 = new Request.Builder()
+                .path("/echo")
+                .method("POST")
+                .body("echo this... 1")
+                .build();
+
+        final Request request2 = new Request.Builder()
+                .path("/echo")
+                .method("POST")
+                .body("echo this... 2")
+                .build();
+
+        final Request request3 = new Request.Builder()
+                .path("/echo")
+                .method("POST")
+                .body("echo this... 3")
+                .build();
+
+        requests.add(request1);
+        requests.add(request2);
+        requests.add(request3);
+
+        final List<Future<Response>> responses = jsr356SwaggerSocketClient.sendAsync(requests);
+
+        assertEquals("Echo Text Doesn't Match!", "echo this... 3", responses.get(2).get().getMessageBody());
+        assertEquals("Echo Text Doesn't Match!", "echo this... 2", responses.get(1).get().getMessageBody());
+        assertEquals("Echo Text Doesn't Match!", "echo this... 1", responses.get(0).get().getMessageBody());
+    }
+
+    @Test
     public void testJSR356SwaggerSocketClientWithTestJsonObjectAndAutoDeserialize(){
         final TestJsonObject requestJsonObject = new TestJsonObject();
         requestJsonObject.setTest("test json object");
@@ -96,6 +140,20 @@ public class JSR356SwaggerSocketClientTest extends EmbeddedTomcatTestBase {
                 .build(), TestJsonObject.class);
 
         assertEquals("Test Json Object Text Doesn't Match!", requestJsonObject.getTest(), responseJsonObject.getTest());
+    }
+
+    @Test
+    public void testAsyncJSR356SwaggerSocketClientWithTestJsonObjectAndAutoDeserialize() throws ExecutionException, InterruptedException {
+        final TestJsonObject requestJsonObject = new TestJsonObject();
+        requestJsonObject.setTest("test json object");
+
+        final Future<TestJsonObject> responseJsonObject = jsr356SwaggerSocketClient.sendAsync(new Request.Builder()
+                .path("/testJsonObject")
+                .method("POST")
+                .body(requestJsonObject)
+                .build(), TestJsonObject.class);
+
+        assertEquals("Test Json Object Text Doesn't Match!", requestJsonObject.getTest(), responseJsonObject.get().getTest());
     }
 
     @Test
@@ -131,6 +189,41 @@ public class JSR356SwaggerSocketClientTest extends EmbeddedTomcatTestBase {
         assertEquals("Test Json Object 1 Text Doesn't Match!", requestJsonObject1.getTest(), responseJsonObjects.get(0).getTest());
         assertEquals("Test Json Object 2 Text Doesn't Match!", requestJsonObject2.getTest(), responseJsonObjects.get(1).getTest());
         assertEquals("Test Json Object 3 Text Doesn't Match!", requestJsonObject3.getTest(), responseJsonObjects.get(2).getTest());
+    }
+
+    @Test
+    public void testAsyncJSR356SwaggerSocketClientWithBatchCallOfTestJsonObjectAndAutoDeserialize() throws ExecutionException, InterruptedException {
+        final TestJsonObject requestJsonObject1 = new TestJsonObject();
+        requestJsonObject1.setTest("test json object 1");
+
+        final TestJsonObject requestJsonObject2 = new TestJsonObject();
+        requestJsonObject2.setTest("test json object 2");
+
+        final TestJsonObject requestJsonObject3 = new TestJsonObject();
+        requestJsonObject3.setTest("test json object 3");
+
+        final List<Request> requests = new ArrayList<Request>();
+        requests.add(new Request.Builder()
+                .path("/testJsonObject")
+                .method("POST")
+                .body(requestJsonObject1)
+                .build());
+        requests.add(new Request.Builder()
+                .path("/testJsonObject")
+                .method("POST")
+                .body(requestJsonObject2)
+                .build());
+        requests.add(new Request.Builder()
+                .path("/testJsonObject")
+                .method("POST")
+                .body(requestJsonObject3)
+                .build());
+
+        final List<Future<TestJsonObject>> responseJsonObjects = jsr356SwaggerSocketClient.sendAsync(requests, TestJsonObject.class);
+
+        assertEquals("Test Json Object 3 Text Doesn't Match!", requestJsonObject3.getTest(), responseJsonObjects.get(2).get().getTest());
+        assertEquals("Test Json Object 2 Text Doesn't Match!", requestJsonObject2.getTest(), responseJsonObjects.get(1).get().getTest());
+        assertEquals("Test Json Object 1 Text Doesn't Match!", requestJsonObject1.getTest(), responseJsonObjects.get(0).get().getTest());
     }
 
     @Test(expected=JSR356SwaggerSocketException.class)
